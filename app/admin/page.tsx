@@ -1,20 +1,16 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useGetProjects, useCreateProject, useUpdateProject, useDeleteProject } from "./hooks/useProjects";
 import { useGetLeads } from "./hooks/useLeads";
 import DashboardStats from "./components/DashboardStats";
 import LeadsTable from "./components/LeadsTable";
 import ProjectsList from "./components/ProjectsList";
 import ProjectFormModal from "./components/ProjectFormModal";
-import { Layers, Users, LogOut, Lock, Key } from "lucide-react";
+import { Layers, Users, LogOut } from "lucide-react";
+import { signOut } from "next-auth/react";
 
 export default function AdminDashboard() {
-  // Passcode verification state
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [passcode, setPasscode] = useState("");
-  const [authError, setAuthError] = useState("");
-
   // Tab State
   const [activeTab, setActiveTab] = useState<"leads" | "projects">("leads");
 
@@ -31,30 +27,8 @@ export default function AdminDashboard() {
   const updateMutation = useUpdateProject();
   const deleteMutation = useDeleteProject();
 
-  // Check auth session
-  useEffect(() => {
-    const sessionAuth = sessionStorage.getItem("godrej_admin_auth");
-    if (sessionAuth === "true") {
-      setIsAuthenticated(true);
-    }
-  }, []);
-
-  const handleLogin = (e: React.FormEvent) => {
-    e.preventDefault();
-    setAuthError("");
-
-    if (passcode === "godrej2026") {
-      setIsAuthenticated(true);
-      sessionStorage.setItem("godrej_admin_auth", "true");
-    } else {
-      setAuthError("Invalid admin passcode. Please try again.");
-    }
-  };
-
   const handleLogout = () => {
-    setIsAuthenticated(false);
-    sessionStorage.removeItem("godrej_admin_auth");
-    setPasscode("");
+    signOut({ callbackUrl: "/admin/login" });
   };
 
   // CRUD Actions
@@ -93,55 +67,6 @@ export default function AdminDashboard() {
   // Derived statistics metrics
   const apartmentsCount = projects.filter((p: any) => p.category === "apartments").length;
   const plotsCount = projects.filter((p: any) => p.category === "plots").length;
-
-  // Render Gate Barrier
-  if (!isAuthenticated) {
-    return (
-      <div className="min-h-screen bg-bg-tan/60 flex items-center justify-center p-4">
-        <div className="w-full max-w-md bg-white border border-black/[0.06] rounded-3xl p-8 shadow-2xl space-y-6 text-center">
-          {/* Padlock Icon */}
-          <div className="w-16 h-16 rounded-2xl bg-primary/10 border border-primary/20 text-primary flex items-center justify-center mx-auto shadow-sm">
-            <Lock className="w-8 h-8" />
-          </div>
-          
-          <div className="space-y-2">
-            <h2 className="text-2xl font-bold font-serif text-primary">Admin Access Portal</h2>
-            <p className="text-xs text-text-muted">
-              Please enter the administrator passcode to manage database entries.
-            </p>
-          </div>
-
-          <form onSubmit={handleLogin} className="space-y-4">
-            {authError && (
-              <div className="p-3 text-xs text-red-700 bg-red-50 border border-red-200 rounded-xl">
-                {authError}
-              </div>
-            )}
-
-            <div className="relative">
-              <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-text-muted">
-                <Key className="w-4 h-4" />
-              </span>
-              <input
-                type="password"
-                placeholder="Passcode (default: godrej2026)"
-                value={passcode}
-                onChange={(e) => setPasscode(e.target.value)}
-                className="w-full bg-bg-tan/40 border border-black/[0.08] rounded-xl pl-10 pr-4 py-3 text-sm text-primary focus:outline-none focus:border-accent-gold text-center font-bold tracking-widest"
-              />
-            </div>
-
-            <button
-              type="submit"
-              className="w-full bg-primary hover:bg-primary/95 text-white font-bold py-3 rounded-xl text-xs tracking-wider transition-all shadow-md cursor-pointer"
-            >
-              UNLOCK PORTAL
-            </button>
-          </form>
-        </div>
-      </div>
-    );
-  }
 
   // Render Dashboard
   return (
