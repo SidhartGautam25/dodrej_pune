@@ -26,7 +26,7 @@ export default function Hero({ onOpenEnquiry }: HeroProps) {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
 
@@ -37,8 +37,25 @@ export default function Hero({ onOpenEnquiry }: HeroProps) {
     }
 
     setIsSubmitting(true);
-    setTimeout(() => {
-      setIsSubmitting(false);
+
+    try {
+      const res = await fetch("/api/leads", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          projectName: formData.project,
+          name: formData.name,
+          email: formData.email,
+          phone: formData.phone,
+          message: formData.message,
+        }),
+      });
+
+      const json = await res.json();
+      if (!res.ok || !json.success) {
+        throw new Error(json.error || "Failed to submit request.");
+      }
+
       setIsSuccess(true);
       setFormData({
         name: "",
@@ -47,7 +64,11 @@ export default function Hero({ onOpenEnquiry }: HeroProps) {
         message: "",
         project: projectsData[0].name,
       });
-    }, 1500);
+    } catch (err: any) {
+      setError(err.message || "An unexpected error occurred.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
