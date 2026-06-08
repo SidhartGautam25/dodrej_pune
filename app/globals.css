@@ -1,26 +1,82 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Colors */
+  --primary: #111e2f;
+  --primary-hover: #0a121d;
+  --accent-gold: #c5a880;
+  --accent-gold-dark: #a88a5d;
+  --accent-gold-light: #dfcbaf;
+  --text-main: #1e293b;
+  --text-muted: #64748b;
+  --bg-tan: #f5f4f0;
+  --bg-light: #f8fafc;
+  
+  /* Fonts */
+  --font-serif: var(--font-playfair), Georgia, serif;
+  --font-sans: var(--font-outfit), system-ui, sans-serif;
+  
+  /* Layout */
+  --background: #f5f4f0;
+  --foreground: #1e293b;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+@theme {
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-accent-gold: var(--accent-gold);
+  --color-accent-gold-dark: var(--accent-gold-dark);
+  --color-accent-gold-light: var(--accent-gold-light);
+  --color-text-main: var(--text-main);
+  --color-text-muted: var(--text-muted);
+  --color-bg-tan: var(--bg-tan);
+  --color-bg-light: var(--bg-light);
+  
+  --font-serif: var(--font-serif);
+  --font-sans: var(--font-sans);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer base {
+  body {
+    background-color: var(--bg-tan);
+    color: var(--text-main);
+    font-family: var(--font-sans);
+    overflow-x: hidden;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* Custom Utilities and Animations */
+@keyframes spin-slow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin-slow {
+  animation: spin-slow 15s linear infinite;
+}
+
+.glass-card {
+  background: rgba(17, 30, 47, 0.75);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.glass-card-light {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+.gold-gradient {
+  background: linear-gradient(135deg, var(--accent-gold) 0%, var(--accent-gold-dark) 100%);
+}
+
+.gold-gradient-hover:hover {
+  background: linear-gradient(135deg, var(--accent-gold-dark) 0%, #8c714c 100%);
 }
