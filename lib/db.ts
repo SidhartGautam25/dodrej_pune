@@ -12,8 +12,9 @@ function createClient(): PrismaClient {
   }
 
   const url = new URL(databaseUrl);
+  const host = url.hostname === "localhost" ? "127.0.0.1" : url.hostname;
   const adapter = new PrismaMariaDb({
-    host: url.hostname,
+    host,
     port: url.port ? parseInt(url.port) : 3306,
     user: decodeURIComponent(url.username),
     password: decodeURIComponent(url.password),
