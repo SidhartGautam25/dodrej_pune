@@ -2,17 +2,18 @@ version: '3.8'
 
 services:
   db:
-    image: postgres:15-alpine
-    container_name: godrej-postgres-db
+    image: mariadb:10
+    container_name: godrej-mariadb
     restart: always
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: godrej
+      MARIADB_ROOT_PASSWORD: rootpassword
+      MARIADB_DATABASE: u899510431_godrejpune
+      MARIADB_USER: u899510431_admin123
+      MARIADB_PASSWORD: E;4bwI*lrGX
     ports:
-      - "5432:5432"
+      - "3306:3306"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - mariadb_data:/var/lib/mysql
 
   web:
     build:
@@ -23,15 +24,16 @@ services:
     ports:
       - "3000:3000"
     environment:
-      DATABASE_URL: "postgresql://postgres:postgres@db:5432/godrej?schema=public"
+      DATABASE_URL: "mysql://u899510431_admin123:E%3B4bwI%2AlrGX@db:3306/u899510431_godrejpune"
       NODE_ENV: "production"
+      AUTH_SECRET: "9ae25c34e022f464010be5349e5d4cb0195e782a2082b2d"
+      ADMIN_USER: "admin"
+      ADMIN_PASSWORD: "godrej2026"
     depends_on:
       - db
     volumes:
-      # Mount public directory to persist uploads across container restarts if needed,
-      # but we can let them write directly.
       - uploads_data:/app/public/uploads
 
 volumes:
-  postgres_data:
+  mariadb_data:
   uploads_data:
