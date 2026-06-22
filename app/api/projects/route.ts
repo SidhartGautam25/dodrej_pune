@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { projectController } from "@/lib/controllers/ProjectController";
 import { auth } from "@/auth";
 
+export const dynamic = "force-dynamic";
+
 export async function GET() {
   return projectController.getProjects();
 }

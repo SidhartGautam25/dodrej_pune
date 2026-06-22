@@ -1,9 +1,10 @@
 datasource db {
-  provider = "postgresql"
+  provider = "mysql"
 }
 
 generator client {
-  provider = "prisma-client-js"
+  provider   = "prisma-client-js"
+  engineType = "library"
 }
 
 model Project {
@@ -16,7 +17,7 @@ model Project {
   possession  String?
   tag1        String?
   tag2        String?
-  highlights  String[]
+  highlights  Json
   rera        String
   category    String   // "apartments" | "plots"
   createdAt   DateTime @default(now())
