@@ -29,6 +29,8 @@ export const metadata: Metadata = {
   authors: [{ name: "Godrej Properties" }],
 };
 
+import QueryProvider from "@/app/components/QueryProvider";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -40,7 +42,7 @@ export default function RootLayout({
       className={`${playfair.variable} ${outfit.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col font-sans">
-        {children}
+        <QueryProvider>{children}</QueryProvider>
       </body>
     </html>
   );

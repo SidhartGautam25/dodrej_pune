@@ -1,25 +1,54 @@
-import { Pool } from "pg";
-import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "@prisma/client";
+import { PrismaMariaDb } from "@prisma/adapter-mariadb";
 
 const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined;
 };
 
-let prisma: PrismaClient;
-
-if (process.env.NODE_ENV === "production") {
-  const pool = new Pool({ connectionString: process.env.DATABASE_URL });
-  const adapter = new PrismaPg(pool);
-  prisma = new PrismaClient({ adapter });
-} else {
-  if (!globalForPrisma.prisma) {
-    const pool = new Pool({ connectionString: process.env.DATABASE_URL });
-    const adapter = new PrismaPg(pool);
-    globalForPrisma.prisma = new PrismaClient({ adapter });
+function createClient(): PrismaClient {
+  const databaseUrl = process.env.DATABASE_URL;
+  if (!databaseUrl) {
+    throw new Error("DATABASE_URL environment variable is not defined");
   }
-  prisma = globalForPrisma.prisma;
+
+  const url = new URL(databaseUrl);
+  const adapter = new PrismaMariaDb({
+    host: url.hostname,
+    port: url.port ? parseInt(url.port) : 3306,
+    user: decodeURIComponent(url.username),
+    password: decodeURIComponent(url.password),
+    database: url.pathname.substring(1),
+    connectionLimit: 5,
+  });
+
+  return new PrismaClient({ adapter });
 }
+
+const getPrisma = (): PrismaClient => {
+  if (process.env.NODE_ENV === "production") {
+    if (!globalForPrisma.prisma) {
+      globalForPrisma.prisma = createClient();
+    }
+    return globalForPrisma.prisma;
+  } else {
+    if (!globalForPrisma.prisma) {
+      globalForPrisma.prisma = createClient();
+    }
+    return globalForPrisma.prisma;
+  }
+};
+
+// A Proxy that forwards all property accesses to the actual prisma client instance
+const prisma = new Proxy({} as PrismaClient, {
+  get(target, prop, receiver) {
+    const client = getPrisma();
+    const value = Reflect.get(client, prop, receiver);
+    if (typeof value === "function") {
+      return value.bind(client);
+    }
+    return value;
+  },
+});
 
 export { prisma };
 export default prisma;
