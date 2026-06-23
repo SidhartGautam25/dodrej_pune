@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { Project } from "../data/projects";
 
@@ -16,12 +15,10 @@ export default function ProjectCard({ project, onOpenEnquiry }: ProjectCardProps
       
       {/* Top Image Section */}
       <Link href={`/projects/${project.id}`} className="relative h-60 w-full overflow-hidden block">
-        <Image
+        <img
           src={project.image}
           alt={project.name}
-          fill
-          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-          className="object-cover group-hover:scale-105 transition-transform duration-500"
+          className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
         />
         {/* Floating tags */}
         {project.possession && (

@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import Image from "next/image";
 import { Edit, Trash2, MapPin, Tag, Plus, Info } from "lucide-react";
 
 interface ProjectData {
@@ -53,12 +52,10 @@ export default function ProjectsList({ projects, onEdit, onDelete, onAdd }: Proj
             >
               {/* Image Thumbnail */}
               <div className="relative h-44 w-full bg-primary/10 overflow-hidden">
-                <Image
+                <img
                   src={project.image}
                   alt={project.name}
-                  fill
-                  sizes="(max-width: 768px) 100vw, 33vw"
-                  className="object-cover group-hover:scale-105 transition-transform duration-500"
+                  className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                 />
                 {/* Category badge */}
                 <span className={`absolute top-3 right-3 text-[9px] font-extrabold uppercase tracking-widest px-2.5 py-1 rounded-full border shadow-sm text-white ${
