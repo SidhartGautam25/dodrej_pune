@@ -1,0 +1,35 @@
+datasource db {
+  provider = "mysql"
+}
+
+generator client {
+  provider   = "prisma-client-js"
+  engineType = "library"
+}
+
+model Project {
+  id          String   @id @default(uuid())
+  name        String   @unique
+  location    String
+  typology    String
+  price       String
+  image       String
+  possession  String?
+  tag1        String?
+  tag2        String?
+  highlights  Json
+  rera        String
+  category    String   // "apartments" | "plots"
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Lead {
+  id          String   @id @default(uuid())
+  projectName String
+  name        String
+  email       String
+  phone       String
+  message     String?
+  createdAt   DateTime @default(now())
+}

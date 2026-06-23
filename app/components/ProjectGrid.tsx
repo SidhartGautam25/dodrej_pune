@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import ProjectCard from "./ProjectCard";
 import { projectsData, Project } from "../data/projects";
 
@@ -10,8 +10,42 @@ interface ProjectGridProps {
 
 export default function ProjectGrid({ onOpenEnquiry }: ProjectGridProps) {
   const [activeTab, setActiveTab] = useState<"all" | "apartments" | "plots">("all");
+  const [projects, setProjects] = useState<Project[]>(projectsData);
+  const [loading, setLoading] = useState(true);
 
-  const filteredProjects = projectsData.filter((project) => {
+  useEffect(() => {
+    async function loadProjects() {
+      try {
+        const res = await fetch("/api/projects");
+        const json = await res.json();
+        if (json.success && Array.isArray(json.data) && json.data.length > 0) {
+          // Map backend database format back to UI Project interface
+          const mapped: Project[] = json.data.map((p: any) => ({
+            id: p.id,
+            name: p.name,
+            location: p.location,
+            typology: p.typology,
+            price: p.price,
+            image: p.image,
+            possession: p.possession || undefined,
+            tag1: p.tag1 || undefined,
+            tag2: p.tag2 || undefined,
+            highlights: p.highlights,
+            rera: p.rera,
+            category: p.category,
+          }));
+          setProjects(mapped);
+        }
+      } catch (err) {
+        console.warn("Failed to load projects from API, falling back to static data:", err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadProjects();
+  }, []);
+
+  const filteredProjects = projects.filter((project) => {
     if (activeTab === "all") return true;
     return project.category === activeTab;
   });
