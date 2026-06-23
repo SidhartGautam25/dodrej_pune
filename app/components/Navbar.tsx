@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
 
 interface NavbarProps {
   onOpenEnquiry: (projectName?: string) => void;
@@ -8,9 +9,10 @@ interface NavbarProps {
 
 export default function Navbar({ onOpenEnquiry }: NavbarProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const pathname = usePathname();
+  const router = useRouter();
 
   const scrollSection = (id: string) => {
-    setIsOpen(false);
     const element = document.getElementById(id);
     if (element) {
       const offset = 80;
@@ -26,12 +28,30 @@ export default function Navbar({ onOpenEnquiry }: NavbarProps) {
     }
   };
 
+  const handleHomeClick = () => {
+    setIsOpen(false);
+    if (pathname === "/") {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } else {
+      router.push("/");
+    }
+  };
+
+  const handleScrollOrCreateLink = (sectionId: string) => {
+    setIsOpen(false);
+    if (pathname === "/") {
+      scrollSection(sectionId);
+    } else {
+      router.push(`/#${sectionId}`);
+    }
+  };
+
   return (
     <nav className="fixed top-4 left-0 w-full z-40 px-4 md:px-8">
       <div className="max-w-7xl mx-auto flex items-center justify-between bg-primary/80 backdrop-blur-md border border-white/10 rounded-full px-6 py-3 shadow-lg">
         
         {/* Left: Brand Logo */}
-        <div className="flex flex-col text-white cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
+        <div className="flex flex-col text-white cursor-pointer" onClick={handleHomeClick}>
           <div className="flex items-center space-x-1">
             <span className="text-base font-extrabold tracking-wider font-serif">GODREJ</span>
             <span className="text-xs font-light tracking-widest text-accent-gold-light uppercase">PROPERTIES</span>
@@ -42,19 +62,19 @@ export default function Navbar({ onOpenEnquiry }: NavbarProps) {
         {/* Center: Desktop Navigation capsule */}
         <div className="hidden md:flex items-center space-x-1 bg-black/30 border border-white/5 rounded-full p-1">
           <button
-            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+            onClick={handleHomeClick}
             className="px-4 py-1.5 text-xs font-medium rounded-full text-white/80 hover:text-white hover:bg-white/10 transition-all cursor-pointer"
           >
             Home
           </button>
           <button
-            onClick={() => scrollSection("projects-section")}
+            onClick={() => handleScrollOrCreateLink("projects-section")}
             className="px-4 py-1.5 text-xs font-medium rounded-full text-white/80 hover:text-white hover:bg-white/10 transition-all cursor-pointer"
           >
             Our Projects
           </button>
           <button
-            onClick={() => scrollSection("about-section")}
+            onClick={() => handleScrollOrCreateLink("about-section")}
             className="px-4 py-1.5 text-xs font-medium rounded-full text-white/80 hover:text-white hover:bg-white/10 transition-all cursor-pointer"
           >
             Contact Us
@@ -112,19 +132,19 @@ export default function Navbar({ onOpenEnquiry }: NavbarProps) {
       {isOpen && (
         <div className="absolute top-20 left-4 right-4 bg-primary border border-white/10 rounded-2xl p-6 shadow-xl flex flex-col space-y-4 md:hidden animate-fade-in">
           <button
-            onClick={() => { setIsOpen(false); window.scrollTo({ top: 0, behavior: "smooth" }); }}
+            onClick={handleHomeClick}
             className="w-full py-2.5 text-left text-sm font-medium text-white/80 hover:text-accent-gold border-b border-white/5"
           >
             Home
           </button>
           <button
-            onClick={() => scrollSection("projects-section")}
+            onClick={() => handleScrollOrCreateLink("projects-section")}
             className="w-full py-2.5 text-left text-sm font-medium text-white/80 hover:text-accent-gold border-b border-white/5"
           >
             Our Projects
           </button>
           <button
-            onClick={() => scrollSection("about-section")}
+            onClick={() => handleScrollOrCreateLink("about-section")}
             className="w-full py-2.5 text-left text-sm font-medium text-white/80 hover:text-accent-gold border-b border-white/5"
           >
             Contact Us
