@@ -32,6 +32,10 @@ export class ProjectRepository {
     highlights: string[];
     rera: string;
     category: string;
+    description?: string | null;
+    amenities?: any;
+    gallery?: any;
+    floorPlans?: any;
   }): Promise<Project> {
     return prisma.project.create({
       data: {
@@ -46,6 +50,10 @@ export class ProjectRepository {
         highlights: data.highlights,
         rera: data.rera,
         category: data.category,
+        description: data.description || null,
+        amenities: data.amenities || null,
+        gallery: data.gallery || null,
+        floorPlans: data.floorPlans || null,
       },
     });
   }
@@ -64,6 +72,10 @@ export class ProjectRepository {
       highlights?: string[];
       rera?: string;
       category?: string;
+      description?: string | null;
+      amenities?: any;
+      gallery?: any;
+      floorPlans?: any;
     }
   ): Promise<Project> {
     return prisma.project.update({

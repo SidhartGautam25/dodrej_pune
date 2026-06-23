@@ -2,6 +2,7 @@
 
 import React from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { Project } from "../data/projects";
 
 interface ProjectCardProps {
@@ -14,7 +15,7 @@ export default function ProjectCard({ project, onOpenEnquiry }: ProjectCardProps
     <div className="flex flex-col bg-white rounded-2xl overflow-hidden border border-black/[0.06] shadow-sm hover:shadow-xl transition-all duration-300 group">
       
       {/* Top Image Section */}
-      <div className="relative h-60 w-full overflow-hidden">
+      <Link href={`/projects/${project.id}`} className="relative h-60 w-full overflow-hidden block">
         <Image
           src={project.image}
           alt={project.name}
@@ -40,14 +41,16 @@ export default function ProjectCard({ project, onOpenEnquiry }: ProjectCardProps
             {project.tag2}
           </div>
         )}
-      </div>
+      </Link>
 
       {/* Details Section */}
       <div className="p-6 flex-grow flex flex-col justify-between">
         <div>
           {/* Title */}
-          <h3 className="text-xl font-bold font-serif text-primary text-center mb-1 group-hover:text-accent-gold transition-colors">
-            {project.name}
+          <h3 className="text-xl font-bold font-serif text-primary text-center mb-1 transition-colors">
+            <Link href={`/projects/${project.id}`} className="hover:text-accent-gold transition-colors block">
+              {project.name}
+            </Link>
           </h3>
           
           {/* Location */}

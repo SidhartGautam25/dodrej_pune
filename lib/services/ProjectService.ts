@@ -32,6 +32,12 @@ export class ProjectService {
     highlights: string[];
     rera: string;
     category: string;
+    description?: string | null;
+    amenities?: string[];
+    galleryUrls?: string[];
+    galleryFiles?: File[];
+    floorPlans?: { title: string; size: string; image?: string; tempIndex?: number }[];
+    floorPlanFiles?: { file: File; index: number }[];
   }): Promise<Project> {
     // Validations
     if (!data.name.trim()) throw new Error("Project name is required.");
@@ -59,9 +65,40 @@ export class ProjectService {
       throw new Error("Project image file or path is required.");
     }
 
+    // Handle Gallery Uploads
+    const uploadedGalleryUrls: string[] = [];
+    if (data.galleryFiles && data.galleryFiles.length > 0) {
+      for (const file of data.galleryFiles) {
+        const url = await this.storage.uploadFile(file, "assets");
+        uploadedGalleryUrls.push(url);
+      }
+    }
+    const finalGallery = [...(data.galleryUrls || []), ...uploadedGalleryUrls];
+
+    // Handle Floor Plans Uploads
+    const finalFloorPlans = [];
+    if (data.floorPlans) {
+      for (const fp of data.floorPlans) {
+        let fpImageUrl = fp.image || "";
+        if (data.floorPlanFiles) {
+          const associated = data.floorPlanFiles.find((f) => f.index === fp.tempIndex);
+          if (associated) {
+            fpImageUrl = await this.storage.uploadFile(associated.file, "assets");
+          }
+        }
+        finalFloorPlans.push({
+          title: fp.title,
+          size: fp.size,
+          image: fpImageUrl,
+        });
+      }
+    }
+
     return this.repo.create({
       ...data,
       image: imageUrl,
+      gallery: finalGallery,
+      floorPlans: finalFloorPlans,
     });
   }
 
@@ -79,6 +116,12 @@ export class ProjectService {
       highlights?: string[];
       rera?: string;
       category?: string;
+      description?: string | null;
+      amenities?: string[];
+      galleryUrls?: string[];
+      galleryFiles?: File[];
+      floorPlans?: { title: string; size: string; image?: string; tempIndex?: number }[];
+      floorPlanFiles?: { file: File; index: number }[];
     }
   ): Promise<Project> {
     const existing = await this.repo.getById(id);
@@ -91,15 +134,64 @@ export class ProjectService {
       throw new Error("Invalid project category.");
     }
 
+    // Handle cover image
     let imageUrl = existing.image;
     if (data.imageFile) {
-      // Upload new file
       imageUrl = await this.storage.uploadFile(data.imageFile, "assets");
-      // Optionally clean up old file if it was locally uploaded
-      if (existing.image.startsWith("/assets/")) {
-        // Only delete if it's dynamic upload, we'll keep static template assets
-        if (existing.image.includes("-")) {
-          await this.storage.deleteFile(existing.image);
+      if (existing.image.startsWith("/assets/") && existing.image.includes("-")) {
+        await this.storage.deleteFile(existing.image);
+      }
+    }
+
+    // Handle Gallery Uploads
+    let finalGallery: string[] | undefined = undefined;
+    if (data.galleryUrls || data.galleryFiles) {
+      const uploadedGalleryUrls: string[] = [];
+      if (data.galleryFiles && data.galleryFiles.length > 0) {
+        for (const file of data.galleryFiles) {
+          const url = await this.storage.uploadFile(file, "assets");
+          uploadedGalleryUrls.push(url);
+        }
+      }
+      const galleryList = [...(data.galleryUrls || []), ...uploadedGalleryUrls];
+      finalGallery = galleryList;
+
+      // Cleanup deleted gallery images
+      const existingGallery = (existing.gallery as string[]) || [];
+      const deletedUrls = existingGallery.filter((url) => !galleryList.includes(url));
+      for (const url of deletedUrls) {
+        if (url.includes("-")) {
+          await this.storage.deleteFile(url);
+        }
+      }
+    }
+
+    // Handle Floor Plans Uploads
+    let finalFloorPlans: any[] | undefined = undefined;
+    if (data.floorPlans) {
+      const floorPlansList = [];
+      for (const fp of data.floorPlans) {
+        let fpImageUrl = fp.image || "";
+        if (data.floorPlanFiles) {
+          const associated = data.floorPlanFiles.find((f) => f.index === fp.tempIndex);
+          if (associated) {
+            fpImageUrl = await this.storage.uploadFile(associated.file, "assets");
+          }
+        }
+        floorPlansList.push({
+          title: fp.title,
+          size: fp.size,
+          image: fpImageUrl,
+        });
+      }
+      finalFloorPlans = floorPlansList;
+
+      // Cleanup deleted floor plan images
+      const existingFloorPlans = (existing.floorPlans as { image?: string }[]) || [];
+      const finalImages = floorPlansList.map((fp) => fp.image).filter(Boolean);
+      for (const fp of existingFloorPlans) {
+        if (fp.image && fp.image.includes("-") && !finalImages.includes(fp.image)) {
+          await this.storage.deleteFile(fp.image);
         }
       }
     }
@@ -107,6 +199,8 @@ export class ProjectService {
     return this.repo.update(id, {
       ...data,
       image: imageUrl,
+      gallery: finalGallery,
+      floorPlans: finalFloorPlans,
     });
   }
 
@@ -117,10 +211,28 @@ export class ProjectService {
     }
 
     const deleted = await this.repo.delete(id);
-    // Delete image file if it's an uploaded asset
+
+    // Delete cover image
     if (existing.image.includes("-")) {
       await this.storage.deleteFile(existing.image);
     }
+
+    // Delete gallery images
+    const gallery = (existing.gallery as string[]) || [];
+    for (const url of gallery) {
+      if (url.includes("-")) {
+        await this.storage.deleteFile(url);
+      }
+    }
+
+    // Delete floor plan images
+    const floorPlans = (existing.floorPlans as { image?: string }[]) || [];
+    for (const fp of floorPlans) {
+      if (fp.image && fp.image.includes("-")) {
+        await this.storage.deleteFile(fp.image);
+      }
+    }
+
     return deleted;
   }
 }

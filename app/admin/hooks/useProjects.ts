@@ -13,6 +13,11 @@ export interface ProjectDataInput {
   highlights: string[];
   rera: string;
   category: "apartments" | "plots";
+  description?: string;
+  amenities?: string[];
+  galleryUrls?: string[];
+  galleryFiles?: File[];
+  floorPlans?: { title: string; size: string; image?: string; file?: File | null }[];
 }
 
 export function useGetProjects() {
@@ -46,6 +51,28 @@ export function useCreateProject() {
       if (data.image) {
         formData.append("image", data.image);
       }
+
+      if (data.description) formData.append("description", data.description);
+      if (data.amenities) formData.append("amenities", JSON.stringify(data.amenities));
+      if (data.galleryUrls) formData.append("galleryUrls", JSON.stringify(data.galleryUrls));
+      
+      data.galleryFiles?.forEach((file) => {
+        formData.append("galleryFiles", file);
+      });
+
+      const serializedFloorPlans = data.floorPlans?.map((fp, idx) => ({
+        title: fp.title,
+        size: fp.size,
+        image: fp.image || "",
+        tempIndex: idx,
+      })) || [];
+      formData.append("floorPlans", JSON.stringify(serializedFloorPlans));
+
+      data.floorPlans?.forEach((fp, idx) => {
+        if (fp.file) {
+          formData.append(`floorPlanFile_${idx}`, fp.file);
+        }
+      });
 
       const res = await fetch("/api/projects", {
         method: "POST",
@@ -82,6 +109,28 @@ export function useUpdateProject() {
       if (data.image) {
         formData.append("image", data.image);
       }
+
+      if (data.description !== undefined) formData.append("description", data.description || "");
+      if (data.amenities) formData.append("amenities", JSON.stringify(data.amenities));
+      if (data.galleryUrls) formData.append("galleryUrls", JSON.stringify(data.galleryUrls));
+      
+      data.galleryFiles?.forEach((file) => {
+        formData.append("galleryFiles", file);
+      });
+
+      const serializedFloorPlans = data.floorPlans?.map((fp, idx) => ({
+        title: fp.title,
+        size: fp.size,
+        image: fp.image || "",
+        tempIndex: idx,
+      })) || [];
+      formData.append("floorPlans", JSON.stringify(serializedFloorPlans));
+
+      data.floorPlans?.forEach((fp, idx) => {
+        if (fp.file) {
+          formData.append(`floorPlanFile_${idx}`, fp.file);
+        }
+      });
 
       const res = await fetch(`/api/projects/${data.id}`, {
         method: "PUT",

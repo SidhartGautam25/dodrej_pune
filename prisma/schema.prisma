@@ -20,6 +20,10 @@ model Project {
   highlights  Json
   rera        String
   category    String   // "apartments" | "plots"
+  description String?  @db.Text
+  amenities   Json?
+  gallery     Json?
+  floorPlans  Json?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
