@@ -3,8 +3,8 @@
 # Exit on error
 set -e
 
-echo "Waiting for PostgreSQL to start..."
-until nc -z db 5432; do
+echo "Waiting for MySQL/MariaDB to start..."
+until nc -z db 3306; do
   echo "Database is unavailable - sleeping"
   sleep 1
 done

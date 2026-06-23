@@ -6,4 +6,7 @@ export default defineConfig({
   datasource: {
     url: process.env.DATABASE_URL || "postgresql://mock:mock@localhost:5432/mock",
   },
+  migrations: {
+    seed: "npx tsx prisma/seed.ts",
+  },
 });
