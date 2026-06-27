@@ -24,21 +24,7 @@ export default function Home() {
     setModalProject("");
   };
 
-  // Auto-trigger enquiry modal after 10 seconds of user session
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      // Only open if modal is not already open
-      setIsModalOpen((prev) => {
-        if (!prev) {
-          setModalProject("Special Consultation");
-          return true;
-        }
-        return prev;
-      });
-    }, 10000); // 10 seconds
 
-    return () => clearTimeout(timer);
-  }, []);
 
   return (
     <div className="relative min-h-screen flex flex-col font-sans bg-bg-tan">

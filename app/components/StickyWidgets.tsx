@@ -12,20 +12,21 @@ export default function StickyWidgets({ onOpenEnquiry }: StickyWidgetsProps) {
       {/* Desktop Sticky Vertical Button on Right Side */}
       <div className="fixed right-0 top-1/2 -translate-y-1/2 z-40 hidden md:block">
         <button
-          onClick={() => onOpenEnquiry("General Enquiry")}
-          className="flex items-center space-x-2 bg-primary hover:bg-black text-white px-4 py-2.5 rounded-l-xl shadow-lg border border-r-0 border-white/10 hover:border-accent-gold/40 transition-all origin-right cursor-pointer"
+          onClick={() => onOpenEnquiry("Schedule a Visit")}
+          className="flex items-center bg-[#f3f4f6]/95 hover:bg-white text-gray-800 px-3 py-6 rounded-l-2xl shadow-xl border border-r-0 border-gray-300 hover:text-primary transition-all duration-300 cursor-pointer group"
           style={{
             writingMode: "vertical-rl",
             transform: "rotate(180deg)",
           }}
         >
-          <span className="flex items-center justify-center p-1 rounded-full bg-accent-gold/20 mb-2 transform rotate-90 text-accent-gold">
-            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+          {/* Rotated icon to show correctly when vertical */}
+          <span className="mb-2.5 transform rotate-90 text-gray-500 group-hover:text-accent-gold transition-colors">
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
             </svg>
           </span>
-          <span className="text-xs font-bold tracking-widest uppercase">
-            Query Now
+          <span className="text-[11px] font-bold tracking-wider text-gray-700 font-sans">
+            Schedule a visit
           </span>
         </button>
       </div>
