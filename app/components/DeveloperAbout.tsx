@@ -104,7 +104,7 @@ export default function DeveloperAbout({ onOpenEnquiry }: DeveloperAboutProps) {
           {/* Call Badge */}
           <div className="pt-4">
             <a
-              href="tel:+919225532615"
+              href="tel:+919665205957"
               className="inline-flex items-center space-x-3 bg-white border border-accent-gold/40 hover:border-accent-gold rounded-xl px-6 py-4 shadow-sm hover:shadow-md transition-all group"
             >
               <div className="w-10 h-10 rounded-full bg-accent-gold/15 flex items-center justify-center text-accent-gold group-hover:bg-accent-gold group-hover:text-white transition-all">
@@ -117,7 +117,7 @@ export default function DeveloperAbout({ onOpenEnquiry }: DeveloperAboutProps) {
                   Talk to Sales Executive
                 </span>
                 <span className="text-base font-extrabold text-primary tracking-wide">
-                  +91-9225532615
+                  +91 96652 05957
                 </span>
               </div>
             </a>

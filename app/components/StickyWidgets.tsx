@@ -31,10 +31,25 @@ export default function StickyWidgets({ onOpenEnquiry }: StickyWidgetsProps) {
         </button>
       </div>
 
+      {/* Desktop Floating Action Button (FAB) at Bottom Right */}
+      <div className="fixed right-6 bottom-6 z-40 hidden md:block">
+        <button
+          onClick={() => onOpenEnquiry("Floating Action Button")}
+          className="flex items-center justify-center w-14 h-14 rounded-full bg-blue-600 text-white hover:bg-blue-700 shadow-2xl transition-all duration-300 hover:scale-110 cursor-pointer group relative"
+          aria-label="Enquire Now"
+        >
+          {/* Ripple animation effect */}
+          <span className="absolute inset-0 rounded-full bg-blue-600/40 animate-ping opacity-75"></span>
+          <svg className="w-6 h-6 z-10 relative" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+          </svg>
+        </button>
+      </div>
+
       {/* Mobile Sticky Bottom Action Bar */}
       <div className="fixed bottom-0 left-0 w-full z-40 flex md:hidden bg-primary/95 border-t border-white/10 backdrop-blur-md shadow-2xl p-2.5 gap-2.5">
         <a
-          href="tel:+919225532615"
+          href="tel:+919665205957"
           className="flex-1 flex items-center justify-center space-x-2 bg-black border border-white/10 text-white rounded-xl py-3 text-xs font-bold uppercase tracking-wider"
         >
           <svg className="w-4 h-4 text-accent-gold" fill="none" viewBox="0 0 24 24" stroke="currentColor">
