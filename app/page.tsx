@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
+import PromoBanner from "./components/PromoBanner";
 import ProjectGrid from "./components/ProjectGrid";
 import DeveloperAbout from "./components/DeveloperAbout";
 import Footer from "./components/Footer";
@@ -33,6 +34,9 @@ export default function Home() {
 
       {/* Hero Section */}
       <Hero onOpenEnquiry={handleOpenEnquiry} />
+
+      {/* Promo Banner Section */}
+      <PromoBanner onOpenEnquiry={handleOpenEnquiry} />
 
       {/* Project Grid Listings */}
       <ProjectGrid onOpenEnquiry={handleOpenEnquiry} />

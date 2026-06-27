@@ -549,7 +549,7 @@ export default function ProjectDetailsClient({ project }: ProjectDetailsClientPr
       )}
 
       {/* Footer Section */}
-      <Footer />
+      <Footer singleProject={project} />
 
       {/* Sticky Call & Form Widgets */}
       <StickyWidgets onOpenEnquiry={handleScrollToEnquiry} />

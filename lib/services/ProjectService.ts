@@ -31,6 +31,10 @@ export class ProjectService {
     tag2?: string | null;
     highlights: string[];
     rera: string;
+    reraId?: string | null;
+    reraLabel?: string | null;
+    reraQrImageFile?: File | null;
+    reraQrImagePath?: string;
     category: string;
     description?: string | null;
     amenities?: string[];
@@ -67,6 +71,12 @@ export class ProjectService {
       throw new Error("Project image file or path is required.");
     }
 
+    // Handle RERA QR Image Upload
+    let reraQrImageUrl = data.reraQrImagePath || "";
+    if (data.reraQrImageFile) {
+      reraQrImageUrl = await this.storage.uploadFile(data.reraQrImageFile, "assets");
+    }
+
     // Handle Gallery Uploads
     const uploadedGalleryUrls: string[] = [];
     if (data.galleryFiles && data.galleryFiles.length > 0) {
@@ -96,13 +106,14 @@ export class ProjectService {
       }
     }
 
-    const { imageFile, imagePath, galleryUrls, galleryFiles, floorPlans: rawFloorPlans, floorPlanFiles, ...rest } = data;
+    const { imageFile, imagePath, galleryUrls, galleryFiles, floorPlans: rawFloorPlans, floorPlanFiles, reraQrImageFile, reraQrImagePath, ...rest } = data;
 
     return this.repo.create({
       ...rest,
       image: imageUrl,
       gallery: finalGallery,
       floorPlans: finalFloorPlans,
+      reraQrImage: reraQrImageUrl || null,
     });
   }
 
@@ -119,6 +130,9 @@ export class ProjectService {
       tag2?: string | null;
       highlights?: string[];
       rera?: string;
+      reraId?: string | null;
+      reraLabel?: string | null;
+      reraQrImageFile?: File | null;
       category?: string;
       description?: string | null;
       amenities?: string[];
@@ -146,6 +160,22 @@ export class ProjectService {
       imageUrl = await this.storage.uploadFile(data.imageFile, "assets");
       if (existing.image.startsWith("/assets/") && existing.image.includes("-")) {
         await this.storage.deleteFile(existing.image);
+      }
+    }
+
+    // Handle RERA QR Image Update
+    let reraQrImageUrl = existing.reraQrImage || "";
+    if (data.hasOwnProperty("reraQrImageFile")) {
+      if (data.reraQrImageFile) {
+        reraQrImageUrl = await this.storage.uploadFile(data.reraQrImageFile, "assets");
+        if (existing.reraQrImage && existing.reraQrImage.startsWith("/assets/") && existing.reraQrImage.includes("-")) {
+          await this.storage.deleteFile(existing.reraQrImage);
+        }
+      } else if (data.reraQrImageFile === null) {
+        if (existing.reraQrImage && existing.reraQrImage.startsWith("/assets/") && existing.reraQrImage.includes("-")) {
+          await this.storage.deleteFile(existing.reraQrImage);
+        }
+        reraQrImageUrl = "";
       }
     }
 
@@ -202,13 +232,14 @@ export class ProjectService {
       }
     }
 
-    const { imageFile, galleryUrls, galleryFiles, floorPlans: rawFloorPlans, floorPlanFiles, ...rest } = data;
+    const { imageFile, galleryUrls, galleryFiles, floorPlans: rawFloorPlans, floorPlanFiles, reraQrImageFile, ...rest } = data;
 
     return this.repo.update(id, {
       ...rest,
       image: imageUrl,
       gallery: finalGallery,
       floorPlans: finalFloorPlans,
+      reraQrImage: reraQrImageUrl || null,
     });
   }
 

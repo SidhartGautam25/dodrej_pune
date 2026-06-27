@@ -27,6 +27,10 @@ export default function ProjectFormModal({
   const [tag1, setTag1] = useState("");
   const [tag2, setTag2] = useState("");
   const [rera, setRera] = useState("");
+  const [reraId, setReraId] = useState("");
+  const [reraLabel, setReraLabel] = useState("");
+  const [reraQrImageFile, setReraQrImageFile] = useState<File | null>(null);
+  const [reraQrImagePreview, setReraQrImagePreview] = useState("");
   const [category, setCategory] = useState<"apartments" | "plots">("apartments");
   const [isNewLaunch, setIsNewLaunch] = useState(false);
   const [sortOrder, setSortOrder] = useState(0);
@@ -71,6 +75,10 @@ export default function ProjectFormModal({
       setTag1(initialData.tag1 || "");
       setTag2(initialData.tag2 || "");
       setRera(initialData.rera || "");
+      setReraId(initialData.reraId || "");
+      setReraLabel(initialData.reraLabel || "");
+      setReraQrImagePreview(initialData.reraQrImage || "");
+      setReraQrImageFile(null);
       setCategory(initialData.category || "apartments");
       setIsNewLaunch(initialData.isNewLaunch || false);
       setSortOrder(initialData.sortOrder || 0);
@@ -94,6 +102,10 @@ export default function ProjectFormModal({
       setTag1("");
       setTag2("");
       setRera("");
+      setReraId("");
+      setReraLabel("");
+      setReraQrImagePreview("");
+      setReraQrImageFile(null);
       setCategory("apartments");
       setIsNewLaunch(false);
       setSortOrder(0);
@@ -234,6 +246,9 @@ export default function ProjectFormModal({
       tag1,
       tag2,
       rera,
+      reraId,
+      reraLabel,
+      reraQrImage: reraQrImageFile,
       category,
       highlights,
       image: imageFile,
@@ -349,7 +364,7 @@ export default function ProjectFormModal({
             {/* RERA ID */}
             <div>
               <label className="block text-[10px] uppercase tracking-wider text-text-muted font-bold mb-1.5">
-                RERA ID *
+                RERA Code / Registration Number *
               </label>
               <input
                 type="text"
@@ -358,6 +373,73 @@ export default function ProjectFormModal({
                 onChange={(e) => setRera(e.target.value)}
                 className="w-full bg-bg-tan/30 border border-black/[0.08] rounded-xl px-4 py-2.5 text-xs text-primary focus:outline-none focus:border-accent-gold"
               />
+            </div>
+
+            {/* RERA Label */}
+            <div>
+              <label className="block text-[10px] uppercase tracking-wider text-text-muted font-bold mb-1.5">
+                RERA Label (Optional)
+              </label>
+              <input
+                type="text"
+                placeholder="e.g. Godrej The Greenfront RERA"
+                value={reraLabel}
+                onChange={(e) => setReraLabel(e.target.value)}
+                className="w-full bg-bg-tan/30 border border-black/[0.08] rounded-xl px-4 py-2.5 text-xs text-primary focus:outline-none focus:border-accent-gold"
+              />
+            </div>
+
+            {/* RERA Detailed ID */}
+            <div>
+              <label className="block text-[10px] uppercase tracking-wider text-text-muted font-bold mb-1.5">
+                RERA Detailed ID (Optional)
+              </label>
+              <input
+                type="text"
+                placeholder="e.g. P52100079064"
+                value={reraId}
+                onChange={(e) => setReraId(e.target.value)}
+                className="w-full bg-bg-tan/30 border border-black/[0.08] rounded-xl px-4 py-2.5 text-xs text-primary focus:outline-none focus:border-accent-gold"
+              />
+            </div>
+
+            {/* RERA QR Image */}
+            <div className="col-span-1 md:col-span-2">
+              <label className="block text-[10px] uppercase tracking-wider text-text-muted font-bold mb-1.5">
+                RERA QR Scanner Image (Optional)
+              </label>
+              <div className="flex items-center gap-4">
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0] || null;
+                    setReraQrImageFile(file);
+                    if (file) {
+                      setReraQrImagePreview(URL.createObjectURL(file));
+                    }
+                  }}
+                  className="text-xs text-text-muted file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-primary file:text-white file:cursor-pointer hover:file:opacity-90"
+                />
+                {reraQrImagePreview && (
+                  <div className="relative w-16 h-16 border border-black/[0.08] rounded-xl overflow-hidden bg-white flex items-center justify-center p-1">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={reraQrImagePreview} alt="RERA QR Preview" className="max-w-full max-h-full object-contain" />
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setReraQrImageFile(null);
+                        setReraQrImagePreview("");
+                      }}
+                      className="absolute top-0 right-0 bg-red-600 text-white rounded-full p-0.5"
+                    >
+                      <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                  </div>
+                )}
+              </div>
             </div>
 
             {/* Possession Year */}

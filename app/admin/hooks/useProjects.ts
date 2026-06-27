@@ -12,6 +12,9 @@ export interface ProjectDataInput {
   tag2?: string;
   highlights: string[];
   rera: string;
+  reraId?: string | null;
+  reraLabel?: string | null;
+  reraQrImage?: File | null;
   category: "apartments" | "plots";
   description?: string;
   amenities?: string[];
@@ -45,6 +48,9 @@ export function useCreateProject() {
       formData.append("typology", data.typology);
       formData.append("price", data.price);
       formData.append("rera", data.rera);
+      if (data.reraId) formData.append("reraId", data.reraId);
+      if (data.reraLabel) formData.append("reraLabel", data.reraLabel);
+      if (data.reraQrImage) formData.append("reraQrImage", data.reraQrImage);
       formData.append("category", data.category);
       if (data.possession) formData.append("possession", data.possession);
       if (data.tag1) formData.append("tag1", data.tag1);
@@ -105,6 +111,9 @@ export function useUpdateProject() {
       formData.append("typology", data.typology);
       formData.append("price", data.price);
       formData.append("rera", data.rera);
+      formData.append("reraId", data.reraId || "");
+      formData.append("reraLabel", data.reraLabel || "");
+      if (data.reraQrImage) formData.append("reraQrImage", data.reraQrImage);
       formData.append("category", data.category);
       formData.append("possession", data.possession || "");
       formData.append("tag1", data.tag1 || "");

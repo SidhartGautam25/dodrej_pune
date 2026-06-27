@@ -34,6 +34,9 @@ export class ProjectRepository {
     tag2?: string | null;
     highlights: string[];
     rera: string;
+    reraId?: string | null;
+    reraLabel?: string | null;
+    reraQrImage?: string | null;
     category: string;
     description?: string | null;
     amenities?: any;
@@ -54,6 +57,9 @@ export class ProjectRepository {
         tag2: data.tag2 || null,
         highlights: data.highlights,
         rera: data.rera,
+        reraId: data.reraId || null,
+        reraLabel: data.reraLabel || null,
+        reraQrImage: data.reraQrImage || null,
         category: data.category,
         description: data.description || null,
         amenities: data.amenities || null,
@@ -78,6 +84,9 @@ export class ProjectRepository {
       tag2?: string | null;
       highlights?: string[];
       rera?: string;
+      reraId?: string | null;
+      reraLabel?: string | null;
+      reraQrImage?: string | null;
       category?: string;
       description?: string | null;
       amenities?: any;

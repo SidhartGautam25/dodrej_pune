@@ -50,6 +50,9 @@ export class ProjectController {
       const tag1 = formData.get("tag1") as string | null;
       const tag2 = formData.get("tag2") as string | null;
       const rera = formData.get("rera") as string;
+      const reraId = formData.get("reraId") as string | null;
+      const reraLabel = formData.get("reraLabel") as string | null;
+      const reraQrImageFile = formData.get("reraQrImage") as File | null;
       const category = formData.get("category") as string;
       const isNewLaunch = formData.get("isNewLaunch") === "true";
       const sortOrderRaw = formData.get("sortOrder");
@@ -122,6 +125,9 @@ export class ProjectController {
         tag1,
         tag2,
         rera,
+        reraId,
+        reraLabel,
+        reraQrImageFile,
         category,
         highlights,
         imageFile,
@@ -161,6 +167,11 @@ export class ProjectController {
         if (formData.has("tag1")) updateData.tag1 = formData.get("tag1") as string;
         if (formData.has("tag2")) updateData.tag2 = formData.get("tag2") as string;
         if (formData.has("rera")) updateData.rera = formData.get("rera") as string;
+        if (formData.has("reraId")) updateData.reraId = formData.get("reraId") as string;
+        if (formData.has("reraLabel")) updateData.reraLabel = formData.get("reraLabel") as string;
+        if (formData.has("reraQrImage")) {
+          updateData.reraQrImageFile = formData.get("reraQrImage") as File | null;
+        }
         if (formData.has("category")) updateData.category = formData.get("category") as string;
         
         if (formData.has("highlights")) {
