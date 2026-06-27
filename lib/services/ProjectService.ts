@@ -38,6 +38,8 @@ export class ProjectService {
     galleryFiles?: File[];
     floorPlans?: { title: string; size: string; image?: string; tempIndex?: number }[];
     floorPlanFiles?: { file: File; index: number }[];
+    isNewLaunch?: boolean;
+    sortOrder?: number;
   }): Promise<Project> {
     // Validations
     if (!data.name.trim()) throw new Error("Project name is required.");
@@ -94,8 +96,10 @@ export class ProjectService {
       }
     }
 
+    const { imageFile, imagePath, galleryUrls, galleryFiles, floorPlans: rawFloorPlans, floorPlanFiles, ...rest } = data;
+
     return this.repo.create({
-      ...data,
+      ...rest,
       image: imageUrl,
       gallery: finalGallery,
       floorPlans: finalFloorPlans,
@@ -122,6 +126,8 @@ export class ProjectService {
       galleryFiles?: File[];
       floorPlans?: { title: string; size: string; image?: string; tempIndex?: number }[];
       floorPlanFiles?: { file: File; index: number }[];
+      isNewLaunch?: boolean;
+      sortOrder?: number;
     }
   ): Promise<Project> {
     const existing = await this.repo.getById(id);
@@ -196,8 +202,10 @@ export class ProjectService {
       }
     }
 
+    const { imageFile, galleryUrls, galleryFiles, floorPlans: rawFloorPlans, floorPlanFiles, ...rest } = data;
+
     return this.repo.update(id, {
-      ...data,
+      ...rest,
       image: imageUrl,
       gallery: finalGallery,
       floorPlans: finalFloorPlans,

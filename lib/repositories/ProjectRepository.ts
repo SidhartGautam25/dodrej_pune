@@ -4,7 +4,10 @@ import { Project } from "@prisma/client";
 export class ProjectRepository {
   async getAll(): Promise<Project[]> {
     return prisma.project.findMany({
-      orderBy: { createdAt: "desc" },
+      orderBy: [
+        { sortOrder: "desc" },
+        { createdAt: "desc" }
+      ],
     });
   }
 
@@ -36,6 +39,8 @@ export class ProjectRepository {
     amenities?: any;
     gallery?: any;
     floorPlans?: any;
+    isNewLaunch?: boolean;
+    sortOrder?: number;
   }): Promise<Project> {
     return prisma.project.create({
       data: {
@@ -54,6 +59,8 @@ export class ProjectRepository {
         amenities: data.amenities || null,
         gallery: data.gallery || null,
         floorPlans: data.floorPlans || null,
+        isNewLaunch: data.isNewLaunch ?? false,
+        sortOrder: data.sortOrder ?? 0,
       },
     });
   }
@@ -76,6 +83,8 @@ export class ProjectRepository {
       amenities?: any;
       gallery?: any;
       floorPlans?: any;
+      isNewLaunch?: boolean;
+      sortOrder?: number;
     }
   ): Promise<Project> {
     return prisma.project.update({

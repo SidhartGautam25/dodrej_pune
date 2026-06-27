@@ -16,6 +16,8 @@ interface ProjectData {
   highlights: string[];
   rera: string;
   category: "apartments" | "plots";
+  isNewLaunch?: boolean;
+  sortOrder?: number;
 }
 
 interface ProjectsListProps {
@@ -57,6 +59,12 @@ export default function ProjectsList({ projects, onEdit, onDelete, onAdd }: Proj
                   alt={project.name}
                   className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                 />
+                {/* New Launch badge */}
+                {project.isNewLaunch && (
+                  <span className="absolute top-3 left-3 text-[9px] font-extrabold uppercase tracking-widest px-2.5 py-1 rounded-full border shadow-sm text-primary bg-accent-gold border-accent-gold-dark">
+                    ★ NEW LAUNCH
+                  </span>
+                )}
                 {/* Category badge */}
                 <span className={`absolute top-3 right-3 text-[9px] font-extrabold uppercase tracking-widest px-2.5 py-1 rounded-full border shadow-sm text-white ${
                   project.category === "plots"
@@ -92,7 +100,7 @@ export default function ProjectsList({ projects, onEdit, onDelete, onAdd }: Proj
                     </div>
                   </div>
 
-                  {/* RERA and Possession */}
+                  {/* RERA, Possession, and Display Order */}
                   <div className="text-[10px] text-text-muted font-medium space-y-1 pt-1">
                     <div className="flex items-center justify-between">
                       <span>RERA ID:</span>
@@ -104,6 +112,10 @@ export default function ProjectsList({ projects, onEdit, onDelete, onAdd }: Proj
                         <span className="font-bold text-primary">{project.possession}</span>
                       </div>
                     )}
+                    <div className="flex items-center justify-between border-t border-black/[0.03] pt-1 mt-1">
+                      <span>Display Order (Priority):</span>
+                      <span className="font-bold text-accent-gold-dark">{project.sortOrder ?? 0}</span>
+                    </div>
                   </div>
                 </div>
 

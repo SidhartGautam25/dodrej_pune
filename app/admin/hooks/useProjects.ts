@@ -18,6 +18,8 @@ export interface ProjectDataInput {
   galleryUrls?: string[];
   galleryFiles?: File[];
   floorPlans?: { title: string; size: string; image?: string; file?: File | null }[];
+  isNewLaunch?: boolean;
+  sortOrder?: number;
 }
 
 export function useGetProjects() {
@@ -48,6 +50,8 @@ export function useCreateProject() {
       if (data.tag1) formData.append("tag1", data.tag1);
       if (data.tag2) formData.append("tag2", data.tag2);
       formData.append("highlights", JSON.stringify(data.highlights));
+      formData.append("isNewLaunch", String(data.isNewLaunch ?? false));
+      formData.append("sortOrder", String(data.sortOrder ?? 0));
       if (data.image) {
         formData.append("image", data.image);
       }
@@ -106,6 +110,8 @@ export function useUpdateProject() {
       formData.append("tag1", data.tag1 || "");
       formData.append("tag2", data.tag2 || "");
       formData.append("highlights", JSON.stringify(data.highlights));
+      formData.append("isNewLaunch", String(data.isNewLaunch ?? false));
+      formData.append("sortOrder", String(data.sortOrder ?? 0));
       if (data.image) {
         formData.append("image", data.image);
       }

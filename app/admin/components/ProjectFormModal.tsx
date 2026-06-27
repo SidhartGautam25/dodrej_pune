@@ -28,6 +28,8 @@ export default function ProjectFormModal({
   const [tag2, setTag2] = useState("");
   const [rera, setRera] = useState("");
   const [category, setCategory] = useState<"apartments" | "plots">("apartments");
+  const [isNewLaunch, setIsNewLaunch] = useState(false);
+  const [sortOrder, setSortOrder] = useState(0);
   
   // Highlights handling
   const [highlights, setHighlights] = useState<string[]>([]);
@@ -70,6 +72,8 @@ export default function ProjectFormModal({
       setTag2(initialData.tag2 || "");
       setRera(initialData.rera || "");
       setCategory(initialData.category || "apartments");
+      setIsNewLaunch(initialData.isNewLaunch || false);
+      setSortOrder(initialData.sortOrder || 0);
       setHighlights(initialData.highlights || []);
       setImagePreview(initialData.image || "");
       setImageFile(null);
@@ -91,6 +95,8 @@ export default function ProjectFormModal({
       setTag2("");
       setRera("");
       setCategory("apartments");
+      setIsNewLaunch(false);
+      setSortOrder(0);
       setHighlights([]);
       setImagePreview("");
       setImageFile(null);
@@ -236,6 +242,8 @@ export default function ProjectFormModal({
       galleryUrls,
       galleryFiles,
       floorPlans,
+      isNewLaunch,
+      sortOrder,
     };
 
     onSubmit(submissionData);
@@ -390,6 +398,34 @@ export default function ProjectFormModal({
                 placeholder="e.g. Zero EMI for 36 Months"
                 value={tag2}
                 onChange={(e) => setTag2(e.target.value)}
+                className="w-full bg-bg-tan/30 border border-black/[0.08] rounded-xl px-4 py-2.5 text-xs text-primary focus:outline-none focus:border-accent-gold"
+              />
+            </div>
+
+            {/* New Launch Status Toggle */}
+            <div className="flex items-center space-x-3 pt-4 sm:pt-6">
+              <input
+                type="checkbox"
+                id="isNewLaunch"
+                checked={isNewLaunch}
+                onChange={(e) => setIsNewLaunch(e.target.checked)}
+                className="w-4 h-4 text-primary focus:ring-accent-gold border-black/[0.12] rounded cursor-pointer"
+              />
+              <label htmlFor="isNewLaunch" className="text-xs font-bold text-primary cursor-pointer select-none">
+                Mark as "New Launch" (Gold Badge)
+              </label>
+            </div>
+
+            {/* Display Order Priority */}
+            <div>
+              <label className="block text-[10px] uppercase tracking-wider text-text-muted font-bold mb-1.5">
+                Display Order Priority (Higher comes first)
+              </label>
+              <input
+                type="number"
+                placeholder="e.g. 10"
+                value={sortOrder}
+                onChange={(e) => setSortOrder(parseInt(e.target.value, 10) || 0)}
                 className="w-full bg-bg-tan/30 border border-black/[0.08] rounded-xl px-4 py-2.5 text-xs text-primary focus:outline-none focus:border-accent-gold"
               />
             </div>

@@ -23,22 +23,27 @@ export default function ProjectCard({ project, onOpenEnquiry }: ProjectCardProps
           alt={project.name}
           className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
         />
-        {/* Floating tags */}
+        {/* Floating Possession Badge (Safe from overlaps) */}
         {project.possession && (
           <div className="absolute top-4 left-4 px-3 py-1 rounded bg-black/75 text-[10px] font-bold text-white uppercase tracking-wider">
             Possession: {project.possession}
           </div>
         )}
 
-        {project.tag1 && (
-          <div className="absolute bottom-4 right-4 px-3 py-1.5 rounded-lg bg-accent-gold text-primary text-[10px] font-bold shadow-md">
-            {project.tag1}
-          </div>
-        )}
-
-        {project.tag2 && (
-          <div className="absolute top-4 right-4 px-3 py-1.5 rounded-lg bg-black/75 text-[10px] font-bold text-white shadow-md">
-            {project.tag2}
+        {/* Circular Stamped Ink New Launch Badge */}
+        {project.isNewLaunch && (
+          <div className="absolute top-4 right-4 z-10 pointer-events-none select-none rotate-[-12deg] drop-shadow-md">
+            <div className="w-20 h-20 rounded-full border-4 border-double border-red-600 flex flex-col items-center justify-center bg-white/90 backdrop-blur-[1px] text-red-600 p-1 shadow-inner relative">
+              {/* Inner dashed ring */}
+              <div className="absolute inset-0.5 rounded-full border border-dashed border-red-500/40"></div>
+              
+              {/* Text elements inside stamp */}
+              <span className="text-[7px] font-bold tracking-widest opacity-85 uppercase leading-none font-sans">GODREJ</span>
+              <span className="text-[10px] font-black tracking-normal uppercase my-0.5 py-0.5 px-1 border-y-2 border-red-600 leading-none font-serif">
+                NEW LAUNCH
+              </span>
+              <span className="text-[6px] font-bold tracking-widest opacity-85 uppercase leading-none font-sans">PROPERTIES</span>
+            </div>
           </div>
         )}
       </Link>
@@ -54,9 +59,25 @@ export default function ProjectCard({ project, onOpenEnquiry }: ProjectCardProps
           </h3>
           
           {/* Location */}
-          <p className="text-xs text-text-muted text-center mb-4 pb-4 border-b border-black/[0.06] font-medium tracking-wide">
+          <p className="text-xs text-text-muted text-center mb-3 pb-3 border-b border-black/[0.06] font-medium tracking-wide">
             {project.location}
           </p>
+
+          {/* Badge Tags list (Flex layout avoids overlap) */}
+          {(project.tag1 || project.tag2) && (
+            <div className="flex flex-wrap gap-2 justify-center mb-4">
+              {project.tag1 && (
+                <span className="px-2.5 py-1 rounded bg-accent-gold/10 border border-accent-gold/30 text-accent-gold-dark text-[9px] font-extrabold uppercase tracking-wider">
+                  {project.tag1}
+                </span>
+              )}
+              {project.tag2 && (
+                <span className="px-2.5 py-1 rounded bg-primary/5 border border-primary/10 text-primary/80 text-[9px] font-extrabold uppercase tracking-wider">
+                  {project.tag2}
+                </span>
+              )}
+            </div>
+          )}
 
           {/* Configuration & Price Row */}
           <div className="space-y-2.5 mb-6 text-sm">

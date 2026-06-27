@@ -2,6 +2,8 @@
 
 import React, { useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
+import { ArrowLeft } from "lucide-react";
+import Link from "next/link";
 
 interface NavLink {
   label: string;
@@ -61,25 +63,29 @@ export default function Navbar({ onOpenEnquiry, customLinks }: NavbarProps) {
     <nav className="fixed top-4 left-0 w-full z-40 px-4 md:px-8">
       <div className="max-w-7xl mx-auto flex items-center justify-between bg-primary/80 backdrop-blur-md border border-white/10 rounded-full px-6 py-3 shadow-lg">
         
-        {/* Left: Brand Logo */}
-        <div className="flex flex-col text-white cursor-pointer" onClick={handleHomeClick}>
-          <div className="flex items-center space-x-1">
-            <span className="text-base font-extrabold tracking-wider font-serif">GODREJ</span>
-            <span className="text-xs font-light tracking-widest text-accent-gold-light uppercase">PROPERTIES</span>
+        {/* Left: Brand Logo / Back Button */}
+        {customLinks ? (
+          <Link
+            href="/"
+            className="flex items-center space-x-2 text-white hover:text-accent-gold transition-colors cursor-pointer group"
+          >
+            <ArrowLeft className="w-4 h-4 text-accent-gold group-hover:translate-x-[-2px] transition-transform" />
+            <span className="text-xs font-extrabold tracking-wider font-serif uppercase">Back to Home</span>
+          </Link>
+        ) : (
+          <div className="flex flex-col text-white cursor-pointer" onClick={handleHomeClick}>
+            <div className="flex items-center space-x-1">
+              <span className="text-base font-extrabold tracking-wider font-serif">GODREJ</span>
+              <span className="text-xs font-light tracking-widest text-accent-gold-light uppercase">PROPERTIES</span>
+            </div>
+            <span className="text-[8px] text-white/50 tracking-widest uppercase -mt-1">Authorized Channel Partner</span>
           </div>
-          <span className="text-[8px] text-white/50 tracking-widest uppercase -mt-1">Authorized Channel Partner</span>
-        </div>
+        )}
 
         {/* Center: Desktop Navigation capsule */}
         <div className="hidden md:flex items-center space-x-1 bg-black/30 border border-white/5 rounded-full p-1">
           {customLinks ? (
             <>
-              <button
-                onClick={handleHomeClick}
-                className="px-4 py-1.5 text-xs font-medium rounded-full text-white/80 hover:text-white hover:bg-white/10 transition-all cursor-pointer"
-              >
-                Home
-              </button>
               {customLinks.map((link) => (
                 <button
                   key={link.id}
@@ -166,12 +172,6 @@ export default function Navbar({ onOpenEnquiry, customLinks }: NavbarProps) {
         <div className="absolute top-20 left-4 right-4 bg-primary border border-white/10 rounded-2xl p-6 shadow-xl flex flex-col space-y-4 md:hidden animate-fade-in">
           {customLinks ? (
             <>
-              <button
-                onClick={handleHomeClick}
-                className="w-full py-2.5 text-left text-sm font-medium text-white/80 hover:text-accent-gold border-b border-white/5 cursor-pointer"
-              >
-                Home
-              </button>
               {customLinks.map((link) => (
                 <button
                   key={link.id}

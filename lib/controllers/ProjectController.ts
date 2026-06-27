@@ -51,6 +51,9 @@ export class ProjectController {
       const tag2 = formData.get("tag2") as string | null;
       const rera = formData.get("rera") as string;
       const category = formData.get("category") as string;
+      const isNewLaunch = formData.get("isNewLaunch") === "true";
+      const sortOrderRaw = formData.get("sortOrder");
+      const sortOrder = sortOrderRaw ? parseInt(sortOrderRaw as string, 10) : 0;
       
       // Parse highlights list
       const highlightsRaw = formData.get("highlights") as string;
@@ -128,6 +131,8 @@ export class ProjectController {
         galleryFiles,
         floorPlans,
         floorPlanFiles,
+        isNewLaunch,
+        sortOrder,
       });
 
       return NextResponse.json({ success: true, data: project }, { status: 201 });
@@ -173,6 +178,15 @@ export class ProjectController {
 
         if (formData.has("description")) {
           updateData.description = formData.get("description") as string;
+        }
+
+        if (formData.has("isNewLaunch")) {
+          updateData.isNewLaunch = formData.get("isNewLaunch") === "true";
+        }
+
+        if (formData.has("sortOrder")) {
+          const rawOrder = formData.get("sortOrder");
+          updateData.sortOrder = rawOrder ? parseInt(rawOrder as string, 10) : 0;
         }
 
         if (formData.has("amenities")) {

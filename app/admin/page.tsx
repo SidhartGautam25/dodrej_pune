@@ -27,8 +27,9 @@ export default function AdminDashboard() {
   const updateMutation = useUpdateProject();
   const deleteMutation = useDeleteProject();
 
-  const handleLogout = () => {
-    signOut({ callbackUrl: "/admin/login" });
+  const handleLogout = async () => {
+    await signOut({ redirect: false });
+    window.location.href = "/admin/login";
   };
 
   // CRUD Actions
