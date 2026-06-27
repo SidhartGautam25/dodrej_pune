@@ -3,26 +3,25 @@ import { notFound } from "next/navigation";
 import { projectService } from "@/lib/services/ProjectService";
 import { projectsData } from "@/app/data/projects";
 import ProjectDetailsClient from "./ProjectDetailsClient";
-import Navbar from "@/app/components/Navbar";
-import Footer from "@/app/components/Footer";
-import StickyWidgets from "@/app/components/StickyWidgets";
+import { slugify } from "@/lib/utils/slugify";
 
 interface PageProps {
-  params: Promise<{ id: string }>;
+  params: Promise<{ slug: string }>;
 }
 
 export async function generateMetadata({ params }: PageProps) {
-  const { id } = await params;
+  const { slug } = await params;
   
   // Try fetching from database, fallback to static
   let dbProject = null;
   try {
-    dbProject = await projectService.getProject(id);
+    const dbProjects = await projectService.listProjects();
+    dbProject = dbProjects.find(p => slugify(p.name) === slug || p.id === slug) || null;
   } catch (err) {
     console.error("Database fetch failed in generateMetadata:", err);
   }
 
-  const project = dbProject || projectsData.find((p) => p.id === id);
+  const project = dbProject || projectsData.find((p) => slugify(p.name) === slug || p.id === slug);
 
   if (!project) {
     return {
@@ -38,11 +37,12 @@ export async function generateMetadata({ params }: PageProps) {
 }
 
 export default async function ProjectPage({ params }: PageProps) {
-  const { id } = await params;
+  const { slug } = await params;
 
   let dbProject: any = null;
   try {
-    dbProject = await projectService.getProject(id);
+    const dbProjects = await projectService.listProjects();
+    dbProject = dbProjects.find(p => slugify(p.name) === slug || p.id === slug) || null;
   } catch (err) {
     console.error("Database fetch failed in Page component:", err);
   }
@@ -82,7 +82,7 @@ export default async function ProjectPage({ params }: PageProps) {
           ? JSON.parse(dbProject.floorPlans)
           : [],
       }
-    : projectsData.find((p) => p.id === id);
+    : projectsData.find((p) => slugify(p.name) === slug || p.id === slug);
 
   if (!project) {
     notFound();

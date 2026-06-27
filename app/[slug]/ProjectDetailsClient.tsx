@@ -104,10 +104,39 @@ export default function ProjectDetailsClient({ project }: ProjectDetailsClientPr
     return <Sparkles className="w-5 h-5 text-accent-gold" />;
   };
 
+  // Dynamic Navigation Links for Project Page
+  const navLinks = [
+    { label: "Overview", id: "overview" },
+    { label: "Highlights", id: "highlights" },
+  ];
+  if (project.amenities && project.amenities.length > 0) {
+    navLinks.push({ label: "Amenities", id: "amenities" });
+  }
+  if (project.gallery && project.gallery.length > 0) {
+    navLinks.push({ label: "Gallery", id: "gallery" });
+  }
+
+  // Smooth scroll to enquiry form
+  const handleScrollToEnquiry = () => {
+    const element = document.getElementById("enquiry-form");
+    if (element) {
+      const offset = 100;
+      const bodyRect = document.body.getBoundingClientRect().top;
+      const elementRect = element.getBoundingClientRect().top;
+      const elementPosition = elementRect - bodyRect;
+      const offsetPosition = elementPosition - offset;
+
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: "smooth",
+      });
+    }
+  };
+
   return (
     <>
-      {/* Header Navbar */}
-      <Navbar onOpenEnquiry={() => {}} />
+      {/* Header Navbar with Custom Project Links */}
+      <Navbar onOpenEnquiry={handleScrollToEnquiry} customLinks={navLinks} />
 
       {/* Hero Section */}
       <section className="relative h-[65vh] w-full min-h-[450px] overflow-hidden flex items-end">
@@ -234,7 +263,7 @@ export default function ProjectDetailsClient({ project }: ProjectDetailsClientPr
         {/* Left Rich details columns */}
         <div className="lg:col-span-8 space-y-12">
           {/* Overview & Description */}
-          <div className="bg-white rounded-3xl p-6 md:p-8 border border-black/[0.04] shadow-sm space-y-6">
+          <div id="overview" className="bg-white rounded-3xl p-6 md:p-8 border border-black/[0.04] shadow-sm space-y-6 scroll-mt-24">
             <h2 className="text-2xl font-bold font-serif text-primary border-b border-black/[0.04] pb-4">
               Project Overview
             </h2>
@@ -248,7 +277,7 @@ export default function ProjectDetailsClient({ project }: ProjectDetailsClientPr
           </div>
 
           {/* Key Highlights */}
-          <div className="bg-white rounded-3xl p-6 md:p-8 border border-black/[0.04] shadow-sm space-y-6">
+          <div id="highlights" className="bg-white rounded-3xl p-6 md:p-8 border border-black/[0.04] shadow-sm space-y-6 scroll-mt-24">
             <h2 className="text-2xl font-bold font-serif text-primary border-b border-black/[0.04] pb-4">
               Key Highlights
             </h2>
@@ -266,7 +295,7 @@ export default function ProjectDetailsClient({ project }: ProjectDetailsClientPr
 
           {/* Amenities Grid */}
           {project.amenities && project.amenities.length > 0 && (
-            <div className="bg-white rounded-3xl p-6 md:p-8 border border-black/[0.04] shadow-sm space-y-6">
+            <div id="amenities" className="bg-white rounded-3xl p-6 md:p-8 border border-black/[0.04] shadow-sm space-y-6 scroll-mt-24">
               <h2 className="text-2xl font-bold font-serif text-primary border-b border-black/[0.04] pb-4">
                 Lifestyle Amenities
               </h2>
@@ -359,7 +388,7 @@ export default function ProjectDetailsClient({ project }: ProjectDetailsClientPr
 
           {/* Project Gallery Masonry Grid */}
           {project.gallery && project.gallery.length > 0 && (
-            <div className="bg-white rounded-3xl p-6 md:p-8 border border-black/[0.04] shadow-sm space-y-6">
+            <div id="gallery" className="bg-white rounded-3xl p-6 md:p-8 border border-black/[0.04] shadow-sm space-y-6 scroll-mt-24">
               <h2 className="text-2xl font-bold font-serif text-primary border-b border-black/[0.04] pb-4">
                 Media Gallery
               </h2>
@@ -385,7 +414,7 @@ export default function ProjectDetailsClient({ project }: ProjectDetailsClientPr
 
         {/* Right Sticky Enquiry Form Card */}
         <div className="lg:col-span-4 lg:sticky lg:top-24 space-y-6">
-          <div className="bg-white rounded-3xl p-6 border border-black/[0.04] shadow-xl relative overflow-hidden">
+          <div id="enquiry-form" className="bg-white rounded-3xl p-6 border border-black/[0.04] shadow-xl relative overflow-hidden scroll-mt-24">
             {/* Soft decorative header border line */}
             <div className="absolute top-0 left-0 right-0 h-1.5 gold-gradient" />
             
@@ -522,8 +551,8 @@ export default function ProjectDetailsClient({ project }: ProjectDetailsClientPr
       {/* Footer Section */}
       <Footer />
 
-      {/* Sticky Quick Widgets */}
-      <StickyWidgets onOpenEnquiry={() => {}} />
+      {/* Sticky Call & Form Widgets */}
+      <StickyWidgets onOpenEnquiry={handleScrollToEnquiry} />
     </>
   );
 }

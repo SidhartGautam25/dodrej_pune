@@ -3,11 +3,17 @@
 import React, { useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 
-interface NavbarProps {
-  onOpenEnquiry: (projectName?: string) => void;
+interface NavLink {
+  label: string;
+  id: string;
 }
 
-export default function Navbar({ onOpenEnquiry }: NavbarProps) {
+interface NavbarProps {
+  onOpenEnquiry: (projectName?: string) => void;
+  customLinks?: NavLink[];
+}
+
+export default function Navbar({ onOpenEnquiry, customLinks }: NavbarProps) {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
@@ -46,6 +52,11 @@ export default function Navbar({ onOpenEnquiry }: NavbarProps) {
     }
   };
 
+  const handleCustomLinkClick = (id: string) => {
+    setIsOpen(false);
+    scrollSection(id);
+  };
+
   return (
     <nav className="fixed top-4 left-0 w-full z-40 px-4 md:px-8">
       <div className="max-w-7xl mx-auto flex items-center justify-between bg-primary/80 backdrop-blur-md border border-white/10 rounded-full px-6 py-3 shadow-lg">
@@ -61,24 +72,46 @@ export default function Navbar({ onOpenEnquiry }: NavbarProps) {
 
         {/* Center: Desktop Navigation capsule */}
         <div className="hidden md:flex items-center space-x-1 bg-black/30 border border-white/5 rounded-full p-1">
-          <button
-            onClick={handleHomeClick}
-            className="px-4 py-1.5 text-xs font-medium rounded-full text-white/80 hover:text-white hover:bg-white/10 transition-all cursor-pointer"
-          >
-            Home
-          </button>
-          <button
-            onClick={() => handleScrollOrCreateLink("projects-section")}
-            className="px-4 py-1.5 text-xs font-medium rounded-full text-white/80 hover:text-white hover:bg-white/10 transition-all cursor-pointer"
-          >
-            Our Projects
-          </button>
-          <button
-            onClick={() => handleScrollOrCreateLink("about-section")}
-            className="px-4 py-1.5 text-xs font-medium rounded-full text-white/80 hover:text-white hover:bg-white/10 transition-all cursor-pointer"
-          >
-            Contact Us
-          </button>
+          {customLinks ? (
+            <>
+              <button
+                onClick={handleHomeClick}
+                className="px-4 py-1.5 text-xs font-medium rounded-full text-white/80 hover:text-white hover:bg-white/10 transition-all cursor-pointer"
+              >
+                Home
+              </button>
+              {customLinks.map((link) => (
+                <button
+                  key={link.id}
+                  onClick={() => handleCustomLinkClick(link.id)}
+                  className="px-4 py-1.5 text-xs font-medium rounded-full text-white/80 hover:text-white hover:bg-white/10 transition-all cursor-pointer"
+                >
+                  {link.label}
+                </button>
+              ))}
+            </>
+          ) : (
+            <>
+              <button
+                onClick={handleHomeClick}
+                className="px-4 py-1.5 text-xs font-medium rounded-full text-white/80 hover:text-white hover:bg-white/10 transition-all cursor-pointer"
+              >
+                Home
+              </button>
+              <button
+                onClick={() => handleScrollOrCreateLink("projects-section")}
+                className="px-4 py-1.5 text-xs font-medium rounded-full text-white/80 hover:text-white hover:bg-white/10 transition-all cursor-pointer"
+              >
+                Our Projects
+              </button>
+              <button
+                onClick={() => handleScrollOrCreateLink("about-section")}
+                className="px-4 py-1.5 text-xs font-medium rounded-full text-white/80 hover:text-white hover:bg-white/10 transition-all cursor-pointer"
+              >
+                Contact Us
+              </button>
+            </>
+          )}
           <button
             onClick={() => onOpenEnquiry("Brochure Request")}
             className="px-4 py-1.5 text-xs font-semibold rounded-full bg-accent-gold text-primary hover:bg-accent-gold-dark hover:scale-105 transition-all shadow-md cursor-pointer"
@@ -131,27 +164,49 @@ export default function Navbar({ onOpenEnquiry }: NavbarProps) {
       {/* Mobile Drawer menu */}
       {isOpen && (
         <div className="absolute top-20 left-4 right-4 bg-primary border border-white/10 rounded-2xl p-6 shadow-xl flex flex-col space-y-4 md:hidden animate-fade-in">
-          <button
-            onClick={handleHomeClick}
-            className="w-full py-2.5 text-left text-sm font-medium text-white/80 hover:text-accent-gold border-b border-white/5"
-          >
-            Home
-          </button>
-          <button
-            onClick={() => handleScrollOrCreateLink("projects-section")}
-            className="w-full py-2.5 text-left text-sm font-medium text-white/80 hover:text-accent-gold border-b border-white/5"
-          >
-            Our Projects
-          </button>
-          <button
-            onClick={() => handleScrollOrCreateLink("about-section")}
-            className="w-full py-2.5 text-left text-sm font-medium text-white/80 hover:text-accent-gold border-b border-white/5"
-          >
-            Contact Us
-          </button>
+          {customLinks ? (
+            <>
+              <button
+                onClick={handleHomeClick}
+                className="w-full py-2.5 text-left text-sm font-medium text-white/80 hover:text-accent-gold border-b border-white/5 cursor-pointer"
+              >
+                Home
+              </button>
+              {customLinks.map((link) => (
+                <button
+                  key={link.id}
+                  onClick={() => handleCustomLinkClick(link.id)}
+                  className="w-full py-2.5 text-left text-sm font-medium text-white/80 hover:text-accent-gold border-b border-white/5 cursor-pointer"
+                >
+                  {link.label}
+                </button>
+              ))}
+            </>
+          ) : (
+            <>
+              <button
+                onClick={handleHomeClick}
+                className="w-full py-2.5 text-left text-sm font-medium text-white/80 hover:text-accent-gold border-b border-white/5 cursor-pointer"
+              >
+                Home
+              </button>
+              <button
+                onClick={() => handleScrollOrCreateLink("projects-section")}
+                className="w-full py-2.5 text-left text-sm font-medium text-white/80 hover:text-accent-gold border-b border-white/5 cursor-pointer"
+              >
+                Our Projects
+              </button>
+              <button
+                onClick={() => handleScrollOrCreateLink("about-section")}
+                className="w-full py-2.5 text-left text-sm font-medium text-white/80 hover:text-accent-gold border-b border-white/5 cursor-pointer"
+              >
+                Contact Us
+              </button>
+            </>
+          )}
           <button
             onClick={() => { setIsOpen(false); onOpenEnquiry("Brochure Request"); }}
-            className="w-full py-3 text-center text-sm font-semibold rounded-lg bg-accent-gold text-primary hover:bg-accent-gold-dark transition-all shadow-md"
+            className="w-full py-3 text-center text-sm font-semibold rounded-lg bg-accent-gold text-primary hover:bg-accent-gold-dark transition-all shadow-md cursor-pointer"
           >
             Download Brochure
           </button>

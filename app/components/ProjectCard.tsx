@@ -3,6 +3,7 @@
 import React from "react";
 import Link from "next/link";
 import { Project } from "../data/projects";
+import { slugify } from "@/lib/utils/slugify";
 
 interface ProjectCardProps {
   project: Project;
@@ -10,11 +11,13 @@ interface ProjectCardProps {
 }
 
 export default function ProjectCard({ project, onOpenEnquiry }: ProjectCardProps) {
+  const projectSlug = slugify(project.name);
+
   return (
     <div className="flex flex-col bg-white rounded-2xl overflow-hidden border border-black/[0.06] shadow-sm hover:shadow-xl transition-all duration-300 group">
       
       {/* Top Image Section */}
-      <Link href={`/projects/${project.id}`} className="relative h-60 w-full overflow-hidden block">
+      <Link href={`/${projectSlug}`} className="relative h-60 w-full overflow-hidden block">
         <img
           src={project.image}
           alt={project.name}
@@ -45,7 +48,7 @@ export default function ProjectCard({ project, onOpenEnquiry }: ProjectCardProps
         <div>
           {/* Title */}
           <h3 className="text-xl font-bold font-serif text-primary text-center mb-1 transition-colors">
-            <Link href={`/projects/${project.id}`} className="hover:text-accent-gold transition-colors block">
+            <Link href={`/${projectSlug}`} className="hover:text-accent-gold transition-colors block">
               {project.name}
             </Link>
           </h3>
