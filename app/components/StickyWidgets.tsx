@@ -12,28 +12,44 @@ export default function StickyWidgets({ onOpenEnquiry }: StickyWidgetsProps) {
       {/* Desktop Sticky Vertical Button on Right Side */}
       <div className="fixed right-0 top-1/2 -translate-y-1/2 z-40 hidden md:block">
         <button
-          onClick={() => onOpenEnquiry("General Enquiry")}
-          className="flex items-center space-x-2 bg-primary hover:bg-black text-white px-4 py-2.5 rounded-l-xl shadow-lg border border-r-0 border-white/10 hover:border-accent-gold/40 transition-all origin-right cursor-pointer"
+          onClick={() => onOpenEnquiry("Schedule a Visit")}
+          className="flex items-center bg-[#f3f4f6]/95 hover:bg-white text-gray-800 px-3 py-6 rounded-l-2xl shadow-xl border border-r-0 border-gray-300 hover:text-primary transition-all duration-300 cursor-pointer group"
           style={{
             writingMode: "vertical-rl",
             transform: "rotate(180deg)",
           }}
         >
-          <span className="flex items-center justify-center p-1 rounded-full bg-accent-gold/20 mb-2 transform rotate-90 text-accent-gold">
-            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+          {/* Rotated icon to show correctly when vertical */}
+          <span className="mb-2.5 transform rotate-90 text-gray-500 group-hover:text-accent-gold transition-colors">
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
             </svg>
           </span>
-          <span className="text-xs font-bold tracking-widest uppercase">
-            Query Now
+          <span className="text-[11px] font-bold tracking-wider text-gray-700 font-sans">
+            Schedule a visit
           </span>
+        </button>
+      </div>
+
+      {/* Desktop Floating Action Button (FAB) at Bottom Right */}
+      <div className="fixed right-6 bottom-6 z-40 hidden md:block">
+        <button
+          onClick={() => onOpenEnquiry("Floating Action Button")}
+          className="flex items-center justify-center w-14 h-14 rounded-full bg-blue-600 text-white hover:bg-blue-700 shadow-2xl transition-all duration-300 hover:scale-110 cursor-pointer group relative"
+          aria-label="Enquire Now"
+        >
+          {/* Ripple animation effect */}
+          <span className="absolute inset-0 rounded-full bg-blue-600/40 animate-ping opacity-75"></span>
+          <svg className="w-6 h-6 z-10 relative" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+          </svg>
         </button>
       </div>
 
       {/* Mobile Sticky Bottom Action Bar */}
       <div className="fixed bottom-0 left-0 w-full z-40 flex md:hidden bg-primary/95 border-t border-white/10 backdrop-blur-md shadow-2xl p-2.5 gap-2.5">
         <a
-          href="tel:+919225532615"
+          href="tel:+919665205957"
           className="flex-1 flex items-center justify-center space-x-2 bg-black border border-white/10 text-white rounded-xl py-3 text-xs font-bold uppercase tracking-wider"
         >
           <svg className="w-4 h-4 text-accent-gold" fill="none" viewBox="0 0 24 24" stroke="currentColor">

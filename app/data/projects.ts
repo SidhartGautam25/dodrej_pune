@@ -11,6 +11,8 @@ export interface Project {
   highlights: string[];
   rera: string;
   category: 'plots' | 'apartments' | 'all';
+  isNewLaunch?: boolean;
+  sortOrder?: number;
 }
 
 export const projectsData: Project[] = [

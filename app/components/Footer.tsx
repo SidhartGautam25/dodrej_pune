@@ -1,11 +1,30 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 
-// Clean reusable SVG representation of a QR Code
-function ReraQr({ name }: { name: string }) {
+interface ProjectReraInfo {
+  name: string;
+  rera: string;
+  reraId?: string | null;
+  reraLabel?: string | null;
+  reraQrImage?: string | null;
+}
+
+interface FooterProps {
+  singleProject?: ProjectReraInfo | null;
+}
+
+function ReraQr({ name, qrImage }: { name: string; qrImage?: string | null }) {
+  if (qrImage) {
+    return (
+      <div className="flex flex-col items-center justify-center p-2 rounded-xl bg-white border border-white/10 shadow-sm w-36 h-36 overflow-hidden">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={qrImage} alt={`RERA QR Code for ${name}`} className="w-28 h-28 object-contain" />
+      </div>
+    );
+  }
   return (
-    <div className="flex flex-col items-center p-3.5 rounded-xl bg-white border border-white/10 shadow-sm text-[#1e293b] w-36">
+    <div className="flex flex-col items-center justify-center p-3.5 rounded-xl bg-white border border-white/10 shadow-sm text-[#1e293b] w-36 h-36">
       {/* Mock QR Code Pattern using SVG for high performance and visual assurance */}
       <svg className="w-20 h-20 text-[#1e293b]" viewBox="0 0 100 100" fill="currentColor">
         {/* Corners */}
@@ -47,8 +66,11 @@ function ReraQr({ name }: { name: string }) {
   );
 }
 
-export default function Footer() {
-  const qrs = [
+export default function Footer({ singleProject }: FooterProps) {
+  const [dbProjects, setDbProjects] = useState<ProjectReraInfo[]>([]);
+
+  // Default hardcoded fallback QRs if database is empty/loading
+  const fallbackQrs = [
     { name: "Godrej The Greenfront", rera: "P52100079064" },
     { name: "Godrej Evergreen Square", rera: "P52100078240" },
     { name: "Godrej River Royale", rera: "P52100052957" },
@@ -59,6 +81,30 @@ export default function Footer() {
     { name: "Godrej Emerald Water (1)", rera: "P52100051200" },
     { name: "Godrej Emerald Water (2)", rera: "PP1260002500516" },
   ];
+
+  useEffect(() => {
+    if (!singleProject) {
+      async function loadProjects() {
+        try {
+          const res = await fetch("/api/projects");
+          const json = await res.json();
+          if (json.success && Array.isArray(json.data) && json.data.length > 0) {
+            setDbProjects(json.data);
+          }
+        } catch (err) {
+          console.warn("Failed to load projects for footer RERA listings:", err);
+        }
+      }
+      loadProjects();
+    }
+  }, [singleProject]);
+
+  // Determine display list
+  const displayQrs: ProjectReraInfo[] = singleProject
+    ? [singleProject]
+    : dbProjects.length > 0
+    ? dbProjects
+    : fallbackQrs;
 
   return (
     <footer className="bg-[#1e293b] text-white/80 py-16 px-4 md:px-8 border-t border-white/5">
@@ -73,15 +119,15 @@ export default function Footer() {
 
         {/* QR Codes Grid */}
         <div className="flex flex-wrap justify-center gap-6 pt-4">
-          {qrs.map((qr, index) => (
+          {displayQrs.map((qr, index) => (
             <div key={index} className="flex flex-col items-center space-y-2">
-              <ReraQr name={qr.name} />
+              <ReraQr name={qr.name} qrImage={qr.reraQrImage} />
               <div className="text-center">
                 <span className="block text-[10px] font-bold text-accent-gold truncate max-w-[144px]">
-                  {qr.name}
+                  {qr.reraLabel || qr.name}
                 </span>
-                <span className="text-[9px] font-medium text-white/50 block">
-                  {qr.rera}
+                <span className="text-[9px] font-medium text-white/50 block select-all">
+                  {qr.reraId || qr.rera}
                 </span>
               </div>
             </div>
