@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
+import PromoBanner from "./components/PromoBanner";
 import ProjectGrid from "./components/ProjectGrid";
 import DeveloperAbout from "./components/DeveloperAbout";
 import Footer from "./components/Footer";
@@ -24,21 +25,7 @@ export default function Home() {
     setModalProject("");
   };
 
-  // Auto-trigger enquiry modal after 10 seconds of user session
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      // Only open if modal is not already open
-      setIsModalOpen((prev) => {
-        if (!prev) {
-          setModalProject("Special Consultation");
-          return true;
-        }
-        return prev;
-      });
-    }, 10000); // 10 seconds
 
-    return () => clearTimeout(timer);
-  }, []);
 
   return (
     <div className="relative min-h-screen flex flex-col font-sans bg-bg-tan">
@@ -47,6 +34,9 @@ export default function Home() {
 
       {/* Hero Section */}
       <Hero onOpenEnquiry={handleOpenEnquiry} />
+
+      {/* Promo Banner Section */}
+      <PromoBanner onOpenEnquiry={handleOpenEnquiry} />
 
       {/* Project Grid Listings */}
       <ProjectGrid onOpenEnquiry={handleOpenEnquiry} />

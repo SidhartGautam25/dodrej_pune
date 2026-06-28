@@ -33,6 +33,8 @@ export default function ProjectGrid({ onOpenEnquiry }: ProjectGridProps) {
             highlights: p.highlights,
             rera: p.rera,
             category: p.category,
+            isNewLaunch: p.isNewLaunch,
+            sortOrder: p.sortOrder,
           }));
           setProjects(mapped);
         }

@@ -7,12 +7,13 @@ import DashboardStats from "./components/DashboardStats";
 import LeadsTable from "./components/LeadsTable";
 import ProjectsList from "./components/ProjectsList";
 import ProjectFormModal from "./components/ProjectFormModal";
-import { Layers, Users, LogOut } from "lucide-react";
+import PromoBannerForm from "./components/PromoBannerForm";
+import { Layers, Users, LogOut, Sliders } from "lucide-react";
 import { signOut } from "next-auth/react";
 
 export default function AdminDashboard() {
   // Tab State
-  const [activeTab, setActiveTab] = useState<"leads" | "projects">("leads");
+  const [activeTab, setActiveTab] = useState<"leads" | "projects" | "banner">("leads");
 
   // Project Modal State
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -27,8 +28,9 @@ export default function AdminDashboard() {
   const updateMutation = useUpdateProject();
   const deleteMutation = useDeleteProject();
 
-  const handleLogout = () => {
-    signOut({ callbackUrl: "/admin/login" });
+  const handleLogout = async () => {
+    await signOut({ redirect: false });
+    window.location.href = "/admin/login";
   };
 
   // CRUD Actions
@@ -109,6 +111,18 @@ export default function AdminDashboard() {
               <Layers className="w-4 h-4" />
               <span>Project Listings</span>
             </button>
+
+            <button
+              onClick={() => setActiveTab("banner")}
+              className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-xs font-bold tracking-wide transition-all cursor-pointer ${
+                activeTab === "banner"
+                  ? "bg-accent-gold text-primary shadow-lg"
+                  : "text-white/70 hover:text-white hover:bg-white/5"
+              }`}
+            >
+              <Sliders className="w-4 h-4" />
+              <span>Promo Settings</span>
+            </button>
           </nav>
         </div>
 
@@ -158,13 +172,15 @@ export default function AdminDashboard() {
             </div>
           ) : activeTab === "leads" ? (
             <LeadsTable leads={leads} />
-          ) : (
+          ) : activeTab === "projects" ? (
             <ProjectsList
               projects={projects}
               onAdd={handleOpenAddModal}
               onEdit={handleOpenEditModal}
               onDelete={handleDeleteProject}
             />
+          ) : (
+            <PromoBannerForm />
           )}
         </div>
       </main>

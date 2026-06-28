@@ -50,7 +50,13 @@ export class ProjectController {
       const tag1 = formData.get("tag1") as string | null;
       const tag2 = formData.get("tag2") as string | null;
       const rera = formData.get("rera") as string;
+      const reraId = formData.get("reraId") as string | null;
+      const reraLabel = formData.get("reraLabel") as string | null;
+      const reraQrImageFile = formData.get("reraQrImage") as File | null;
       const category = formData.get("category") as string;
+      const isNewLaunch = formData.get("isNewLaunch") === "true";
+      const sortOrderRaw = formData.get("sortOrder");
+      const sortOrder = sortOrderRaw ? parseInt(sortOrderRaw as string, 10) : 0;
       
       // Parse highlights list
       const highlightsRaw = formData.get("highlights") as string;
@@ -59,12 +65,56 @@ export class ProjectController {
         try {
           highlights = JSON.parse(highlightsRaw);
         } catch {
-          // Fallback if it's comma-separated
           highlights = highlightsRaw.split(",").map((s) => s.trim()).filter(Boolean);
         }
       }
 
       const imageFile = formData.get("image") as File | null;
+
+      // Extract new fields
+      const description = formData.get("description") as string | null;
+      
+      const amenitiesRaw = formData.get("amenities") as string | null;
+      let amenities: string[] = [];
+      if (amenitiesRaw) {
+        try {
+          amenities = JSON.parse(amenitiesRaw);
+        } catch {
+          amenities = [];
+        }
+      }
+
+      const galleryUrlsRaw = formData.get("galleryUrls") as string | null;
+      let galleryUrls: string[] = [];
+      if (galleryUrlsRaw) {
+        try {
+          galleryUrls = JSON.parse(galleryUrlsRaw);
+        } catch {
+          galleryUrls = [];
+        }
+      }
+
+      const galleryFiles = formData.getAll("galleryFiles") as File[];
+
+      const floorPlansRaw = formData.get("floorPlans") as string | null;
+      let floorPlans: any[] = [];
+      if (floorPlansRaw) {
+        try {
+          floorPlans = JSON.parse(floorPlansRaw);
+        } catch {
+          floorPlans = [];
+        }
+      }
+
+      const floorPlanFiles: { file: File; index: number }[] = [];
+      for (const fp of floorPlans) {
+        if (fp.tempIndex !== undefined) {
+          const file = formData.get(`floorPlanFile_${fp.tempIndex}`) as File | null;
+          if (file) {
+            floorPlanFiles.push({ file, index: fp.tempIndex });
+          }
+        }
+      }
 
       const project = await this.service.createProject({
         name,
@@ -75,9 +125,20 @@ export class ProjectController {
         tag1,
         tag2,
         rera,
+        reraId,
+        reraLabel,
+        reraQrImageFile,
         category,
         highlights,
         imageFile,
+        description,
+        amenities,
+        galleryUrls,
+        galleryFiles,
+        floorPlans,
+        floorPlanFiles,
+        isNewLaunch,
+        sortOrder,
       });
 
       return NextResponse.json({ success: true, data: project }, { status: 201 });
@@ -106,6 +167,11 @@ export class ProjectController {
         if (formData.has("tag1")) updateData.tag1 = formData.get("tag1") as string;
         if (formData.has("tag2")) updateData.tag2 = formData.get("tag2") as string;
         if (formData.has("rera")) updateData.rera = formData.get("rera") as string;
+        if (formData.has("reraId")) updateData.reraId = formData.get("reraId") as string;
+        if (formData.has("reraLabel")) updateData.reraLabel = formData.get("reraLabel") as string;
+        if (formData.has("reraQrImage")) {
+          updateData.reraQrImageFile = formData.get("reraQrImage") as File | null;
+        }
         if (formData.has("category")) updateData.category = formData.get("category") as string;
         
         if (formData.has("highlights")) {
@@ -119,6 +185,62 @@ export class ProjectController {
         
         if (formData.has("image")) {
           updateData.imageFile = formData.get("image") as File | null;
+        }
+
+        if (formData.has("description")) {
+          updateData.description = formData.get("description") as string;
+        }
+
+        if (formData.has("isNewLaunch")) {
+          updateData.isNewLaunch = formData.get("isNewLaunch") === "true";
+        }
+
+        if (formData.has("sortOrder")) {
+          const rawOrder = formData.get("sortOrder");
+          updateData.sortOrder = rawOrder ? parseInt(rawOrder as string, 10) : 0;
+        }
+
+        if (formData.has("amenities")) {
+          const amenitiesRaw = formData.get("amenities") as string;
+          try {
+            updateData.amenities = JSON.parse(amenitiesRaw);
+          } catch {
+            updateData.amenities = [];
+          }
+        }
+
+        if (formData.has("galleryUrls")) {
+          const galleryUrlsRaw = formData.get("galleryUrls") as string;
+          try {
+            updateData.galleryUrls = JSON.parse(galleryUrlsRaw);
+          } catch {
+            updateData.galleryUrls = [];
+          }
+        }
+
+        if (formData.has("galleryFiles")) {
+          updateData.galleryFiles = formData.getAll("galleryFiles") as File[];
+        }
+
+        if (formData.has("floorPlans")) {
+          const floorPlansRaw = formData.get("floorPlans") as string;
+          try {
+            updateData.floorPlans = JSON.parse(floorPlansRaw);
+          } catch {
+            updateData.floorPlans = [];
+          }
+
+          // Gather corresponding floor plan files
+          const floorPlanFiles: { file: File; index: number }[] = [];
+          for (const fp of updateData.floorPlans) {
+            if (fp.tempIndex !== undefined) {
+              const file = formData.get(`floorPlanFile_${fp.tempIndex}`) as File | null;
+              if (file) {
+                floorPlanFiles.push({ file, index: fp.tempIndex });
+              }
+            }
+          }
+          updateData.floorPlanFiles = floorPlanFiles;
         }
       } else {
         // Plain JSON update
