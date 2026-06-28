@@ -55,6 +55,34 @@ export class LocalStorageService implements IStorageService {
   }
 }
 
+// Helper to navigate FTP directories with dynamic fallback for "public_html" prefix
+async function cdFtpDir(client: ftp.Client, remotePath: string) {
+  const segments = remotePath.split("/").filter(Boolean);
+  for (const segment of segments) {
+    if (segment === "public_html") {
+      const pwd = await client.pwd();
+      if (pwd === "/public_html" || pwd.startsWith("/public_html/")) {
+        continue;
+      }
+    }
+    await client.cd(segment);
+  }
+}
+
+// Helper to ensure and navigate FTP directories with dynamic fallback for "public_html" prefix
+async function ensureFtpDir(client: ftp.Client, remotePath: string) {
+  const segments = remotePath.split("/").filter(Boolean);
+  for (const segment of segments) {
+    if (segment === "public_html") {
+      const pwd = await client.pwd();
+      if (pwd === "/public_html" || pwd.startsWith("/public_html/")) {
+        continue;
+      }
+    }
+    await client.ensureDir(segment);
+  }
+}
+
 export class FtpStorageService implements IStorageService {
   private host = process.env.FTP_HOST;
   private user = process.env.FTP_USER;
@@ -78,9 +106,8 @@ export class FtpStorageService implements IStorageService {
         secure: false,
       });
 
-      // Target directory on FTP: e.g. "public/assets" or "public_html/public/assets"
-      const remoteDir = joinFtpPaths(this.remotePath);
-      await client.ensureDir(remoteDir);
+      // Robust navigation to target directory
+      await ensureFtpDir(client, this.remotePath);
       
       // Upload buffer as a Readable stream
       const stream = Readable.from(buffer);
@@ -110,8 +137,7 @@ export class FtpStorageService implements IStorageService {
         secure: false,
       });
 
-      const remoteDir = joinFtpPaths(this.remotePath);
-      await client.cd(remoteDir);
+      await cdFtpDir(client, this.remotePath);
       await client.remove(filename);
     } catch (error) {
       console.warn(`Could not delete file ${fileUrl} on FTP:`, error);

@@ -25,11 +25,17 @@ class WritableBuffer extends Writable {
   }
 }
 
-function joinFtpPaths(...parts: string[]): string {
-  return parts
-    .map((p) => p.replace(/\\/g, "/"))
-    .join("/")
-    .replace(/\/+/g, "/");
+async function cdFtpDir(client: ftp.Client, remotePath: string) {
+  const segments = remotePath.split("/").filter(Boolean);
+  for (const segment of segments) {
+    if (segment === "public_html") {
+      const pwd = await client.pwd();
+      if (pwd === "/public_html" || pwd.startsWith("/public_html/")) {
+        continue;
+      }
+    }
+    await client.cd(segment);
+  }
 }
 
 export async function GET(req: NextRequest, { params }: RouteParams) {
@@ -91,7 +97,7 @@ export async function GET(req: NextRequest, { params }: RouteParams) {
         });
 
         const remotePath = process.env.FTP_REMOTE_PATH || "public/assets";
-        await client.cd(joinFtpPaths(remotePath));
+        await cdFtpDir(client, remotePath);
 
         const writableBuffer = new WritableBuffer();
         await client.downloadTo(writableBuffer, filename);
