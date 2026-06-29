@@ -74,19 +74,12 @@ export default function Navbar({ onOpenEnquiry, customLinks }: NavbarProps) {
         <div className="flex items-center space-x-3 text-white cursor-pointer" onClick={handleHomeClick}>
           <div className="bg-white/95 p-1.5 rounded flex items-center justify-center shadow-sm">
             <img
-              src="/godrej_properties_logo.svg"
+              src="/godrej_logo_final.jpeg"
               alt="Godrej Properties Logo"
               className="h-8 w-auto object-contain"
             />
           </div>
-          <div className="flex flex-col border-l border-white/25 pl-3">
-            <span className="text-[10px] font-extrabold text-white tracking-widest uppercase leading-none">
-              Authorized
-            </span>
-            <span className="text-[9px] font-extrabold text-accent-gold-light tracking-widest uppercase mt-0.5 leading-none">
-              Channel Partner
-            </span>
-          </div>
+
         </div>
       )}
 
