@@ -64,6 +64,9 @@ export default async function ProjectPage({ params }: PageProps) {
           ? JSON.parse(dbProject.highlights)
           : [],
         rera: dbProject.rera,
+        reraId: dbProject.reraId || undefined,
+        reraLabel: dbProject.reraLabel || undefined,
+        reraQrImage: dbProject.reraQrImage || undefined,
         category: dbProject.category,
         description: dbProject.description || undefined,
         amenities: Array.isArray(dbProject.amenities)

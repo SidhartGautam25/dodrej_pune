@@ -51,11 +51,11 @@ function ReraQr({ name, qrImage }: { name: string; qrImage?: string | null }) {
         <rect x="50" y="10" width="10" height="10" />
         <rect x="0" y="55" width="15" height="10" />
         <rect x="25" y="55" width="10" height="10" />
-        
+
         <rect x="70" y="40" width="10" height="15" />
         <rect x="85" y="30" width="15" height="10" />
         <rect x="85" y="50" width="10" height="15" />
-        
+
         <rect x="40" y="50" width="10" height="35" />
         <rect x="55" y="50" width="15" height="10" />
         <rect x="55" y="70" width="10" height="20" />
@@ -103,17 +103,17 @@ export default function Footer({ singleProject }: FooterProps) {
   const displayQrs: ProjectReraInfo[] = singleProject
     ? [singleProject]
     : dbProjects.length > 0
-    ? dbProjects
-    : fallbackQrs;
+      ? dbProjects
+      : fallbackQrs;
 
   return (
     <footer className="bg-[#1e293b] text-white/80 py-16 px-4 md:px-8 border-t border-white/5">
       <div className="max-w-7xl mx-auto space-y-12">
-        
+
         {/* RERA Agent registration */}
         <div className="text-center">
           <span className="text-sm font-bold tracking-widest text-accent-gold-light uppercase border-b border-accent-gold/20 pb-2 px-4">
-            Agent Rera : A011262501553
+            Agent Rera : A51700032694
           </span>
         </div>
 
@@ -144,7 +144,7 @@ export default function Footer({ singleProject }: FooterProps) {
           <p>
             The RERA registration details are sourced directly from the Maharashtra Real Estate Regulatory Authority (MahaRERA)
             and can be verified on their official website. This website is managed by an authorized channel partner
-            (RERA Agent Reg: A011262501553) to assist home buyers. Logos, trademarks, and project renders are property of
+            (RERA Agent Reg: A51700032694) to assist home buyers. Logos, trademarks, and project renders are property of
             their respective owners.
           </p>
           <p className="text-center pt-4 text-white/50 text-[11px] font-medium">
