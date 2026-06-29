@@ -66,9 +66,14 @@ export async function POST(req: NextRequest) {
 
     const imageFile = formData.get("image") as File | null;
     let imageUrl = existing?.imageUrl || DEFAULT_BANNER.imageUrl;
+    const uploadLogs: string[] = [];
 
     if (imageFile) {
-      imageUrl = await storageService.uploadFile(imageFile, "assets");
+      const result = await storageService.uploadFile(imageFile, "assets");
+      imageUrl = result.url;
+      if (result.logs) {
+        uploadLogs.push(...result.logs);
+      }
       // Clean up previous custom image if it exists
       if (existing?.imageUrl && existing.imageUrl.startsWith("/assets/") && existing.imageUrl.includes("-")) {
         await storageService.deleteFile(existing.imageUrl);
@@ -103,7 +108,7 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    return NextResponse.json({ success: true, data: updated }, { status: 200 });
+    return NextResponse.json({ success: true, data: updated, logs: uploadLogs }, { status: 200 });
   } catch (error: any) {
     console.error("POST /api/promo-banner error:", error);
     return NextResponse.json({

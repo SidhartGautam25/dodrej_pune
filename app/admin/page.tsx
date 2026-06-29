@@ -8,7 +8,7 @@ import LeadsTable from "./components/LeadsTable";
 import ProjectsList from "./components/ProjectsList";
 import ProjectFormModal from "./components/ProjectFormModal";
 import PromoBannerForm from "./components/PromoBannerForm";
-import { Layers, Users, LogOut, Sliders } from "lucide-react";
+import { Layers, Users, LogOut, Sliders, Info, XCircle } from "lucide-react";
 import { signOut } from "next-auth/react";
 
 export default function AdminDashboard() {
@@ -18,6 +18,7 @@ export default function AdminDashboard() {
   // Project Modal State
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingProject, setEditingProject] = useState<any | null>(null);
+  const [notification, setNotification] = useState<{ title: string; messages: string[]; type: "info" | "success" | "error" } | null>(null);
 
   // Queries
   const { data: projects = [], isLoading: isLoadingProjects } = useGetProjects();
@@ -53,14 +54,42 @@ export default function AdminDashboard() {
   const handleFormSubmit = (data: any) => {
     if (editingProject) {
       updateMutation.mutate(data, {
-        onSuccess: () => {
+        onSuccess: (result: any) => {
           setIsModalOpen(false);
+          if (result.logs && result.logs.length > 0) {
+            setNotification({
+              title: "FTP Storage Notice",
+              messages: result.logs,
+              type: "info",
+            });
+          }
+        },
+        onError: (err: any) => {
+          setNotification({
+            title: "Project Update Failed",
+            messages: [err.message || "An unexpected error occurred during project update."],
+            type: "error",
+          });
         },
       });
     } else {
       createMutation.mutate(data, {
-        onSuccess: () => {
+        onSuccess: (result: any) => {
           setIsModalOpen(false);
+          if (result.logs && result.logs.length > 0) {
+            setNotification({
+              title: "FTP Storage Notice",
+              messages: result.logs,
+              type: "info",
+            });
+          }
+        },
+        onError: (err: any) => {
+          setNotification({
+            title: "Project Creation Failed",
+            messages: [err.message || "An unexpected error occurred during project creation."],
+            type: "error",
+          });
         },
       });
     }
@@ -193,6 +222,44 @@ export default function AdminDashboard() {
         initialData={editingProject}
         isSubmitting={createMutation.isPending || updateMutation.isPending}
       />
+
+      {/* Custom Notification Modal */}
+      {notification && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+          <div className="bg-white rounded-3xl p-6 max-w-md w-full shadow-2xl space-y-4 border border-black/[0.05]">
+            <div className="flex items-center space-x-3">
+              {notification.type === "error" ? (
+                <div className="p-2 bg-red-50 text-red-600 rounded-full">
+                  <XCircle className="w-6 h-6" />
+                </div>
+              ) : (
+                <div className="p-2 bg-accent-gold/10 text-accent-gold-dark rounded-full">
+                  <Info className="w-6 h-6" />
+                </div>
+              )}
+              <h4 className="text-sm font-bold font-serif text-primary">
+                {notification.title}
+              </h4>
+            </div>
+            <div className="space-y-2 max-h-[40vh] overflow-y-auto text-xs text-text-muted leading-relaxed">
+              {notification.messages.map((msg, i) => (
+                <div key={i} className="flex items-start space-x-2">
+                  <span className="text-accent-gold font-bold">•</span>
+                  <span>{msg}</span>
+                </div>
+              ))}
+            </div>
+            <div className="flex justify-end pt-2">
+              <button
+                onClick={() => setNotification(null)}
+                className="px-5 py-2 bg-primary text-white text-xs font-bold rounded-xl hover:opacity-90 transition-opacity cursor-pointer"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
