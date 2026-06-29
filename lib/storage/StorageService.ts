@@ -60,8 +60,9 @@ async function cdFtpDir(client: ftp.Client, remotePath: string) {
   const segments = remotePath.split("/").filter(Boolean);
   for (const segment of segments) {
     if (segment === "public_html") {
-      const pwd = await client.pwd();
-      if (pwd === "/public_html" || pwd.startsWith("/public_html/")) {
+      const list = await client.list();
+      const hasPublicHtml = list.some(item => item.name === "public_html" && item.isDirectory);
+      if (!hasPublicHtml) {
         continue;
       }
     }
@@ -74,8 +75,9 @@ async function ensureFtpDir(client: ftp.Client, remotePath: string) {
   const segments = remotePath.split("/").filter(Boolean);
   for (const segment of segments) {
     if (segment === "public_html") {
-      const pwd = await client.pwd();
-      if (pwd === "/public_html" || pwd.startsWith("/public_html/")) {
+      const list = await client.list();
+      const hasPublicHtml = list.some(item => item.name === "public_html" && item.isDirectory);
+      if (!hasPublicHtml) {
         continue;
       }
     }
