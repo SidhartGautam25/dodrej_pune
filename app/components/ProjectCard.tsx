@@ -113,3 +113,53 @@ export default function ProjectCard({ project, onOpenEnquiry }: ProjectCardProps
     </div>
   );
 }
+
+export function ProjectCardSkeleton() {
+  return (
+    <div className="flex flex-col bg-white rounded-2xl overflow-hidden border border-black/[0.06] shadow-sm animate-pulse">
+      {/* Top Image Section Skeleton */}
+      <div className="relative h-60 w-full bg-slate-200" />
+
+      {/* Details Section Skeleton */}
+      <div className="p-6 flex-grow flex flex-col justify-between">
+        <div>
+          {/* Title */}
+          <div className="h-6 bg-slate-200 rounded w-3/4 mx-auto mb-3" />
+          
+          {/* Location */}
+          <div className="border-b border-black/[0.06] pb-4 mb-4">
+            <div className="h-4 bg-slate-200 rounded w-1/2 mx-auto" />
+          </div>
+
+          {/* Badge Tags list */}
+          <div className="flex gap-2 justify-center mb-5">
+            <div className="h-5 bg-slate-200 rounded w-24" />
+            <div className="h-5 bg-slate-200 rounded w-20" />
+          </div>
+
+          {/* Configuration & Price Row */}
+          <div className="space-y-3 mb-6">
+            <div className="flex justify-between items-center">
+              <div className="h-4 bg-slate-200 rounded w-1/4" />
+              <div className="h-4 bg-slate-200 rounded w-1/3" />
+            </div>
+            <div className="flex justify-between items-center">
+              <div className="h-4 bg-slate-200 rounded w-1/4" />
+              <div className="h-4 bg-slate-200 rounded w-1/3" />
+            </div>
+          </div>
+
+          {/* Star Bullets */}
+          <div className="space-y-2.5 mb-6 flex flex-col items-center">
+            <div className="h-3 bg-slate-200 rounded w-2/3" />
+            <div className="h-3 bg-slate-200 rounded w-1/2" />
+          </div>
+        </div>
+
+        {/* CTA Button */}
+        <div className="w-full h-11 bg-slate-200 rounded-xl" />
+      </div>
+    </div>
+  );
+}
+

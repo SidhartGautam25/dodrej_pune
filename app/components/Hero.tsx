@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
-import { projectsData } from "../data/projects";
 
 interface HeroProps {
   onOpenEnquiry: (projectName?: string) => void;
@@ -11,10 +10,12 @@ interface HeroProps {
 export default function Hero({ onOpenEnquiry }: HeroProps) {
   const [currentBgIndex, setCurrentBgIndex] = useState(0);
 
-  // Background images: start with default cover, then add project images
+  // Background images: use custom hero images in public/hero
   const bgImages = [
-    "/assets/hero_bg.png",
-    ...projectsData.map((p) => p.image).filter(Boolean),
+    "/hero/hero_image_1.avif",
+    "/hero/hero_image_2.avif",
+    "/hero/hero_image_3.avif",
+    "/hero/hero_image_4.avif",
   ];
 
   // Rotate background images every 5 seconds
@@ -38,9 +39,8 @@ export default function Hero({ onOpenEnquiry }: HeroProps) {
             fill
             priority={index === 0}
             sizes="100vw"
-            className={`object-cover object-center transition-opacity duration-1000 ease-in-out ${
-              index === currentBgIndex ? "opacity-75" : "opacity-0"
-            }`}
+            className={`object-cover object-center transition-opacity duration-1000 ease-in-out ${index === currentBgIndex ? "opacity-75" : "opacity-0"
+              }`}
           />
         ))}
         {/* Dark radial/horizontal overlay for readability (exact look as the screenshot) */}
@@ -50,10 +50,7 @@ export default function Hero({ onOpenEnquiry }: HeroProps) {
 
       {/* Hero Content (left-aligned, clean, matching the screenshot layout) */}
       <div className="relative z-10 w-full max-w-4xl mt-16 text-left flex flex-col items-start space-y-5">
-        <span className="text-xs md:text-sm font-bold tracking-widest text-accent-gold uppercase">
-          Authorized Channel Partner
-        </span>
-        
+
         <h1 className="text-4xl sm:text-5xl md:text-7xl font-extrabold tracking-tight font-sans text-white max-w-3xl leading-tight">
           Discover Premium Luxury Residences in Pune
         </h1>
