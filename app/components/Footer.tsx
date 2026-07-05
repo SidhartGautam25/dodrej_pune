@@ -122,11 +122,11 @@ export default function Footer({ singleProject }: FooterProps) {
           {displayQrs.map((qr, index) => (
             <div key={index} className="flex flex-col items-center space-y-2">
               <ReraQr name={qr.name} qrImage={qr.reraQrImage} />
-              <div className="text-center">
-                <span className="block text-[10px] font-bold text-accent-gold truncate max-w-[144px]">
+              <div className="text-center w-full flex flex-col items-center">
+                <span className="block text-[10px] font-bold text-accent-gold truncate max-w-[144px] text-center mx-auto">
                   {qr.reraLabel || qr.name}
                 </span>
-                <span className="text-[9px] font-medium text-white/50 block select-all">
+                <span className="text-[9px] font-medium text-white/50 block select-all text-center mx-auto">
                   {qr.reraId || qr.rera}
                 </span>
               </div>
@@ -135,19 +135,19 @@ export default function Footer({ singleProject }: FooterProps) {
         </div>
 
         {/* Legal Disclaimer */}
-        <div className="text-[10px] text-white/40 leading-relaxed border-t border-white/10 pt-8 space-y-3 font-light">
-          <p>
+        <div className="text-[10px] text-white/40 leading-relaxed border-t border-white/10 pt-8 space-y-3 font-light text-center">
+          <p className="max-w-4xl mx-auto">
             Disclaimer: The information provided on this website is for informational purposes only and does not constitute
             an offer or contract. All renderings, floor plans, specifications, layouts, dimensions, pricing, and project
             highlights are conceptual/representative and subject to change by the developer without prior notice.
           </p>
-          <p>
+          <p className="max-w-4xl mx-auto">
             The RERA registration details are sourced directly from the Maharashtra Real Estate Regulatory Authority (MahaRERA)
             and can be verified on their official website. This website is managed by an authorized channel partner
             (RERA Agent Reg: A51700032694) to assist home buyers. Logos, trademarks, and project renders are property of
             their respective owners.
           </p>
-          <p className="text-center pt-4 text-white/50 text-[11px] font-medium">
+          <p className="text-center pt-4 text-white/50 text-[11px] font-medium max-w-4xl mx-auto">
             &copy; {new Date().getFullYear()} Godrej Properties Pune. All Rights Reserved. Managed by Authorized Channel Partner.
           </p>
         </div>

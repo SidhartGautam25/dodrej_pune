@@ -4,6 +4,7 @@ import React from "react";
 import Link from "next/link";
 import { Project } from "../data/projects";
 import { slugify } from "@/lib/utils/slugify";
+import { ChevronRight } from "lucide-react";
 
 interface ProjectCardProps {
   project: Project;
@@ -91,12 +92,12 @@ export default function ProjectCard({ project, onOpenEnquiry }: ProjectCardProps
             </div>
           </div>
 
-          {/* Star Bullets */}
-          <ul className="space-y-2 mb-6 flex flex-col items-center">
-            {project.highlights.map((highlight, index) => (
-              <li key={index} className="flex items-center text-xs font-semibold text-primary/80">
-                <span className="text-accent-gold mr-2 text-sm">★</span>
-                <span>{highlight}</span>
+          {/* Arrow Bullets */}
+          <ul className="space-y-2 mb-6 flex flex-col items-start w-full">
+            {project.highlights.slice(0, 4).map((highlight, index) => (
+              <li key={index} className="flex items-start text-xs font-semibold text-primary/80 w-full">
+                <ChevronRight className="w-3.5 h-3.5 text-accent-gold-dark mr-2 mt-0.5 flex-shrink-0" />
+                <span className="flex-1 text-left leading-normal">{highlight}</span>
               </li>
             ))}
           </ul>
