@@ -73,17 +73,11 @@ export default function Hero({ onOpenEnquiry }: HeroProps) {
           ))}
         </div>
 
-        {/* Only a subtle left-side gradient for text readability */}
-        <div
-          className="absolute inset-0 z-10"
-          style={{
-            background:
-              "linear-gradient(90deg, rgba(0,0,0,0.48) 0%, rgba(0,0,0,0.22) 18%, rgba(0,0,0,0.08) 32%, rgba(0,0,0,0) 55%)",
-          }}
-        />
+        {/* Hazing gradient: Responsive overlay (darker on mobile, left-to-right gradient on desktop) */}
+        <div className="absolute inset-0 z-10 bg-black/45 md:bg-transparent md:bg-gradient-to-r md:from-black/75 md:via-black/45 md:to-transparent" />
 
-        {/* Very light vignette */}
-        <div className="absolute inset-0 z-10 bg-gradient-to-t from-black/15 via-transparent to-black/10" />
+        {/* Top/bottom vignette for header and bottom bar readability */}
+        <div className="absolute inset-0 z-10 bg-gradient-to-t from-black/25 via-transparent to-black/20" />
       </div>
 
       {/* Hero Content (left-aligned, clean, matching the screenshot layout) */}
