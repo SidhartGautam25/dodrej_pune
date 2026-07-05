@@ -38,7 +38,7 @@ export default function Hero({ onOpenEnquiry }: HeroProps) {
   }, []);
 
   return (
-    <section className="relative h-screen w-full flex items-center justify-start px-6 md:px-16 lg:px-24 overflow-hidden bg-primary">
+    <section className="relative min-h-screen md:h-screen w-full flex items-center justify-start px-6 md:px-16 lg:px-24 py-24 md:py-0 overflow-x-hidden bg-primary">
       {/* Background Slideshow */}
       <div className="absolute inset-0 z-0">
         {/* Desktop Slideshow */}
@@ -82,7 +82,7 @@ export default function Hero({ onOpenEnquiry }: HeroProps) {
 
       {/* Hero Content (left-aligned, clean, matching the screenshot layout) */}
       <div className="relative z-20 w-full max-w-4xl mt-20 text-left flex flex-col items-start space-y-6">
-        
+
         {/* Tagline */}
         <span className="text-accent-gold font-extrabold text-[10px] md:text-xs tracking-[0.25em] uppercase font-sans drop-shadow-[0_2px_8px_rgba(0,0,0,0.5)]">
           THOUGHTFULLY DESIGNED. PRECISELY CRAFTED.
@@ -99,49 +99,49 @@ export default function Hero({ onOpenEnquiry }: HeroProps) {
         </p>
 
         {/* Feature Badges - Horizontal layout matching inspiration */}
-        <div className="flex flex-wrap items-center gap-x-5 gap-y-2.5 pt-1 text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.5)]">
+        <div className="grid grid-cols-2 gap-y-3.5 gap-x-4 md:flex md:flex-wrap md:items-center md:gap-x-5 md:gap-y-2.5 pt-1 text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.5)] w-full">
           <div className="flex items-center space-x-2">
-            <MapPin className="w-4 h-4 text-accent-gold" />
+            <MapPin className="w-4 h-4 text-accent-gold flex-shrink-0" />
             <span className="text-[10px] font-extrabold tracking-wider uppercase">Prime Locations</span>
           </div>
-          <span className="text-white/20 hidden sm:inline">|</span>
+          <span className="text-white/20 hidden md:inline">|</span>
           <div className="flex items-center space-x-2">
-            <Sparkles className="w-4 h-4 text-accent-gold" />
+            <Sparkles className="w-4 h-4 text-accent-gold flex-shrink-0" />
             <span className="text-[10px] font-extrabold tracking-wider uppercase">World-Class Amenities</span>
           </div>
-          <span className="text-white/20 hidden sm:inline">|</span>
+          <span className="text-white/20 hidden md:inline">|</span>
           <div className="flex items-center space-x-2">
-            <ShieldCheck className="w-4 h-4 text-accent-gold" />
+            <ShieldCheck className="w-4 h-4 text-accent-gold flex-shrink-0" />
             <span className="text-[10px] font-extrabold tracking-wider uppercase">Trusted Brand</span>
           </div>
-          <span className="text-white/20 hidden sm:inline">|</span>
+          <span className="text-white/20 hidden md:inline">|</span>
           <div className="flex items-center space-x-2">
-            <Tag className="w-4 h-4 text-accent-gold" />
+            <Tag className="w-4 h-4 text-accent-gold flex-shrink-0" />
             <span className="text-[10px] font-extrabold tracking-wider uppercase">Exclusive Offers</span>
           </div>
         </div>
 
         {/* Action Buttons */}
-        <div className="flex flex-wrap gap-3.5 pt-2">
+        <div className="flex flex-col sm:flex-row gap-3.5 w-full sm:w-auto pt-2">
           <button
             onClick={() => onOpenEnquiry("Book Free Site Visit")}
-            className="px-5 py-3 bg-accent-gold hover:bg-accent-gold/90 text-primary font-extrabold text-[10px] uppercase tracking-widest rounded-lg transition-all duration-300 shadow-md flex items-center space-x-2 cursor-pointer hover:scale-105"
+            className="w-full sm:w-auto justify-center px-5 py-3.5 bg-accent-gold hover:bg-accent-gold/90 text-primary font-extrabold text-[10px] uppercase tracking-widest rounded-lg transition-all duration-300 shadow-md flex items-center space-x-2 cursor-pointer hover:scale-105"
           >
             <Calendar className="w-3.5 h-3.5" />
             <span>Book Free Site Visit</span>
           </button>
-          
+
           <button
             onClick={() => onOpenEnquiry("Get Price Sheet")}
-            className="px-5 py-3 bg-transparent hover:bg-white/5 text-white border border-white/30 hover:border-white font-extrabold text-[10px] uppercase tracking-widest rounded-lg transition-all duration-300 flex items-center space-x-2 cursor-pointer shadow-sm hover:scale-105"
+            className="w-full sm:w-auto justify-center px-5 py-3.5 bg-transparent hover:bg-white/5 text-white border border-white/30 hover:border-white font-extrabold text-[10px] uppercase tracking-widest rounded-lg transition-all duration-300 flex items-center space-x-2 cursor-pointer shadow-sm hover:scale-105"
           >
             <Phone className="w-3.5 h-3.5 text-accent-gold" />
             <span>Get Price Sheet</span>
           </button>
-          
+
           <button
             onClick={() => onOpenEnquiry("Download Brochure")}
-            className="px-5 py-3 bg-transparent hover:bg-white/5 text-white border border-white/30 hover:border-white font-extrabold text-[10px] uppercase tracking-widest rounded-lg transition-all duration-300 flex items-center space-x-2 cursor-pointer shadow-sm hover:scale-105"
+            className="w-full sm:w-auto justify-center px-5 py-3.5 bg-transparent hover:bg-white/5 text-white border border-white/30 hover:border-white font-extrabold text-[10px] uppercase tracking-widest rounded-lg transition-all duration-300 flex items-center space-x-2 cursor-pointer shadow-sm hover:scale-105"
           >
             <Download className="w-3.5 h-3.5 text-accent-gold" />
             <span>Download Brochure</span>
@@ -149,11 +149,11 @@ export default function Hero({ onOpenEnquiry }: HeroProps) {
         </div>
 
         {/* Explore Locations Bar - Dark Translucent panel */}
-        <div className="bg-black/35 border border-white/10 backdrop-blur-md rounded-xl p-4 md:p-5 w-full max-w-3xl mt-6 shadow-lg">
+        <div className="bg-black/35 border border-white/10 backdrop-blur-md rounded-xl p-4 md:p-5 w-full max-w-3xl mt-6 shadow-lg mb-8 sm:mb-0">
           <span className="block text-[9px] font-extrabold tracking-widest text-accent-gold uppercase mb-2">
             Explore Projects in Pune&apos;s Top Locations
           </span>
-          <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-[11px] font-bold text-white/90">
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-2.5 text-[11px] font-bold text-white/90">
             <button className="flex items-center space-x-1 hover:text-accent-gold transition-colors cursor-pointer" onClick={() => onOpenEnquiry("Kharadi Location Enquiry")}>
               <MapPin className="w-3 h-3 text-accent-gold" />
               <span>Kharadi</span>
@@ -184,17 +184,15 @@ export default function Hero({ onOpenEnquiry }: HeroProps) {
 
       {/* RERA Registered badge */}
       <div className="absolute right-8 bottom-12 z-20 hidden lg:flex items-center space-x-2 bg-white/95 border border-slate-200/80 rounded-xl p-3 shadow-md">
-        <div className="w-8.5 h-8.5 rounded-full bg-green-500/10 border border-green-500/20 flex items-center justify-center text-green-600">
-          <ShieldCheck className="w-4.5 h-4.5 fill-green-600/10" />
-        </div>
-        <div className="flex flex-col leading-tight">
+        {/* x */}
+        {/* <div className="flex flex-col leading-tight">
           <span className="text-[9px] font-extrabold tracking-wider text-green-600 uppercase">
             RERA Registered
           </span>
           <span className="text-[8px] font-semibold text-text-muted">
             Projects
           </span>
-        </div>
+        </div> */}
       </div>
     </section>
   );
