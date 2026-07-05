@@ -11,18 +11,27 @@ interface HeroProps {
 export default function Hero({ onOpenEnquiry }: HeroProps) {
   const [currentBgIndex, setCurrentBgIndex] = useState(0);
 
-  const bgImages = [
-    "/hero/hero_image_5.avif",
-    "/hero/hero_image_6.avif",
-    "/hero/hero_image_7.avif",
-    "/hero/hero_image_9.avif",
+  const desktopImages = [
+    "/hero/desktop/hero_image_1.png",
+    "/hero/desktop/hero_image_2.png",
+    "/hero/desktop/hero_image_3.png",
+    "/hero/desktop/hero_image_4.png",
+    "/hero/desktop/hero_image_5.png",
+  ];
+
+  const phoneImages = [
+    "/hero/phone/hero_image_1.png",
+    "/hero/phone/hero_image_2.png",
+    "/hero/phone/hero_image_3.png",
+    "/hero/phone/hero_image_4.png",
+    "/hero/phone/hero_image_5.png",
   ];
 
   useEffect(() => {
-    if (bgImages.length <= 1) return;
+    if (desktopImages.length <= 1) return;
 
     const interval = setInterval(() => {
-      setCurrentBgIndex((prev) => (prev + 1) % bgImages.length);
+      setCurrentBgIndex((prev) => (prev + 1) % desktopImages.length);
     }, 5000);
 
     return () => clearInterval(interval);
@@ -32,18 +41,37 @@ export default function Hero({ onOpenEnquiry }: HeroProps) {
     <section className="relative h-screen w-full flex items-center justify-start px-6 md:px-16 lg:px-24 overflow-hidden bg-primary">
       {/* Background Slideshow */}
       <div className="absolute inset-0 z-0">
-        {bgImages.map((src, index) => (
-          <Image
-            key={src}
-            src={src}
-            alt="Godrej Pune Projects"
-            fill
-            priority={index === 0}
-            sizes="100vw"
-            className={`object-cover object-center transition-opacity duration-1000 ease-in-out ${index === currentBgIndex ? "opacity-100" : "opacity-0"
-              }`}
-          />
-        ))}
+        {/* Desktop Slideshow */}
+        <div className="hidden md:block absolute inset-0">
+          {desktopImages.map((src, index) => (
+            <Image
+              key={"desktop-" + src}
+              src={src}
+              alt="Godrej Pune Projects Desktop"
+              fill
+              priority={index === 0}
+              sizes="100vw"
+              className={`object-cover object-center transition-opacity duration-1000 ease-in-out ${index === currentBgIndex ? "opacity-100" : "opacity-0"
+                }`}
+            />
+          ))}
+        </div>
+
+        {/* Mobile/Phone Slideshow */}
+        <div className="block md:hidden absolute inset-0">
+          {phoneImages.map((src, index) => (
+            <Image
+              key={"phone-" + src}
+              src={src}
+              alt="Godrej Pune Projects Mobile"
+              fill
+              priority={index === 0}
+              sizes="100vw"
+              className={`object-cover object-center transition-opacity duration-1000 ease-in-out ${index === currentBgIndex ? "opacity-100" : "opacity-0"
+                }`}
+            />
+          ))}
+        </div>
 
         {/* Only a subtle left-side gradient for text readability */}
         <div
