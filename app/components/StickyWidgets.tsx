@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { Phone } from "lucide-react";
 
 interface StickyWidgetsProps {
   onOpenEnquiry: (projectName?: string) => void;
@@ -31,19 +32,34 @@ export default function StickyWidgets({ onOpenEnquiry }: StickyWidgetsProps) {
         </button>
       </div>
 
-      {/* Desktop Floating Action Button (FAB) at Bottom Right */}
-      <div className="fixed right-6 bottom-6 z-40 hidden md:block">
-        <button
-          onClick={() => onOpenEnquiry("Floating Action Button")}
-          className="flex items-center justify-center w-14 h-14 rounded-full bg-blue-600 text-white hover:bg-blue-700 shadow-2xl transition-all duration-300 hover:scale-110 cursor-pointer group relative"
-          aria-label="Enquire Now"
+      {/* Desktop Floating Action Button (FAB) at Bottom Left - Phone Call */}
+      <div className="fixed left-6 bottom-6 z-40 hidden md:block">
+        <a
+          href="tel:+919665205957"
+          className="flex items-center justify-center w-14 h-14 rounded-full bg-blue-600 text-white hover:bg-blue-700 shadow-2xl transition-all duration-300 hover:scale-110 cursor-pointer group relative animate-bounce"
+          aria-label="Call Now"
         >
           {/* Ripple animation effect */}
           <span className="absolute inset-0 rounded-full bg-blue-600/40 animate-ping opacity-75"></span>
-          <svg className="w-6 h-6 z-10 relative" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+          <Phone className="w-6 h-6 z-10 relative" />
+        </a>
+      </div>
+
+      {/* Desktop Floating Action Button (FAB) at Bottom Right - WhatsApp */}
+      <div className="fixed right-6 bottom-6 z-40 hidden md:block">
+        <a
+          href="https://wa.me/919665205957"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center justify-center w-14 h-14 rounded-full bg-green-500 text-white hover:bg-green-600 shadow-2xl transition-all duration-300 hover:scale-110 cursor-pointer group relative"
+          aria-label="Chat on WhatsApp"
+        >
+          {/* Ripple animation effect */}
+          <span className="absolute inset-0 rounded-full bg-green-500/40 animate-ping opacity-75"></span>
+          <svg className="w-7 h-7 fill-white z-10 relative" viewBox="0 0 24 24">
+            <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.724-1.455L0 24zm6.59-4.846c1.6.95 3.188 1.449 4.825 1.451 5.436 0 9.86-4.37 9.864-9.799.002-2.63-1.023-5.101-2.885-6.963C16.59 1.98 14.12 1.97 12.01 1.97c-5.442 0-9.87 4.372-9.874 9.802-.001 1.761.47 3.479 1.365 5.011L2.52 20.77l4.128-.976z" />
           </svg>
-        </button>
+        </a>
       </div>
 
       {/* Mobile Sticky Bottom Action Bar */}
@@ -57,15 +73,17 @@ export default function StickyWidgets({ onOpenEnquiry }: StickyWidgetsProps) {
           </svg>
           <span>Call Now</span>
         </a>
-        <button
-          onClick={() => onOpenEnquiry("Mobile Sticky Widget")}
-          className="flex-1 flex items-center justify-center space-x-2 gold-gradient hover:gold-gradient-hover text-primary rounded-xl py-3 text-xs font-bold uppercase tracking-wider shadow-lg cursor-pointer"
+        <a
+          href="https://wa.me/919665205957"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex-1 flex items-center justify-center space-x-2 bg-green-600 hover:bg-green-700 text-white rounded-xl py-3 text-xs font-bold uppercase tracking-wider shadow-lg cursor-pointer"
         >
-          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+          <svg className="w-4 h-4 fill-white" viewBox="0 0 24 24">
+            <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.724-1.455L0 24zm6.59-4.846c1.6.95 3.188 1.449 4.825 1.451 5.436 0 9.86-4.37 9.864-9.799.002-2.63-1.023-5.101-2.885-6.963C16.59 1.98 14.12 1.97 12.01 1.97c-5.442 0-9.87 4.372-9.874 9.802-.001 1.761.47 3.479 1.365 5.011L2.52 20.77l4.128-.976z" />
           </svg>
-          <span>Enquiry</span>
-        </button>
+          <span>WhatsApp</span>
+        </a>
       </div>
     </>
   );
