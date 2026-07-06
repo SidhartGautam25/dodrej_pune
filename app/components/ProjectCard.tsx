@@ -40,7 +40,7 @@ export default function ProjectCard({ project, onOpenEnquiry, newLaunchLogo }: P
               <img
                 src={newLaunchLogo}
                 alt="New Launch Logo"
-                className="w-20 h-20 object-contain rounded-xl p-1 bg-white/95 backdrop-blur-[1px] shadow-sm border border-black/[0.04]"
+                className="w-20 h-20 object-contain"
               />
             ) : (
               <div className="w-20 h-20 rounded-full border-4 border-double border-red-600 flex flex-col items-center justify-center bg-white/90 backdrop-blur-[1px] text-red-600 p-1 shadow-inner relative">
