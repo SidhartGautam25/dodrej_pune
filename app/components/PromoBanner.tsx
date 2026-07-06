@@ -59,7 +59,7 @@ export default function PromoBanner({ onOpenEnquiry }: PromoBannerProps) {
           className="w-full h-auto block"
         />
       </div>
- 
+
       {/* 2. Official Brand Primary Theme Action Bar */}
       <div className="w-full bg-primary py-4 px-4 border-y border-white/5 shadow-inner">
         <div className="max-w-7xl mx-auto grid grid-cols-2 gap-3 sm:flex sm:justify-center sm:items-center sm:gap-4">
@@ -72,7 +72,7 @@ export default function PromoBanner({ onOpenEnquiry }: PromoBannerProps) {
             </svg>
             <span className="whitespace-nowrap">Book Site Visit</span>
           </button>
- 
+
           <button
             onClick={() => onOpenEnquiry("Get Details")}
             className="w-full sm:w-auto justify-center bg-white/10 hover:bg-white/20 border border-white/20 text-white rounded-xl px-5 py-2.5 text-xs font-bold uppercase tracking-wider flex items-center space-x-2 transition-all duration-300 shadow-sm hover:scale-[1.02] cursor-pointer"
@@ -84,56 +84,56 @@ export default function PromoBanner({ onOpenEnquiry }: PromoBannerProps) {
           </button>
         </div>
       </div>
- 
+
       {/* 3. Four Column Content Section */}
       <div className="w-full border-b border-black/[0.06] py-8 bg-bg-tan/10">
         <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-y-6 md:gap-y-0 text-center relative divide-y divide-black/[0.06] md:divide-y-0 md:divide-x md:divide-black/[0.08]">
- 
+
           {/* Section 1 */}
           <div className="flex flex-col justify-center px-4 pb-4 md:pb-0">
             <span className="text-xs md:text-sm font-extrabold text-primary tracking-tight leading-snug">
               {data.sec1Title}
             </span>
-            <span className="text-[10px] md:text-xs font-semibold text-accent-gold-dark mt-1.5 uppercase tracking-wider">
+            <span className="text-[10px] md:text-xs font-semibold mt-1.5 uppercase tracking-wider">
               {data.sec1Sub}
             </span>
           </div>
- 
+
           {/* Section 2 */}
           <div className="flex flex-col justify-center px-4 py-4 md:py-0">
             <span className="text-xs md:text-sm font-extrabold text-primary tracking-tight leading-snug">
               {data.sec2Title}
             </span>
-            <span className="text-[10px] md:text-xs font-semibold text-accent-gold-dark mt-1.5 uppercase tracking-wider">
+            <span className="text-[10px] md:text-xs font-semibold  mt-1.5 uppercase tracking-wider">
               {data.sec2Sub}
             </span>
           </div>
- 
+
           {/* Section 3 */}
           <div className="flex flex-col justify-center px-4 py-4 md:py-0">
             <span className="text-xs md:text-sm font-extrabold text-primary tracking-tight leading-snug">
               {data.sec3Title}
             </span>
-            <span className="text-[10px] md:text-xs font-semibold text-accent-gold-dark mt-1.5 uppercase tracking-wider">
+            <span className="text-[10px] md:text-xs font-semibold  mt-1.5 uppercase tracking-wider">
               {data.sec3Sub}
             </span>
           </div>
- 
+
           {/* Section 4 */}
           <div className="flex flex-col justify-center px-4 pt-4 md:pt-0">
             <span className="text-xs md:text-sm font-extrabold text-primary tracking-tight leading-snug">
               {data.sec4Title}
             </span>
-            <span className="text-[10px] md:text-xs font-semibold text-accent-gold-dark mt-1.5 uppercase tracking-wider">
+            <span className="text-[10px] md:text-xs font-semibold mt-1.5 uppercase tracking-wider">
               {data.sec4Sub}
             </span>
           </div>
- 
+
         </div>
       </div>
 
       {/* 4. India's No. 1 Developer text & introduction */}
-      <div className="w-full bg-white py-12 px-4 md:px-8 text-center">
+      {/* <div className="w-full bg-white py-12 px-4 md:px-8 text-center">
         <div className="max-w-4xl mx-auto space-y-4">
           <h3 className="text-xs md:text-sm font-extrabold tracking-widest text-accent-gold-dark uppercase font-serif">
             India's No.1 Real Estate Developer
@@ -144,7 +144,7 @@ export default function PromoBanner({ onOpenEnquiry }: PromoBannerProps) {
             both lifestyle and long-term value.
           </p>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 }

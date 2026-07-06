@@ -15,8 +15,8 @@ export default function Hero({ onOpenEnquiry }: HeroProps) {
     "/hero/desktop/hero_image_1.png",
     "/hero/desktop/hero_image_2.png",
     "/hero/desktop/hero_image_3.png",
-    "/hero/desktop/hero_image_4.png",
-    "/hero/desktop/hero_image_5.png",
+    "/hero/desktop/hero_image_4.jpeg",
+    "/hero/desktop/hero_image_5.avif",
   ];
 
   const phoneImages = [
@@ -95,7 +95,7 @@ export default function Hero({ onOpenEnquiry }: HeroProps) {
 
         {/* Subtitle */}
         <p className="text-white/95 text-xs sm:text-sm md:text-base max-w-2xl leading-relaxed font-medium drop-shadow-[0_2px_10px_rgba(0,0,0,0.65)]">
-          Premium 1, 2, 3 & 4 BHK residences in prime locations with world-class amenities and exclusive offers.
+          Explore premium 1, 2, 3& 4 BHK apartments in Pune's most coveted locations starting from 75 Lacs*. Find your perfect home with world-class amenities and exclusive pre-launch offers.
         </p>
 
         {/* Feature Badges - Horizontal layout matching inspiration */}
@@ -166,7 +166,7 @@ export default function Hero({ onOpenEnquiry }: HeroProps) {
             <span className="text-white/20 hidden sm:inline">|</span>
             <button className="flex items-center space-x-1 hover:text-accent-gold transition-colors cursor-pointer" onClick={() => onOpenEnquiry("Mahalunge Location Enquiry")}>
               <MapPin className="w-3 h-3 text-accent-gold" />
-              <span>Mahalunge</span>
+              <span>Koregaon Park</span>
             </button>
             <span className="text-white/20 hidden sm:inline">|</span>
             <button className="flex items-center space-x-1 hover:text-accent-gold transition-colors cursor-pointer" onClick={() => onOpenEnquiry("Pimpri Location Enquiry")}>
