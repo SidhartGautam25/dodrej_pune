@@ -8,12 +8,13 @@ import LeadsTable from "./components/LeadsTable";
 import ProjectsList from "./components/ProjectsList";
 import ProjectFormModal from "./components/ProjectFormModal";
 import PromoBannerForm from "./components/PromoBannerForm";
-import { Layers, Users, LogOut, Sliders, Info, XCircle } from "lucide-react";
+import LaunchLogoForm from "./components/LaunchLogoForm";
+import { Layers, Users, LogOut, Sliders, Info, XCircle, Award } from "lucide-react";
 import { signOut } from "next-auth/react";
 
 export default function AdminDashboard() {
   // Tab State
-  const [activeTab, setActiveTab] = useState<"leads" | "projects" | "banner">("leads");
+  const [activeTab, setActiveTab] = useState<"leads" | "projects" | "banner" | "logo">("leads");
 
   // Project Modal State
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -152,6 +153,18 @@ export default function AdminDashboard() {
               <Sliders className="w-4 h-4" />
               <span>Promo Settings</span>
             </button>
+
+            <button
+              onClick={() => setActiveTab("logo")}
+              className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-xs font-bold tracking-wide transition-all cursor-pointer ${
+                activeTab === "logo"
+                  ? "bg-accent-gold text-primary shadow-lg"
+                  : "text-white/70 hover:text-white hover:bg-white/5"
+              }`}
+            >
+              <Award className="w-4 h-4" />
+              <span>Launch Logo</span>
+            </button>
           </nav>
         </div>
 
@@ -208,8 +221,10 @@ export default function AdminDashboard() {
               onEdit={handleOpenEditModal}
               onDelete={handleDeleteProject}
             />
-          ) : (
+          ) : activeTab === "banner" ? (
             <PromoBannerForm />
+          ) : (
+            <LaunchLogoForm />
           )}
         </div>
       </main>

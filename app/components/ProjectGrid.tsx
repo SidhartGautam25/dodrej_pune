@@ -11,6 +11,7 @@ interface ProjectGridProps {
 export default function ProjectGrid({ onOpenEnquiry }: ProjectGridProps) {
   const [activeTab, setActiveTab] = useState<"all" | "apartments" | "plots">("all");
   const [projects, setProjects] = useState<Project[]>([]);
+  const [newLaunchLogo, setNewLaunchLogo] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -47,7 +48,21 @@ export default function ProjectGrid({ onOpenEnquiry }: ProjectGridProps) {
         setLoading(false);
       }
     }
+
+    async function loadLogo() {
+      try {
+        const res = await fetch("/api/promo-banner");
+        const json = await res.json();
+        if (json.success && json.data) {
+          setNewLaunchLogo(json.data.newLaunchLogoUrl || null);
+        }
+      } catch (err) {
+        console.warn("Failed to load launch logo settings:", err);
+      }
+    }
+
     loadProjects();
+    loadLogo();
   }, []);
 
   const filteredProjects = projects.filter((project) => {
@@ -115,6 +130,7 @@ export default function ProjectGrid({ onOpenEnquiry }: ProjectGridProps) {
                 key={project.id}
                 project={project}
                 onOpenEnquiry={onOpenEnquiry}
+                newLaunchLogo={newLaunchLogo}
               />
             ))
           )}

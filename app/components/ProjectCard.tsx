@@ -9,9 +9,10 @@ import { ChevronRight } from "lucide-react";
 interface ProjectCardProps {
   project: Project;
   onOpenEnquiry: (projectName: string) => void;
+  newLaunchLogo?: string | null;
 }
 
-export default function ProjectCard({ project, onOpenEnquiry }: ProjectCardProps) {
+export default function ProjectCard({ project, onOpenEnquiry, newLaunchLogo }: ProjectCardProps) {
   const projectSlug = slugify(project.name);
 
   return (
@@ -31,20 +32,29 @@ export default function ProjectCard({ project, onOpenEnquiry }: ProjectCardProps
           </div>
         )}
 
-        {/* Circular Stamped Ink New Launch Badge */}
+        {/* Circular Stamped Ink New Launch Badge or Custom Logo Badge */}
         {project.isNewLaunch && (
           <div className="absolute top-4 right-4 z-10 pointer-events-none select-none rotate-[-12deg] drop-shadow-md">
-            <div className="w-20 h-20 rounded-full border-4 border-double border-red-600 flex flex-col items-center justify-center bg-white/90 backdrop-blur-[1px] text-red-600 p-1 shadow-inner relative">
-              {/* Inner dashed ring */}
-              <div className="absolute inset-0.5 rounded-full border border-dashed border-red-500/40"></div>
-              
-              {/* Text elements inside stamp */}
-              <span className="text-[7px] font-bold tracking-widest opacity-85 uppercase leading-none font-sans">GODREJ</span>
-              <span className="text-[10px] font-black tracking-normal uppercase my-0.5 py-0.5 px-1 border-y-2 border-red-600 leading-none font-serif">
-                NEW LAUNCH
-              </span>
-              <span className="text-[6px] font-bold tracking-widest opacity-85 uppercase leading-none font-sans">PROPERTIES</span>
-            </div>
+            {newLaunchLogo ? (
+              /* eslint-disable-next-line @next/next/no-img-element */
+              <img
+                src={newLaunchLogo}
+                alt="New Launch Logo"
+                className="w-20 h-20 object-contain rounded-xl p-1 bg-white/95 backdrop-blur-[1px] shadow-sm border border-black/[0.04]"
+              />
+            ) : (
+              <div className="w-20 h-20 rounded-full border-4 border-double border-red-600 flex flex-col items-center justify-center bg-white/90 backdrop-blur-[1px] text-red-600 p-1 shadow-inner relative">
+                {/* Inner dashed ring */}
+                <div className="absolute inset-0.5 rounded-full border border-dashed border-red-500/40"></div>
+                
+                {/* Text elements inside stamp */}
+                <span className="text-[7px] font-bold tracking-widest opacity-85 uppercase leading-none font-sans">GODREJ</span>
+                <span className="text-[10px] font-black tracking-normal uppercase my-0.5 py-0.5 px-1 border-y-2 border-red-600 leading-none font-serif">
+                  NEW LAUNCH
+                </span>
+                <span className="text-[6px] font-bold tracking-widest opacity-85 uppercase leading-none font-sans">PROPERTIES</span>
+              </div>
+            )}
           </div>
         )}
       </Link>
