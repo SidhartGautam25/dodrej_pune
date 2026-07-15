@@ -13,22 +13,16 @@ export default function StickyWidgets({ onOpenEnquiry }: StickyWidgetsProps) {
       {/* Desktop Sticky Vertical Button on Right Side */}
       <div className="fixed right-0 top-1/2 -translate-y-1/2 z-40 hidden md:block">
         <button
-          onClick={() => onOpenEnquiry("Schedule a Visit")}
-          className="flex items-center bg-[#f3f4f6]/95 hover:bg-white text-gray-800 px-3 py-6 rounded-l-2xl shadow-xl border border-r-0 border-gray-300 hover:text-primary transition-all duration-300 cursor-pointer group"
-          style={{
-            writingMode: "vertical-rl",
-            transform: "rotate(180deg)",
-          }}
+          onClick={() => onOpenEnquiry("Enquiry Now")}
+          className="shadow-2xl hover:scale-105 active:scale-95 transition-all duration-300 cursor-pointer focus:outline-none block"
+          aria-label="Enquire Now"
         >
-          {/* Rotated icon to show correctly when vertical */}
-          <span className="mb-2.5 transform rotate-90 text-gray-500 group-hover:text-accent-gold transition-colors">
-            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-            </svg>
-          </span>
-          <span className="text-[11px] font-bold tracking-wider text-gray-700 font-sans">
-            Schedule a visit
-          </span>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/assets/enquire.png"
+            alt="Enquire"
+            className="w-10 h-auto rounded-l-xl"
+          />
         </button>
       </div>
 
