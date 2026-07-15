@@ -116,7 +116,7 @@ export class ProjectController {
         }
       }
 
-      const project = await this.service.createProject({
+      const { project, logs } = await this.service.createProject({
         name,
         location,
         typology,
@@ -141,7 +141,7 @@ export class ProjectController {
         sortOrder,
       });
 
-      return NextResponse.json({ success: true, data: project }, { status: 201 });
+      return NextResponse.json({ success: true, data: project, logs }, { status: 201 });
     } catch (error: any) {
       console.error("POST /api/projects error:", error);
       return NextResponse.json({ success: false, error: error.message || "Failed to create project" }, { status: 400 });
@@ -248,8 +248,8 @@ export class ProjectController {
         updateData = body;
       }
 
-      const project = await this.service.updateProject(id, updateData);
-      return NextResponse.json({ success: true, data: project }, { status: 200 });
+      const { project, logs } = await this.service.updateProject(id, updateData);
+      return NextResponse.json({ success: true, data: project, logs }, { status: 200 });
     } catch (error: any) {
       console.error("PUT /api/projects/:id error:", error);
       return NextResponse.json({ success: false, error: error.message || "Failed to update project" }, { status: 400 });

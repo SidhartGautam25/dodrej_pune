@@ -20,6 +20,7 @@ export default function PromoBannerForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
   const [success, setSuccess] = useState(false);
+  const [bannerLogs, setBannerLogs] = useState<string[]>([]);
 
   useEffect(() => {
     async function fetchBannerSettings() {
@@ -59,6 +60,7 @@ export default function PromoBannerForm() {
     e.preventDefault();
     setErrorMsg("");
     setSuccess(false);
+    setBannerLogs([]);
     setIsSubmitting(true);
 
     const formData = new FormData();
@@ -87,6 +89,7 @@ export default function PromoBannerForm() {
       }
 
       setSuccess(true);
+      setBannerLogs(json.logs || []);
       if (json.data && json.data.imageUrl) {
         setImagePreview(json.data.imageUrl);
         setImageFile(null);
@@ -121,9 +124,19 @@ export default function PromoBannerForm() {
       </div>
 
       {success && (
-        <div className="p-4 bg-green-50 border border-green-200 text-green-700 text-xs font-bold rounded-2xl flex items-center space-x-2">
-          <Check className="w-4 h-4" />
-          <span>Promo banner settings saved successfully!</span>
+        <div className="p-4 bg-green-50 border border-green-200 text-green-700 text-xs font-bold rounded-2xl space-y-2 flex flex-col justify-start">
+          <div className="flex items-center space-x-2">
+            <Check className="w-4 h-4 text-green-600" />
+            <span>Promo banner settings saved successfully!</span>
+          </div>
+          {bannerLogs && bannerLogs.length > 0 && (
+            <div className="pl-6 border-l-2 border-green-300 text-[10px] text-green-600 font-normal space-y-1 mt-1">
+              <span className="font-bold block text-[9px] uppercase tracking-wider text-green-700">FTP Activity:</span>
+              {bannerLogs.map((log, i) => (
+                <div key={i}>• {log}</div>
+              ))}
+            </div>
+          )}
         </div>
       )}
 

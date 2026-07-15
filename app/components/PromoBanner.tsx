@@ -50,78 +50,81 @@ export default function PromoBanner({ onOpenEnquiry }: PromoBannerProps) {
   return (
     <div className="w-full bg-white text-text-main">
       {/* 1. Full-Width Promotional Banner Image */}
-      <div className="w-full h-[35vh] md:h-[40vh] relative overflow-hidden">
+      {/* 1. Full-Width Promotional Banner Image */}
+      <div className="w-full relative overflow-hidden bg-white">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={data.imageUrl}
           alt="Promotional Banner"
-          className="w-full h-full object-cover object-center block"
+          className="w-full h-auto block"
         />
       </div>
 
       {/* 2. Official Brand Primary Theme Action Bar */}
-      <div className="w-full bg-primary py-4 px-4 flex flex-wrap justify-center items-center gap-4 border-y border-white/5 shadow-inner">
-        <button
-          onClick={() => onOpenEnquiry("Book Site Visit")}
-          className="gold-gradient hover:gold-gradient-hover text-primary rounded-xl px-6 py-2.5 text-xs font-bold uppercase tracking-wider flex items-center space-x-2.5 transition-all duration-300 shadow-md hover:scale-[1.02] cursor-pointer"
-        >
-          <svg className="w-4 h-4 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M8 7h12m0 0l-4-4m4 4l-4 4M8 6C5.79 6 4 7.79 4 10v4c0 2.21 1.79 4 4 4h8" />
-          </svg>
-          <span>Book Site Visit</span>
-        </button>
+      <div className="w-full bg-primary py-4 px-4 border-y border-white/5 shadow-inner">
+        <div className="max-w-7xl mx-auto grid grid-cols-2 gap-3 sm:flex sm:justify-center sm:items-center sm:gap-4">
+          <button
+            onClick={() => onOpenEnquiry("Book Site Visit")}
+            className="w-full sm:w-auto justify-center gold-gradient hover:gold-gradient-hover text-primary rounded-xl px-5 py-2.5 text-xs font-bold uppercase tracking-wider flex items-center space-x-2 transition-all duration-300 shadow-md hover:scale-[1.02] cursor-pointer"
+          >
+            <svg className="w-4 h-4 text-primary flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M8 7h12m0 0l-4-4m4 4l-4 4M8 6C5.79 6 4 7.79 4 10v4c0 2.21 1.79 4 4 4h8" />
+            </svg>
+            <span className="whitespace-nowrap">Book Site Visit</span>
+          </button>
 
-        <button
-          onClick={() => onOpenEnquiry("Get Details")}
-          className="bg-white/10 hover:bg-white/20 border border-white/20 text-white rounded-xl px-6 py-2.5 text-xs font-bold uppercase tracking-wider flex items-center space-x-2.5 transition-all duration-300 shadow-sm hover:scale-[1.02] cursor-pointer"
-        >
-          <svg className="w-4 h-4 text-accent-gold-light" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-          </svg>
-          <span>Get Details</span>
-        </button>
+          <button
+            onClick={() => onOpenEnquiry("Get Details")}
+            className="w-full sm:w-auto justify-center bg-white/10 hover:bg-white/20 border border-white/20 text-white rounded-xl px-5 py-2.5 text-xs font-bold uppercase tracking-wider flex items-center space-x-2 transition-all duration-300 shadow-sm hover:scale-[1.02] cursor-pointer"
+          >
+            <svg className="w-4 h-4 text-accent-gold-light flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+            </svg>
+            <span className="whitespace-nowrap">Get Details</span>
+          </button>
+        </div>
       </div>
 
       {/* 3. Four Column Content Section */}
       <div className="w-full border-b border-black/[0.06] py-8 bg-bg-tan/10">
-        <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-y-6 md:gap-y-0 text-center relative divide-x divide-black/[0.08]">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-y-6 md:gap-y-0 text-center relative divide-y divide-black/[0.06] md:divide-y-0 md:divide-x md:divide-black/[0.08]">
 
           {/* Section 1 */}
-          <div className="flex flex-col justify-center px-4">
+          <div className="flex flex-col justify-center px-4 pb-4 md:pb-0">
             <span className="text-xs md:text-sm font-extrabold text-primary tracking-tight leading-snug">
               {data.sec1Title}
             </span>
-            <span className="text-[10px] md:text-xs font-semibold text-accent-gold-dark mt-1.5 uppercase tracking-wider">
+            <span className="text-[10px] md:text-xs font-semibold mt-1.5 uppercase tracking-wider">
               {data.sec1Sub}
             </span>
           </div>
 
           {/* Section 2 */}
-          <div className="flex flex-col justify-center px-4">
+          <div className="flex flex-col justify-center px-4 py-4 md:py-0">
             <span className="text-xs md:text-sm font-extrabold text-primary tracking-tight leading-snug">
               {data.sec2Title}
             </span>
-            <span className="text-[10px] md:text-xs font-semibold text-accent-gold-dark mt-1.5 uppercase tracking-wider">
+            <span className="text-[10px] md:text-xs font-semibold  mt-1.5 uppercase tracking-wider">
               {data.sec2Sub}
             </span>
           </div>
 
           {/* Section 3 */}
-          <div className="flex flex-col justify-center px-4">
+          <div className="flex flex-col justify-center px-4 py-4 md:py-0">
             <span className="text-xs md:text-sm font-extrabold text-primary tracking-tight leading-snug">
               {data.sec3Title}
             </span>
-            <span className="text-[10px] md:text-xs font-semibold text-accent-gold-dark mt-1.5 uppercase tracking-wider">
+            <span className="text-[10px] md:text-xs font-semibold  mt-1.5 uppercase tracking-wider">
               {data.sec3Sub}
             </span>
           </div>
 
           {/* Section 4 */}
-          <div className="flex flex-col justify-center px-4">
+          <div className="flex flex-col justify-center px-4 pt-4 md:pt-0">
             <span className="text-xs md:text-sm font-extrabold text-primary tracking-tight leading-snug">
               {data.sec4Title}
             </span>
-            <span className="text-[10px] md:text-xs font-semibold text-accent-gold-dark mt-1.5 uppercase tracking-wider">
+            <span className="text-[10px] md:text-xs font-semibold mt-1.5 uppercase tracking-wider">
               {data.sec4Sub}
             </span>
           </div>
@@ -130,7 +133,7 @@ export default function PromoBanner({ onOpenEnquiry }: PromoBannerProps) {
       </div>
 
       {/* 4. India's No. 1 Developer text & introduction */}
-      <div className="w-full bg-white py-12 px-4 md:px-8 text-center">
+      {/* <div className="w-full bg-white py-12 px-4 md:px-8 text-center">
         <div className="max-w-4xl mx-auto space-y-4">
           <h3 className="text-xs md:text-sm font-extrabold tracking-widest text-accent-gold-dark uppercase font-serif">
             India's No.1 Real Estate Developer
@@ -141,7 +144,7 @@ export default function PromoBanner({ onOpenEnquiry }: PromoBannerProps) {
             both lifestyle and long-term value.
           </p>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 }
