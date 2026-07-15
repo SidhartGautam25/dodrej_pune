@@ -4,13 +4,15 @@ import React from "react";
 import Link from "next/link";
 import { Project } from "../data/projects";
 import { slugify } from "@/lib/utils/slugify";
+import { ChevronRight } from "lucide-react";
 
 interface ProjectCardProps {
   project: Project;
   onOpenEnquiry: (projectName: string) => void;
+  newLaunchLogo?: string | null;
 }
 
-export default function ProjectCard({ project, onOpenEnquiry }: ProjectCardProps) {
+export default function ProjectCard({ project, onOpenEnquiry, newLaunchLogo }: ProjectCardProps) {
   const projectSlug = slugify(project.name);
 
   return (
@@ -30,20 +32,29 @@ export default function ProjectCard({ project, onOpenEnquiry }: ProjectCardProps
           </div>
         )}
 
-        {/* Circular Stamped Ink New Launch Badge */}
+        {/* Circular Stamped Ink New Launch Badge or Custom Logo Badge */}
         {project.isNewLaunch && (
           <div className="absolute top-4 right-4 z-10 pointer-events-none select-none rotate-[-12deg] drop-shadow-md">
-            <div className="w-20 h-20 rounded-full border-4 border-double border-red-600 flex flex-col items-center justify-center bg-white/90 backdrop-blur-[1px] text-red-600 p-1 shadow-inner relative">
-              {/* Inner dashed ring */}
-              <div className="absolute inset-0.5 rounded-full border border-dashed border-red-500/40"></div>
-              
-              {/* Text elements inside stamp */}
-              <span className="text-[7px] font-bold tracking-widest opacity-85 uppercase leading-none font-sans">GODREJ</span>
-              <span className="text-[10px] font-black tracking-normal uppercase my-0.5 py-0.5 px-1 border-y-2 border-red-600 leading-none font-serif">
-                NEW LAUNCH
-              </span>
-              <span className="text-[6px] font-bold tracking-widest opacity-85 uppercase leading-none font-sans">PROPERTIES</span>
-            </div>
+            {newLaunchLogo ? (
+              /* eslint-disable-next-line @next/next/no-img-element */
+              <img
+                src={newLaunchLogo}
+                alt="New Launch Logo"
+                className="w-20 h-20 object-contain"
+              />
+            ) : (
+              <div className="w-20 h-20 rounded-full border-4 border-double border-red-600 flex flex-col items-center justify-center bg-white/90 backdrop-blur-[1px] text-red-600 p-1 shadow-inner relative">
+                {/* Inner dashed ring */}
+                <div className="absolute inset-0.5 rounded-full border border-dashed border-red-500/40"></div>
+                
+                {/* Text elements inside stamp */}
+                <span className="text-[7px] font-bold tracking-widest opacity-85 uppercase leading-none font-sans">GODREJ</span>
+                <span className="text-[10px] font-black tracking-normal uppercase my-0.5 py-0.5 px-1 border-y-2 border-red-600 leading-none font-serif">
+                  NEW LAUNCH
+                </span>
+                <span className="text-[6px] font-bold tracking-widest opacity-85 uppercase leading-none font-sans">PROPERTIES</span>
+              </div>
+            )}
           </div>
         )}
       </Link>
@@ -91,12 +102,12 @@ export default function ProjectCard({ project, onOpenEnquiry }: ProjectCardProps
             </div>
           </div>
 
-          {/* Star Bullets */}
-          <ul className="space-y-2 mb-6 flex flex-col items-center">
-            {project.highlights.map((highlight, index) => (
-              <li key={index} className="flex items-center text-xs font-semibold text-primary/80">
-                <span className="text-accent-gold mr-2 text-sm">★</span>
-                <span>{highlight}</span>
+          {/* Arrow Bullets */}
+          <ul className="space-y-2 mb-6 flex flex-col items-start w-full">
+            {project.highlights.slice(0, 4).map((highlight, index) => (
+              <li key={index} className="flex items-start text-xs font-semibold text-primary/80 w-full">
+                <ChevronRight className="w-3.5 h-3.5 text-accent-gold-dark mr-2 mt-0.5 flex-shrink-0" />
+                <span className="flex-1 text-left leading-normal">{highlight}</span>
               </li>
             ))}
           </ul>

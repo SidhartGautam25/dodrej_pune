@@ -91,7 +91,7 @@ export function useCreateProject() {
 
       const json = await res.json();
       if (!res.ok) throw new Error(json.error || "Failed to create project");
-      return json.data;
+      return json;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["projects"] });
@@ -154,7 +154,7 @@ export function useUpdateProject() {
 
       const json = await res.json();
       if (!res.ok) throw new Error(json.error || "Failed to update project");
-      return json.data;
+      return json;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["projects"] });

@@ -44,7 +44,7 @@ export class ProjectService {
     floorPlanFiles?: { file: File; index: number }[];
     isNewLaunch?: boolean;
     sortOrder?: number;
-  }): Promise<Project> {
+  }): Promise<{ project: Project; logs: string[] }> {
     // Validations
     if (!data.name.trim()) throw new Error("Project name is required.");
     if (!data.location.trim()) throw new Error("Project location is required.");
@@ -61,10 +61,14 @@ export class ProjectService {
       throw new Error(`A project named '${data.name}' already exists.`);
     }
 
+    const uploadLogs: string[] = [];
+
     // Handle Image Upload
     let imageUrl = data.imagePath || "";
     if (data.imageFile) {
-      imageUrl = await this.storage.uploadFile(data.imageFile, "assets");
+      const res = await this.storage.uploadFile(data.imageFile, "assets");
+      imageUrl = res.url;
+      if (res.logs) uploadLogs.push(...res.logs);
     }
 
     if (!imageUrl) {
@@ -74,15 +78,18 @@ export class ProjectService {
     // Handle RERA QR Image Upload
     let reraQrImageUrl = data.reraQrImagePath || "";
     if (data.reraQrImageFile) {
-      reraQrImageUrl = await this.storage.uploadFile(data.reraQrImageFile, "assets");
+      const res = await this.storage.uploadFile(data.reraQrImageFile, "assets");
+      reraQrImageUrl = res.url;
+      if (res.logs) uploadLogs.push(...res.logs);
     }
 
     // Handle Gallery Uploads
     const uploadedGalleryUrls: string[] = [];
     if (data.galleryFiles && data.galleryFiles.length > 0) {
       for (const file of data.galleryFiles) {
-        const url = await this.storage.uploadFile(file, "assets");
-        uploadedGalleryUrls.push(url);
+        const res = await this.storage.uploadFile(file, "assets");
+        uploadedGalleryUrls.push(res.url);
+        if (res.logs) uploadLogs.push(...res.logs);
       }
     }
     const finalGallery = [...(data.galleryUrls || []), ...uploadedGalleryUrls];
@@ -95,7 +102,9 @@ export class ProjectService {
         if (data.floorPlanFiles) {
           const associated = data.floorPlanFiles.find((f) => f.index === fp.tempIndex);
           if (associated) {
-            fpImageUrl = await this.storage.uploadFile(associated.file, "assets");
+            const res = await this.storage.uploadFile(associated.file, "assets");
+            fpImageUrl = res.url;
+            if (res.logs) uploadLogs.push(...res.logs);
           }
         }
         finalFloorPlans.push({
@@ -108,13 +117,15 @@ export class ProjectService {
 
     const { imageFile, imagePath, galleryUrls, galleryFiles, floorPlans: rawFloorPlans, floorPlanFiles, reraQrImageFile, reraQrImagePath, ...rest } = data;
 
-    return this.repo.create({
+    const project = await this.repo.create({
       ...rest,
       image: imageUrl,
       gallery: finalGallery,
       floorPlans: finalFloorPlans,
       reraQrImage: reraQrImageUrl || null,
     });
+
+    return { project, logs: uploadLogs };
   }
 
   async updateProject(
@@ -143,7 +154,7 @@ export class ProjectService {
       isNewLaunch?: boolean;
       sortOrder?: number;
     }
-  ): Promise<Project> {
+  ): Promise<{ project: Project; logs: string[] }> {
     const existing = await this.repo.getById(id);
     if (!existing) {
       throw new Error("Project not found.");
@@ -154,10 +165,14 @@ export class ProjectService {
       throw new Error("Invalid project category.");
     }
 
+    const uploadLogs: string[] = [];
+
     // Handle cover image
     let imageUrl = existing.image;
     if (data.imageFile) {
-      imageUrl = await this.storage.uploadFile(data.imageFile, "assets");
+      const res = await this.storage.uploadFile(data.imageFile, "assets");
+      imageUrl = res.url;
+      if (res.logs) uploadLogs.push(...res.logs);
       if (existing.image.startsWith("/assets/") && existing.image.includes("-")) {
         await this.storage.deleteFile(existing.image);
       }
@@ -167,7 +182,9 @@ export class ProjectService {
     let reraQrImageUrl = existing.reraQrImage || "";
     if (data.hasOwnProperty("reraQrImageFile")) {
       if (data.reraQrImageFile) {
-        reraQrImageUrl = await this.storage.uploadFile(data.reraQrImageFile, "assets");
+        const res = await this.storage.uploadFile(data.reraQrImageFile, "assets");
+        reraQrImageUrl = res.url;
+        if (res.logs) uploadLogs.push(...res.logs);
         if (existing.reraQrImage && existing.reraQrImage.startsWith("/assets/") && existing.reraQrImage.includes("-")) {
           await this.storage.deleteFile(existing.reraQrImage);
         }
@@ -185,8 +202,9 @@ export class ProjectService {
       const uploadedGalleryUrls: string[] = [];
       if (data.galleryFiles && data.galleryFiles.length > 0) {
         for (const file of data.galleryFiles) {
-          const url = await this.storage.uploadFile(file, "assets");
-          uploadedGalleryUrls.push(url);
+          const res = await this.storage.uploadFile(file, "assets");
+          uploadedGalleryUrls.push(res.url);
+          if (res.logs) uploadLogs.push(...res.logs);
         }
       }
       const galleryList = [...(data.galleryUrls || []), ...uploadedGalleryUrls];
@@ -211,7 +229,9 @@ export class ProjectService {
         if (data.floorPlanFiles) {
           const associated = data.floorPlanFiles.find((f) => f.index === fp.tempIndex);
           if (associated) {
-            fpImageUrl = await this.storage.uploadFile(associated.file, "assets");
+            const res = await this.storage.uploadFile(associated.file, "assets");
+            fpImageUrl = res.url;
+            if (res.logs) uploadLogs.push(...res.logs);
           }
         }
         floorPlansList.push({
@@ -234,13 +254,15 @@ export class ProjectService {
 
     const { imageFile, galleryUrls, galleryFiles, floorPlans: rawFloorPlans, floorPlanFiles, reraQrImageFile, ...rest } = data;
 
-    return this.repo.update(id, {
+    const project = await this.repo.update(id, {
       ...rest,
       image: imageUrl,
       gallery: finalGallery,
       floorPlans: finalFloorPlans,
       reraQrImage: reraQrImageUrl || null,
     });
+
+    return { project, logs: uploadLogs };
   }
 
   async deleteProject(id: string): Promise<Project> {
