@@ -14,10 +14,12 @@ import { projectsData } from "./data/projects";
 export default function Home() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalProject, setModalProject] = useState("");
+  const [hasOpened, setHasOpened] = useState(false);
 
   const handleOpenEnquiry = (projectName: string = "") => {
     setModalProject(projectName || projectsData[0].name);
     setIsModalOpen(true);
+    setHasOpened(true);
   };
 
   const handleCloseEnquiry = () => {
@@ -25,7 +27,20 @@ export default function Home() {
     setModalProject("");
   };
 
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setHasOpened((prev) => {
+        if (!prev) {
+          setModalProject(projectsData[0].name);
+          setIsModalOpen(true);
+          return true;
+        }
+        return prev;
+      });
+    }, 5000);
 
+    return () => clearTimeout(timer);
+  }, []);
 
   return (
     <div className="relative min-h-screen flex flex-col font-sans bg-bg-tan">
