@@ -20,6 +20,7 @@ export default function AdminDashboard() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingProject, setEditingProject] = useState<any | null>(null);
   const [notification, setNotification] = useState<{ title: string; messages: string[]; type: "info" | "success" | "error" } | null>(null);
+  const [projectFormError, setProjectFormError] = useState<string | null>(null);
 
   // Queries
   const { data: projects = [], isLoading: isLoadingProjects } = useGetProjects();
@@ -38,11 +39,13 @@ export default function AdminDashboard() {
   // CRUD Actions
   const handleOpenAddModal = () => {
     setEditingProject(null);
+    setProjectFormError(null);
     setIsModalOpen(true);
   };
 
   const handleOpenEditModal = (project: any) => {
     setEditingProject(project);
+    setProjectFormError(null);
     setIsModalOpen(true);
   };
 
@@ -53,6 +56,7 @@ export default function AdminDashboard() {
   };
 
   const handleFormSubmit = (data: any) => {
+    setProjectFormError(null);
     if (editingProject) {
       updateMutation.mutate(data, {
         onSuccess: (result: any) => {
@@ -66,11 +70,7 @@ export default function AdminDashboard() {
           }
         },
         onError: (err: any) => {
-          setNotification({
-            title: "Project Update Failed",
-            messages: [err.message || "An unexpected error occurred during project update."],
-            type: "error",
-          });
+          setProjectFormError(err.message || "An unexpected error occurred during project update.");
         },
       });
     } else {
@@ -86,11 +86,7 @@ export default function AdminDashboard() {
           }
         },
         onError: (err: any) => {
-          setNotification({
-            title: "Project Creation Failed",
-            messages: [err.message || "An unexpected error occurred during project creation."],
-            type: "error",
-          });
+          setProjectFormError(err.message || "An unexpected error occurred during project creation.");
         },
       });
     }
@@ -232,10 +228,14 @@ export default function AdminDashboard() {
       {/* Project Form Modal */}
       <ProjectFormModal
         isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
+        onClose={() => {
+          setIsModalOpen(false);
+          setProjectFormError(null);
+        }}
         onSubmit={handleFormSubmit}
         initialData={editingProject}
         isSubmitting={createMutation.isPending || updateMutation.isPending}
+        error={projectFormError}
       />
 
       {/* Custom Notification Modal */}

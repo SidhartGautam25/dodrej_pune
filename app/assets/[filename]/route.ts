@@ -120,13 +120,7 @@ export async function GET(req: NextRequest, { params }: RouteParams) {
           }
         }
 
-        // Cache the file locally to speed up subsequent requests
-        try {
-          await fs.mkdir(path.dirname(filePath), { recursive: true });
-          await fs.writeFile(filePath, ftpBuffer);
-        } catch (writeErr) {
-          console.warn("Failed to cache FTP file locally:", writeErr);
-        }
+
 
         return new NextResponse(ftpBuffer as any, {
           headers: {
@@ -135,7 +129,7 @@ export async function GET(req: NextRequest, { params }: RouteParams) {
           },
         });
       } catch (ftpError) {
-        console.error(`FTP fallback failed for ${filename}:`, ftpError);
+        console.warn(`[Asset Route] FTP fallback failed for ${filename} (file may have been deleted or not uploaded yet): ${(ftpError as Error).message}`);
       } finally {
         client.close();
       }

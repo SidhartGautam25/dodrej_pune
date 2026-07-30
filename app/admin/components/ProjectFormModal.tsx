@@ -10,6 +10,7 @@ interface ProjectFormModalProps {
   onSubmit: (data: ProjectDataInput) => void;
   initialData?: any | null;
   isSubmitting: boolean;
+  error?: string | null;
 }
 
 export default function ProjectFormModal({
@@ -18,6 +19,7 @@ export default function ProjectFormModal({
   onSubmit,
   initialData = null,
   isSubmitting,
+  error = null,
 }: ProjectFormModalProps) {
   const [name, setName] = useState("");
   const [location, setLocation] = useState("");
@@ -282,9 +284,10 @@ export default function ProjectFormModal({
 
         {/* Scrollable Form Body */}
         <form onSubmit={handleSubmitForm} className="flex-1 overflow-y-auto p-6 space-y-6">
-          {validationError && (
-            <div className="p-3 text-xs text-red-700 bg-red-50 border border-red-200 rounded-xl">
-              {validationError}
+          {(validationError || error) && (
+            <div className="p-3 text-xs text-red-700 bg-red-50 border border-red-200 rounded-xl space-y-1">
+              {validationError && <div>{validationError}</div>}
+              {error && <div>{error}</div>}
             </div>
           )}
 
