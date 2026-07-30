@@ -19,7 +19,16 @@ model Project {
   tag2        String?
   highlights  Json
   rera        String
+  reraId      String?
+  reraLabel   String?
+  reraQrImage String?  @db.Text
   category    String   // "apartments" | "plots"
+  description String?  @db.Text
+  amenities   Json?
+  gallery     Json?
+  floorPlans  Json?
+  isNewLaunch Boolean  @default(false)
+  sortOrder   Int      @default(0)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
@@ -32,4 +41,19 @@ model Lead {
   phone       String
   message     String?
   createdAt   DateTime @default(now())
+}
+
+model PromoBanner {
+  id               String   @id @default("global")
+  imageUrl         String   @db.Text
+  sec1Title        String
+  sec1Sub          String
+  sec2Title        String
+  sec2Sub          String
+  sec3Title        String
+  sec3Sub          String
+  sec4Title        String
+  sec4Sub          String
+  newLaunchLogoUrl String?  @db.Text
+  updatedAt        DateTime @updatedAt
 }

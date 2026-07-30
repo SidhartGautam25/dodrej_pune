@@ -4,7 +4,10 @@ import { Project } from "@prisma/client";
 export class ProjectRepository {
   async getAll(): Promise<Project[]> {
     return prisma.project.findMany({
-      orderBy: { createdAt: "desc" },
+      orderBy: [
+        { sortOrder: "desc" },
+        { createdAt: "desc" }
+      ],
     });
   }
 
@@ -31,7 +34,16 @@ export class ProjectRepository {
     tag2?: string | null;
     highlights: string[];
     rera: string;
+    reraId?: string | null;
+    reraLabel?: string | null;
+    reraQrImage?: string | null;
     category: string;
+    description?: string | null;
+    amenities?: any;
+    gallery?: any;
+    floorPlans?: any;
+    isNewLaunch?: boolean;
+    sortOrder?: number;
   }): Promise<Project> {
     return prisma.project.create({
       data: {
@@ -45,7 +57,16 @@ export class ProjectRepository {
         tag2: data.tag2 || null,
         highlights: data.highlights,
         rera: data.rera,
+        reraId: data.reraId || null,
+        reraLabel: data.reraLabel || null,
+        reraQrImage: data.reraQrImage || null,
         category: data.category,
+        description: data.description || null,
+        amenities: data.amenities || null,
+        gallery: data.gallery || null,
+        floorPlans: data.floorPlans || null,
+        isNewLaunch: data.isNewLaunch ?? false,
+        sortOrder: data.sortOrder ?? 0,
       },
     });
   }
@@ -63,7 +84,16 @@ export class ProjectRepository {
       tag2?: string | null;
       highlights?: string[];
       rera?: string;
+      reraId?: string | null;
+      reraLabel?: string | null;
+      reraQrImage?: string | null;
       category?: string;
+      description?: string | null;
+      amenities?: any;
+      gallery?: any;
+      floorPlans?: any;
+      isNewLaunch?: boolean;
+      sortOrder?: number;
     }
   ): Promise<Project> {
     return prisma.project.update({

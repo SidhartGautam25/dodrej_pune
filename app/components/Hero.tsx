@@ -1,298 +1,198 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
-import { projectsData } from "../data/projects";
+import { MapPin, Sparkles, ShieldCheck, Tag, Calendar, FileText, Download, Phone } from "lucide-react";
 
 interface HeroProps {
   onOpenEnquiry: (projectName?: string) => void;
 }
 
 export default function Hero({ onOpenEnquiry }: HeroProps) {
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    message: "",
-    project: projectsData[0].name,
-  });
+  const [currentBgIndex, setCurrentBgIndex] = useState(0);
 
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isSuccess, setIsSuccess] = useState(false);
-  const [error, setError] = useState("");
+  const desktopImages = [
+    "/hero/desktop/hero_image_1.png",
+    "/hero/desktop/hero_image_2.png",
+    "/hero/desktop/hero_image_3.png",
+    "/hero/desktop/hero_image_4.jpeg",
+    "/hero/desktop/hero_image_5.avif",
+  ];
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
+  const phoneImages = [
+    "/hero/phone/hero_image_1.png",
+    "/hero/phone/hero_image_2.png",
+    "/hero/phone/hero_image_3.png",
+    "/hero/phone/hero_image_4.png",
+    "/hero/phone/hero_image_5.png",
+  ];
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError("");
+  useEffect(() => {
+    if (desktopImages.length <= 1) return;
 
-    if (!formData.name.trim()) return setError("Please enter your name.");
-    if (!formData.email.trim()) return setError("Please enter your email.");
-    if (!formData.phone.trim() || formData.phone.length < 10) {
-      return setError("Please enter a valid 10-digit phone number.");
-    }
+    const interval = setInterval(() => {
+      setCurrentBgIndex((prev) => (prev + 1) % desktopImages.length);
+    }, 5000);
 
-    setIsSubmitting(true);
-
-    try {
-      const res = await fetch("/api/leads", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          projectName: formData.project,
-          name: formData.name,
-          email: formData.email,
-          phone: formData.phone,
-          message: formData.message,
-        }),
-      });
-
-      const json = await res.json();
-      if (!res.ok || !json.success) {
-        throw new Error(json.error || "Failed to submit request.");
-      }
-
-      setIsSuccess(true);
-      setFormData({
-        name: "",
-        email: "",
-        phone: "",
-        message: "",
-        project: projectsData[0].name,
-      });
-    } catch (err: any) {
-      setError(err.message || "An unexpected error occurred.");
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
+    return () => clearInterval(interval);
+  }, []);
 
   return (
-    <section className="relative min-h-[95vh] w-full flex items-center justify-center pt-24 pb-16 px-4 md:px-8 overflow-hidden bg-primary">
-      {/* Background Image with blur effect at edges */}
+    <section className="relative min-h-screen md:h-screen w-full flex items-center justify-start px-6 md:px-16 lg:px-24 py-24 md:py-0 overflow-x-hidden bg-primary">
+      {/* Background Slideshow */}
       <div className="absolute inset-0 z-0">
-        <Image
-          src="/assets/hero_bg.png"
-          alt="Godrej Pune Projects"
-          fill
-          priority
-          sizes="100vw"
-          className="object-cover object-center opacity-85"
-        />
-        {/* Dark overlay for glassmorphism readability */}
-        <div className="absolute inset-0 bg-gradient-to-t from-primary via-black/40 to-primary/30 z-0" />
+        {/* Desktop Slideshow */}
+        <div className="hidden md:block absolute inset-0">
+          {desktopImages.map((src, index) => (
+            <Image
+              key={"desktop-" + src}
+              src={src}
+              alt="Godrej Pune Projects Desktop"
+              fill
+              priority={index === 0}
+              sizes="100vw"
+              className={`object-cover object-center transition-opacity duration-1000 ease-in-out ${index === currentBgIndex ? "opacity-100" : "opacity-0"
+                }`}
+            />
+          ))}
+        </div>
+
+        {/* Mobile/Phone Slideshow */}
+        <div className="block md:hidden absolute inset-0">
+          {phoneImages.map((src, index) => (
+            <Image
+              key={"phone-" + src}
+              src={src}
+              alt="Godrej Pune Projects Mobile"
+              fill
+              priority={index === 0}
+              sizes="100vw"
+              className={`object-cover object-center transition-opacity duration-1000 ease-in-out ${index === currentBgIndex ? "opacity-100" : "opacity-0"
+                }`}
+            />
+          ))}
+        </div>
+
+        {/* Hazing gradient: Responsive overlay (darker on mobile, left-to-right gradient on desktop) */}
+        <div className="absolute inset-0 z-10 bg-black/45 md:bg-transparent md:bg-gradient-to-r md:from-black/75 md:via-black/45 md:to-transparent" />
+
+        {/* Top/bottom vignette for header and bottom bar readability */}
+        <div className="absolute inset-0 z-10 bg-gradient-to-t from-black/25 via-transparent to-black/20" />
       </div>
 
-      {/* Main Grid Content */}
-      <div className="relative z-10 w-full max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 items-center mt-6">
-        
-        {/* Left Column: Glass Info Card */}
-        <div className="lg:col-span-7 flex flex-col items-start space-y-6 text-white max-w-2xl">
-          <div className="w-full rounded-2xl shadow-xl glass-card p-6 md:p-8 border border-white/10">
-            <span className="text-sm font-bold tracking-widest text-accent-gold uppercase mb-1 block">
-              Pune
-            </span>
-            <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight font-serif mb-6 leading-tight">
-              Godrej Projects
-            </h1>
+      {/* Hero Content (left-aligned, clean, matching the screenshot layout) */}
+      <div className="relative z-20 w-full max-w-4xl mt-20 text-left flex flex-col items-start space-y-6">
 
-            {/* List of Features */}
-            <div className="space-y-4 mb-8">
-              <div className="flex items-center space-x-3.5">
-                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-accent-gold/20 flex items-center justify-center border border-accent-gold/30">
-                  <svg className="w-4.5 h-4.5 text-accent-gold" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
-                  </svg>
-                </div>
-                <span className="text-sm font-medium tracking-wide">Avail Pre-Launch Offers!</span>
-              </div>
+        {/* Tagline */}
+        <span className="text-accent-gold font-extrabold text-[10px] md:text-xs tracking-[0.25em] uppercase font-sans drop-shadow-[0_2px_8px_rgba(0,0,0,0.5)]">
+          THOUGHTFULLY DESIGNED. PRECISELY CRAFTED.
+        </span>
 
-              <div className="flex items-center space-x-3.5">
-                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-accent-gold/20 flex items-center justify-center border border-accent-gold/30">
-                  <svg className="w-4.5 h-4.5 text-accent-gold" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M8.433 7.418c.554-.589 1.448-.589 2.002 0l.207.22 1.213-.879a3.75 3.75 0 01.004 5.303l-2.002 2.002a3.75 3.75 0 01-5.304-5.303l1.213.88.207-.223zm3.134 5.164l-.207-.22-1.213.879a3.75 3.75 0 01-.004-5.303l2.002-2.002a3.75 3.75 0 015.304 5.303l-1.213-.88-.207.223z" />
-                  </svg>
-                </div>
-                <span className="text-sm font-medium tracking-wide">Avail Special Payment plans</span>
-              </div>
+        {/* Heading */}
+        <h1 className="text-3xl sm:text-5xl md:text-[56px] font-extrabold tracking-tight font-sans text-white max-w-3xl leading-tight drop-shadow-[0_4px_20px_rgba(0,0,0,0.75)]">
+          Luxury Living by Godrej in Pune
+        </h1>
 
-              <div className="flex items-center space-x-3.5">
-                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-accent-gold/20 flex items-center justify-center border border-accent-gold/30">
-                  <svg className="w-4.5 h-4.5 text-accent-gold" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M4 4a2 2 0 00-2 2v1h16V6a2 2 0 00-2-2H4zM18 9H2v5a2 2 0 002 2h12a2 2 0 002-2V9zM4 13a1 1 0 011-1h1a1 1 0 110 2H5a1 1 0 01-1-1zm5-1a1 1 0 100 2h3a1 1 0 100-2H9z" />
-                  </svg>
-                </div>
-                <span className="text-sm font-medium tracking-wide">Fully Furnished Apartments</span>
-              </div>
-            </div>
+        {/* Subtitle */}
+        <p className="text-white/95 text-xs sm:text-sm md:text-base max-w-2xl leading-relaxed font-medium drop-shadow-[0_2px_10px_rgba(0,0,0,0.65)]">
+          Explore premium 1, 2, 3& 4 BHK apartments in Pune's most coveted locations starting from 75 Lacs*. Find your perfect home with world-class amenities and exclusive pre-launch offers.
+        </p>
 
-            {/* Pricing capsules */}
-            <div className="flex flex-col sm:flex-row gap-4">
-              <div className="px-5 py-3 rounded-full bg-accent-gold/25 border border-accent-gold text-white font-semibold text-center text-sm tracking-wide">
-                1, 2, 3 & 4 BHK Apartments
-              </div>
-              <div className="px-5 py-3 rounded-full bg-accent-gold text-primary font-bold text-center text-sm tracking-wide shadow-md">
-                Starting Price : ₹ 75 Lacs*
-              </div>
-            </div>
+        {/* Feature Badges - Horizontal layout matching inspiration */}
+        <div className="grid grid-cols-2 gap-y-3.5 gap-x-4 md:flex md:flex-wrap md:items-center md:gap-x-5 md:gap-y-2.5 pt-1 text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.5)] w-full">
+          <div className="flex items-center space-x-2">
+            <MapPin className="w-4 h-4 text-accent-gold flex-shrink-0" />
+            <span className="text-[10px] font-extrabold tracking-wider uppercase">Prime Locations</span>
+          </div>
+          <span className="text-white/20 hidden md:inline">|</span>
+          <div className="flex items-center space-x-2">
+            <Sparkles className="w-4 h-4 text-accent-gold flex-shrink-0" />
+            <span className="text-[10px] font-extrabold tracking-wider uppercase">World-Class Amenities</span>
+          </div>
+          <span className="text-white/20 hidden md:inline">|</span>
+          <div className="flex items-center space-x-2">
+            <ShieldCheck className="w-4 h-4 text-accent-gold flex-shrink-0" />
+            <span className="text-[10px] font-extrabold tracking-wider uppercase">Trusted Brand</span>
+          </div>
+          <span className="text-white/20 hidden md:inline">|</span>
+          <div className="flex items-center space-x-2">
+            <Tag className="w-4 h-4 text-accent-gold flex-shrink-0" />
+            <span className="text-[10px] font-extrabold tracking-wider uppercase">Exclusive Offers</span>
           </div>
         </div>
 
-        {/* Right Column: Callback Form */}
-        <div className="lg:col-span-5 w-full">
-          <div className="w-full rounded-2xl shadow-xl glass-card p-6 md:p-8 border border-white/10 text-white">
-            <h3 className="text-lg md:text-xl font-semibold tracking-tight font-serif text-accent-gold mb-6 border-b border-white/10 pb-3">
-              Get a Call Back from Our Expert:
-            </h3>
+        {/* Action Buttons */}
+        <div className="flex flex-col sm:flex-row gap-3.5 w-full sm:w-auto pt-2">
+          <button
+            onClick={() => onOpenEnquiry("Book Free Site Visit")}
+            className="w-full sm:w-auto justify-center px-5 py-3.5 bg-accent-gold hover:bg-accent-gold/90 text-primary font-extrabold text-[10px] uppercase tracking-widest rounded-lg transition-all duration-300 shadow-md flex items-center space-x-2 cursor-pointer hover:scale-105"
+          >
+            <Calendar className="w-3.5 h-3.5" />
+            <span>Book Free Site Visit</span>
+          </button>
 
-            {isSuccess ? (
-              <div className="flex flex-col items-center justify-center text-center py-12 space-y-4 animate-fade-in">
-                <div className="w-14 h-14 rounded-full bg-green-500/20 border border-green-500 flex items-center justify-center text-green-400">
-                  <svg className="w-9 h-9" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-                  </svg>
-                </div>
-                <h4 className="text-xl font-serif text-accent-gold">Request Submitted!</h4>
-                <p className="text-xs text-white/70 max-w-xs leading-relaxed">
-                  Thank you for your interest. An executive will get back to you shortly.
-                </p>
-                <button
-                  onClick={() => setIsSuccess(false)}
-                  className="mt-4 px-5 py-1.5 rounded-full border border-white/20 hover:border-accent-gold text-xs transition-colors"
-                >
-                  Submit Another Query
-                </button>
-              </div>
-            ) : (
-              <form onSubmit={handleSubmit} className="space-y-4">
-                {error && (
-                  <div className="p-3 text-xs text-red-200 bg-red-500/20 border border-red-500/30 rounded-lg">
-                    {error}
-                  </div>
-                )}
+          <button
+            onClick={() => onOpenEnquiry("Get Price Sheet")}
+            className="w-full sm:w-auto justify-center px-5 py-3.5 bg-transparent hover:bg-white/5 text-white border border-white/30 hover:border-white font-extrabold text-[10px] uppercase tracking-widest rounded-lg transition-all duration-300 flex items-center space-x-2 cursor-pointer shadow-sm hover:scale-105"
+          >
+            <Phone className="w-3.5 h-3.5 text-accent-gold" />
+            <span>Get Price Sheet</span>
+          </button>
 
-                <div>
-                  <select
-                    name="project"
-                    value={formData.project}
-                    onChange={handleChange}
-                    className="w-full bg-primary/75 border border-white/20 rounded-lg px-3.5 py-2.5 text-xs focus:outline-none focus:border-accent-gold text-white"
-                  >
-                    {projectsData.map((proj) => (
-                      <option key={proj.id} value={proj.name} className="bg-primary text-white">
-                        {proj.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
+          <button
+            onClick={() => onOpenEnquiry("Download Brochure")}
+            className="w-full sm:w-auto justify-center px-5 py-3.5 bg-transparent hover:bg-white/5 text-white border border-white/30 hover:border-white font-extrabold text-[10px] uppercase tracking-widest rounded-lg transition-all duration-300 flex items-center space-x-2 cursor-pointer shadow-sm hover:scale-105"
+          >
+            <Download className="w-3.5 h-3.5 text-accent-gold" />
+            <span>Download Brochure</span>
+          </button>
+        </div>
 
-                <div>
-                  <input
-                    type="text"
-                    name="name"
-                    placeholder="Enter Name"
-                    value={formData.name}
-                    onChange={handleChange}
-                    className="w-full bg-primary/75 border border-white/20 rounded-lg px-3.5 py-2.5 text-xs placeholder-white/40 focus:outline-none focus:border-accent-gold text-white"
-                  />
-                </div>
-
-                <div>
-                  <input
-                    type="email"
-                    name="email"
-                    placeholder="Enter Email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    className="w-full bg-primary/75 border border-white/20 rounded-lg px-3.5 py-2.5 text-xs placeholder-white/40 focus:outline-none focus:border-accent-gold text-white"
-                  />
-                </div>
-
-                <div>
-                  <div className="flex">
-                    <span className="inline-flex items-center px-3.5 rounded-l-lg border border-r-0 border-white/20 bg-primary/90 text-xs text-white/70">
-                      +91
-                    </span>
-                    <input
-                      type="tel"
-                      name="phone"
-                      maxLength={10}
-                      placeholder="Enter Number"
-                      value={formData.phone}
-                      onChange={handleChange}
-                      className="w-full bg-primary/75 border border-white/20 rounded-r-lg px-3.5 py-2.5 text-xs placeholder-white/40 focus:outline-none focus:border-accent-gold text-white"
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <textarea
-                    name="message"
-                    rows={2}
-                    placeholder="Enter Message"
-                    value={formData.message}
-                    onChange={handleChange}
-                    className="w-full bg-primary/75 border border-white/20 rounded-lg px-3.5 py-2.5 text-xs placeholder-white/40 focus:outline-none focus:border-accent-gold text-white"
-                  />
-                </div>
-
-                <div className="flex items-start mt-2">
-                  <input
-                    type="checkbox"
-                    id="hero-consent"
-                    required
-                    defaultChecked
-                    className="mt-1 mr-2 rounded text-accent-gold bg-primary border-white/20 focus:ring-accent-gold"
-                  />
-                  <label htmlFor="hero-consent" className="text-[10px] text-white/50 leading-tight">
-                    I authorize company representatives to Call, SMS, Email or WhatsApp me about its products and offers. This consent overrides any registration for DNC/NDNC.
-                  </label>
-                </div>
-
-                <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="w-full py-3 rounded-lg gold-gradient hover:gold-gradient-hover text-primary font-bold text-xs tracking-wider transition-all duration-300 flex items-center justify-center shadow-lg disabled:opacity-50"
-                >
-                  {isSubmitting ? (
-                    <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-primary" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx={12} cy={12} r={10} stroke="currentColor" strokeWidth={4} />
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-                    </svg>
-                  ) : null}
-                  {isSubmitting ? "SUBMITTING..." : "SUBMIT NOW"}
-                </button>
-              </form>
-            )}
+        {/* Explore Locations Bar - Dark Translucent panel */}
+        <div className="bg-black/35 border border-white/10 backdrop-blur-md rounded-xl p-4 md:p-5 w-full max-w-3xl mt-6 shadow-lg mb-8 sm:mb-0">
+          <span className="block text-[9px] font-extrabold tracking-widest text-accent-gold uppercase mb-2">
+            Explore Projects in Pune&apos;s Top Locations
+          </span>
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-2.5 text-[11px] font-bold text-white/90">
+            <button className="flex items-center space-x-1 hover:text-accent-gold transition-colors cursor-pointer" onClick={() => onOpenEnquiry("Kharadi Location Enquiry")}>
+              <MapPin className="w-3 h-3 text-accent-gold" />
+              <span>Kharadi</span>
+            </button>
+            <span className="text-white/20 hidden sm:inline">|</span>
+            <button className="flex items-center space-x-1 hover:text-accent-gold transition-colors cursor-pointer" onClick={() => onOpenEnquiry("Hinjewadi Location Enquiry")}>
+              <MapPin className="w-3 h-3 text-accent-gold" />
+              <span>Hinjewadi</span>
+            </button>
+            <span className="text-white/20 hidden sm:inline">|</span>
+            <button className="flex items-center space-x-1 hover:text-accent-gold transition-colors cursor-pointer" onClick={() => onOpenEnquiry("Mahalunge Location Enquiry")}>
+              <MapPin className="w-3 h-3 text-accent-gold" />
+              <span>Koregaon Park</span>
+            </button>
+            <span className="text-white/20 hidden sm:inline">|</span>
+            <button className="flex items-center space-x-1 hover:text-accent-gold transition-colors cursor-pointer" onClick={() => onOpenEnquiry("Pimpri Location Enquiry")}>
+              <MapPin className="w-3 h-3 text-accent-gold" />
+              <span>Pimpri</span>
+            </button>
+            <span className="text-white/20 hidden sm:inline">|</span>
+            <button className="flex items-center space-x-1 hover:text-accent-gold transition-colors cursor-pointer" onClick={() => onOpenEnquiry("Baner Location Enquiry")}>
+              <MapPin className="w-3 h-3 text-accent-gold" />
+              <span>Baner</span>
+            </button>
           </div>
         </div>
       </div>
 
-      {/* Rotating Circle Text Badge at bottom center */}
-      <div 
-        onClick={() => onOpenEnquiry("Site Visit")}
-        className="absolute bottom-6 left-1/2 transform -translate-x-1/2 z-20 flex items-center justify-center w-28 h-28 cursor-pointer group hover:scale-105 transition-transform duration-300 hidden md:flex"
-      >
-        <div className="absolute inset-0 rounded-full bg-black/40 border border-white/10 backdrop-blur-md" />
-        {/* Rotating text */}
-        <svg viewBox="0 0 100 100" className="w-full h-full animate-spin-slow text-white text-[9.5px] font-bold tracking-widest fill-current">
-          <path id="circlePath" d="M 50,50 m -37,0 a 37,37 0 1,1 74,0 a 37,37 0 1,1 -74,0" fill="none" />
-          <text>
-            <textPath href="#circlePath" startOffset="0%">
-              • Book A Free Site Visit Now! • Book A Free Site Visit Now!
-            </textPath>
-          </text>
-        </svg>
-        {/* Center car icon */}
-        <div className="absolute w-12 h-12 rounded-full bg-accent-gold text-primary flex items-center justify-center shadow-lg group-hover:bg-accent-gold-dark transition-colors">
-          <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
-          </svg>
-        </div>
+      {/* RERA Registered badge */}
+      <div className="absolute right-8 bottom-12 z-20 hidden lg:flex items-center space-x-2 bg-white/95 border border-slate-200/80 rounded-xl p-3 shadow-md">
+        {/* x */}
+        {/* <div className="flex flex-col leading-tight">
+          <span className="text-[9px] font-extrabold tracking-wider text-green-600 uppercase">
+            RERA Registered
+          </span>
+          <span className="text-[8px] font-semibold text-text-muted">
+            Projects
+          </span>
+        </div> */}
       </div>
     </section>
   );

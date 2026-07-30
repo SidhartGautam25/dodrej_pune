@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
+import PromoBanner from "./components/PromoBanner";
 import ProjectGrid from "./components/ProjectGrid";
 import DeveloperAbout from "./components/DeveloperAbout";
 import Footer from "./components/Footer";
@@ -13,10 +14,12 @@ import { projectsData } from "./data/projects";
 export default function Home() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalProject, setModalProject] = useState("");
+  const [hasOpened, setHasOpened] = useState(false);
 
   const handleOpenEnquiry = (projectName: string = "") => {
     setModalProject(projectName || projectsData[0].name);
     setIsModalOpen(true);
+    setHasOpened(true);
   };
 
   const handleCloseEnquiry = () => {
@@ -24,18 +27,17 @@ export default function Home() {
     setModalProject("");
   };
 
-  // Auto-trigger enquiry modal after 10 seconds of user session
   useEffect(() => {
     const timer = setTimeout(() => {
-      // Only open if modal is not already open
-      setIsModalOpen((prev) => {
+      setHasOpened((prev) => {
         if (!prev) {
-          setModalProject("Special Consultation");
+          setModalProject(projectsData[0].name);
+          setIsModalOpen(true);
           return true;
         }
         return prev;
       });
-    }, 10000); // 10 seconds
+    }, 5000);
 
     return () => clearTimeout(timer);
   }, []);
@@ -47,6 +49,9 @@ export default function Home() {
 
       {/* Hero Section */}
       <Hero onOpenEnquiry={handleOpenEnquiry} />
+
+      {/* Promo Banner Section */}
+      <PromoBanner onOpenEnquiry={handleOpenEnquiry} />
 
       {/* Project Grid Listings */}
       <ProjectGrid onOpenEnquiry={handleOpenEnquiry} />
