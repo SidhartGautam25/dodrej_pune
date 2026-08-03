@@ -30,9 +30,33 @@ export async function generateMetadata({ params }: PageProps) {
     };
   }
 
+  const projectTitle = `${project.name} | Godrej Properties Pune`;
+  const projectDesc = `Discover price, floor plans, location map, and reviews of ${project.name} in ${project.location}, Pune by Godrej Properties.`;
+  const projectKeywords = `${project.name}, ${project.name} Pune, Godrej ${project.name}, Godrej ${project.name} Pune, Godrej Properties ${project.name}, ${project.name} price, ${project.name} floor plan, ${project.name} contact number, Godrej Properties Pune, Godrej Pune, Godrej Property`;
+
   return {
-    title: `${project.name} | Godrej Properties Pune`,
-    description: `Explore premium properties, pricing, layouts, floor plans, and amenities of ${project.name} located at ${project.location}.`,
+    title: projectTitle,
+    description: projectDesc,
+    keywords: projectKeywords,
+    alternates: {
+      canonical: `https://godrejpropertypune.com/${slug}`,
+    },
+    openGraph: {
+      title: projectTitle,
+      description: projectDesc,
+      url: `https://godrejpropertypune.com/${slug}`,
+      siteName: "Godrej Property Pune",
+      images: [
+        {
+          url: project.image || "/godrej_logo_final.jpeg",
+          width: 800,
+          height: 600,
+          alt: `${project.name} Logo`,
+        },
+      ],
+      locale: "en_US",
+      type: "website",
+    },
   };
 }
 
@@ -93,6 +117,30 @@ export default async function ProjectPage({ params }: PageProps) {
 
   return (
     <div className="relative min-h-screen flex flex-col font-sans bg-bg-tan">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "ApartmentComplex",
+            "name": `${project.name} | Godrej Properties Pune`,
+            "image": project.image ? (project.image.startsWith("http") ? project.image : `https://godrejpropertypune.com${project.image}`) : undefined,
+            "url": `https://godrejpropertypune.com/${slug}`,
+            "address": {
+              "@type": "PostalAddress",
+              "addressLocality": project.location || "Pune",
+              "addressRegion": "MH",
+              "addressCountry": "IN"
+            },
+            "description": `Explore premium properties, pricing, layouts, floor plans, and amenities of ${project.name} located at ${project.location}.`,
+            "offers": {
+              "@type": "Offer",
+              "priceCurrency": "INR",
+              "price": project.price || undefined
+            }
+          })
+        }}
+      />
       {/* Dynamic Project Details Container */}
       <ProjectDetailsClient project={project} />
     </div>

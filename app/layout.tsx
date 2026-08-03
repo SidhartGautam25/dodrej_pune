@@ -26,7 +26,7 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://godrejpropertypune.com"),
   title: "Godrej Property Pune | Premium Apartments & Plots in Pune",
   description: "Discover premium residential apartments & plots by Godrej Properties in Pune. Check pricing, floor plans, location, and exclusive offers on Godrej Property Pune.",
-  keywords: "Godrej Property Pune, Godrej Properties Pune, Godrej Pune, godrejproperpune, Godrej Projects Pune, Hinjewadi, Baner, Magarpatta, Keshav Nagar, Kharadi, Godrej Eden Estate, Godrej The Greenfront, Godrej Evergreen Square, The Aqua Retreat, Godrej River Royale",
+  keywords: "Godrej Property Pune, Godrej Properties Pune, Godrej Pune, godrejproperpune, godrej, godrej property, pune godrej property, godrej properties, godrej projects in pune, godrej flats in pune, godrej plots pune, Hinjewadi, Baner, Magarpatta, Keshav Nagar, Kharadi, Godrej Eden Estate, Godrej The Greenfront, Godrej Evergreen Square, The Aqua Retreat, Godrej River Royale",
   authors: [{ name: "Godrej Properties" }],
   alternates: {
     canonical: "https://godrejpropertypune.com",
