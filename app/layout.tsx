@@ -34,9 +34,12 @@ export const metadata: Metadata = {
   icons: {
     icon: [
       { url: "/favicon.ico", sizes: "any" },
-      { url: "/godrej_logo_final.jpeg", type: "image/jpeg" }
+      { url: "/icon-192.png", sizes: "192x192", type: "image/png" },
+      { url: "/icon-512.png", sizes: "512x512", type: "image/png" }
     ],
-    apple: "/godrej_logo_final.jpeg",
+    apple: [
+      { url: "/apple-icon.png", sizes: "180x180", type: "image/png" }
+    ],
   },
   openGraph: {
     title: "Godrej Property Pune | Premium Apartments & Plots in Pune",
