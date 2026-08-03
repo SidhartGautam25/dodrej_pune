@@ -10,8 +10,7 @@ interface EnquiryModalProps {
 }
 
 export default function EnquiryModal({ isOpen, onClose, defaultProject = "" }: EnquiryModalProps) {
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
+  const [name, setName] = useState("");
   const [formData, setFormData] = useState({
     email: "",
     phone: "",
@@ -19,32 +18,41 @@ export default function EnquiryModal({ isOpen, onClose, defaultProject = "" }: E
     project: "",
   });
 
-  const [modalImage, setModalImage] = useState("/assets/hero_bg.png");
+  const [projectsList, setProjectsList] = useState<any[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [error, setError] = useState("");
+
+  // Fetch all listed projects dynamically from the database
+  useEffect(() => {
+    async function fetchProjects() {
+      try {
+        const res = await fetch("/api/projects");
+        const json = await res.json();
+        if (json.success && Array.isArray(json.data) && json.data.length > 0) {
+          setProjectsList(json.data);
+        } else {
+          setProjectsList(projectsData);
+        }
+      } catch (err) {
+        console.warn("Failed to fetch projects for modal dropdown:", err);
+        setProjectsList(projectsData);
+      }
+    }
+    fetchProjects();
+  }, []);
 
   useEffect(() => {
     if (isOpen) {
       setFormData((prev) => ({
         ...prev,
-        project: defaultProject || prev.project || projectsData[0].name,
+        project: defaultProject || prev.project || (projectsList.length > 0 ? projectsList[0].name : ""),
       }));
-      setFirstName("");
-      setLastName("");
+      setName("");
       setIsSuccess(false);
       setError("");
-
-      // Pick a random project cover image for the modal header
-      if (projectsData.length > 0) {
-        const randomIndex = Math.floor(Math.random() * projectsData.length);
-        const selected = projectsData[randomIndex];
-        if (selected && selected.image) {
-          setModalImage(selected.image);
-        }
-      }
     }
-  }, [isOpen, defaultProject]);
+  }, [isOpen, defaultProject, projectsList]);
 
   if (!isOpen) return null;
 
@@ -52,10 +60,9 @@ export default function EnquiryModal({ isOpen, onClose, defaultProject = "" }: E
     e.preventDefault();
     setError("");
 
-    if (!firstName.trim()) return setError("Please enter your First Name.");
-    if (!lastName.trim()) return setError("Please enter your Last Name.");
-    if (!formData.email.trim()) return setError("Please enter your Email.");
-    if (!formData.phone.trim() || formData.phone.length < 10) {
+    if (!name.trim()) return setError("Please enter your Name.");
+    if (!formData.project) return setError("Please select a Project of Interest.");
+    if (!formData.phone.trim() || formData.phone.replace(/\D/g, "").length < 10) {
       return setError("Please enter a valid 10-digit Phone Number.");
     }
 
@@ -67,7 +74,7 @@ export default function EnquiryModal({ isOpen, onClose, defaultProject = "" }: E
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           projectName: formData.project,
-          name: `${firstName.trim()} ${lastName.trim()}`,
+          name: name.trim(),
           email: formData.email,
           phone: formData.phone,
           message: formData.message || `Request callback for ${formData.project}`,
@@ -86,8 +93,7 @@ export default function EnquiryModal({ isOpen, onClose, defaultProject = "" }: E
         message: "",
         project: "",
       });
-      setFirstName("");
-      setLastName("");
+      setName("");
     } catch (err: any) {
       setError(err.message || "An unexpected error occurred. Please try again.");
     } finally {
@@ -101,151 +107,163 @@ export default function EnquiryModal({ isOpen, onClose, defaultProject = "" }: E
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in" onClick={onClose}>
+    <div 
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in" 
+      onClick={onClose}
+    >
       <div 
-        className="relative w-full max-w-lg overflow-hidden rounded-2xl bg-white shadow-2xl border border-gray-100 animate-scale-up"
+        className="relative w-full max-w-md overflow-hidden rounded-3xl bg-white p-8 sm:p-10 shadow-2xl border border-gray-100 animate-scale-up"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Top Image Section */}
-        <div className="relative w-full h-44 sm:h-52 bg-gray-100">
-          <img
-            src={modalImage}
-            alt="Godrej Property Banner"
-            className="w-full h-full object-cover"
-          />
-          {/* Red Circle Close Button */}
-          <button
-            onClick={onClose}
-            className="absolute top-3 right-3 z-20 w-7 h-7 rounded-full bg-[#ef4444] text-white flex items-center justify-center shadow-lg hover:bg-red-600 transition-colors cursor-pointer"
-            aria-label="Close modal"
-          >
-            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
-        </div>
+        {/* Close Button */}
+        <button
+          onClick={onClose}
+          className="absolute top-6 right-6 text-gray-800 hover:text-black transition-colors cursor-pointer"
+          aria-label="Close modal"
+        >
+          <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
 
-        {/* Bottom Form Section */}
-        <div className="p-6 sm:p-8">
-          {isSuccess ? (
-            <div className="flex flex-col items-center justify-center text-center py-8 space-y-4">
-              <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center text-green-600 animate-bounce">
-                <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                </svg>
-              </div>
-              <h4 className="text-xl font-bold text-gray-900">Request Submitted!</h4>
-              <p className="text-sm text-gray-500 max-w-sm leading-relaxed">
-                Thank you for your interest. A representative will contact you shortly on your mobile number.
-              </p>
-              <button
-                onClick={onClose}
-                className="mt-6 px-8 py-2.5 bg-[#1e293b] hover:bg-black text-white font-bold text-xs rounded shadow-md transition-colors"
-              >
-                Close Window
-              </button>
+        {isSuccess ? (
+          <div className="flex flex-col items-center justify-center text-center py-8 space-y-4">
+            <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center text-green-600 animate-bounce">
+              <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+              </svg>
             </div>
-          ) : (
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <h3 className="text-lg sm:text-xl font-extrabold text-center text-gray-800 tracking-tight leading-tight">
-                Welcome to Godrej Properties Limited
+            <h4 className="text-xl font-bold text-gray-900">Request Submitted!</h4>
+            <p className="text-sm text-gray-500 max-w-sm leading-relaxed">
+              Thank you for your interest. A representative will contact you shortly on your mobile number.
+            </p>
+            <button
+              onClick={onClose}
+              className="mt-6 px-8 py-2.5 bg-[#658216] hover:bg-[#536b12] text-white font-bold text-xs rounded-xl shadow-md transition-colors"
+            >
+              Close Window
+            </button>
+          </div>
+        ) : (
+          <form onSubmit={handleSubmit} className="space-y-5">
+            {/* Header Text */}
+            <div className="text-center mb-6">
+              <h3 className="text-2xl font-bold text-gray-800 tracking-tight leading-tight">
+                Godrej Property Pune
               </h3>
-              <p className="text-[11px] text-gray-500 text-center mb-6 max-w-xs sm:max-w-sm mx-auto leading-relaxed">
-                Find your perfect home at {formData.project || "Godrej Projects"} with premium amenities and a location that keeps you connected.
+              <p className="text-xs text-gray-600 font-semibold mt-1.5">
+                Register Here And Avail The Best Benefits!!
               </p>
+            </div>
 
-              {error && (
-                <div className="p-3 text-xs text-red-700 bg-red-50 border border-red-200 rounded-lg">
-                  {error}
-                </div>
-              )}
-
-              {/* First Name & Last Name (2 columns) */}
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-[9px] text-gray-400 font-bold uppercase mb-0.5">First Name *</label>
-                  <input
-                    type="text"
-                    value={firstName}
-                    onChange={(e) => setFirstName(e.target.value)}
-                    placeholder="First Name"
-                    className="w-full bg-transparent border-b border-gray-300 focus:border-gray-800 focus:outline-none py-1 text-xs text-gray-800 placeholder-gray-300 font-medium"
-                    required
-                  />
-                </div>
-                <div>
-                  <label className="block text-[9px] text-gray-400 font-bold uppercase mb-0.5">Last Name *</label>
-                  <input
-                    type="text"
-                    value={lastName}
-                    onChange={(e) => setLastName(e.target.value)}
-                    placeholder="Last Name"
-                    className="w-full bg-transparent border-b border-gray-300 focus:border-gray-800 focus:outline-none py-1 text-xs text-gray-800 placeholder-gray-300 font-medium"
-                    required
-                  />
-                </div>
+            {error && (
+              <div className="p-3 text-xs text-red-700 bg-red-50 border border-red-200 rounded-lg">
+                {error}
               </div>
+            )}
 
-              {/* Email Field */}
-              <div>
-                <label className="block text-[9px] text-gray-400 font-bold uppercase mb-0.5">Email *</label>
+            {/* Name Field */}
+            <div>
+              <input
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="Name*"
+                className="w-full bg-transparent border-b border-gray-300 focus:border-gray-800 focus:outline-none py-2 text-sm text-gray-800 placeholder-gray-400 font-medium transition-colors"
+                required
+              />
+            </div>
+
+            {/* Phone Field */}
+            <div>
+              <div className="flex items-center border-b border-gray-300 focus-within:border-gray-800 py-1 transition-colors">
+                <div className="flex items-center space-x-1 pr-2 select-none mr-2 border-r border-gray-200">
+                  <span className="text-sm">🇮🇳</span>
+                  <svg className="w-2.5 h-2.5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </div>
                 <input
-                  type="email"
-                  name="email"
-                  value={formData.email}
+                  type="tel"
+                  name="phone"
+                  maxLength={10}
+                  value={formData.phone}
                   onChange={handleChange}
-                  placeholder="Enter Email Address"
-                  className="w-full bg-transparent border-b border-gray-300 focus:border-gray-800 focus:outline-none py-1.5 text-xs text-gray-800 placeholder-gray-300 font-medium"
+                  placeholder="Phone Number"
+                  className="w-full bg-transparent focus:outline-none text-sm text-gray-800 placeholder-gray-400 font-medium"
                   required
                 />
               </div>
+            </div>
 
-              {/* Mobile Field */}
-              <div>
-                <label className="block text-[9px] text-gray-400 font-bold uppercase mb-0.5">Mobile * (Click flag to change country)</label>
-                <div className="flex items-center border-b border-gray-300 focus-within:border-gray-800">
-                  <div className="flex items-center space-x-1 py-1.5 text-xs text-gray-500 select-none mr-2 font-medium">
-                    <span className="text-sm">🇮🇳</span>
-                    <span>+91</span>
-                  </div>
-                  <input
-                    type="tel"
-                    name="phone"
-                    maxLength={10}
-                    value={formData.phone}
-                    onChange={handleChange}
-                    placeholder="Mobile Number"
-                    className="w-full bg-transparent focus:outline-none py-1.5 text-xs text-gray-800 placeholder-gray-300 font-medium"
-                    required
-                  />
+            {/* Email Field (Optional) */}
+            <div>
+              <input
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                placeholder="Email (Optional)"
+                className="w-full bg-transparent border-b border-gray-300 focus:border-gray-800 focus:outline-none py-2 text-sm text-gray-800 placeholder-gray-400 font-medium transition-colors"
+              />
+            </div>
+
+            {/* Project Select Dropdown */}
+            <div className="space-y-1">
+              <label className="block text-xs font-bold text-gray-500">Project of Interest*</label>
+              <div className="relative">
+                <select
+                  name="project"
+                  value={formData.project}
+                  onChange={handleChange}
+                  className="w-full bg-transparent border-b border-gray-300 focus:border-gray-800 focus:outline-none py-2 text-sm text-gray-800 font-medium appearance-none cursor-pointer"
+                  required
+                >
+                  <option value="" disabled>Select Project</option>
+                  {projectsList.map((p) => (
+                    <option key={p.id} value={p.name}>
+                      {p.name}
+                    </option>
+                  ))}
+                </select>
+                <div className="absolute inset-y-0 right-0 flex items-center pr-1 pointer-events-none">
+                  <svg className="w-4 h-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                  </svg>
                 </div>
               </div>
+            </div>
 
-              {/* Consent Checkbox */}
-              <div className="flex items-start mt-4">
-                <input
-                  type="checkbox"
-                  id="consent"
-                  required
-                  defaultChecked
-                  className="mt-1 mr-2.5 rounded border-gray-300 text-gray-800 focus:ring-gray-800 w-3.5 h-3.5"
-                />
-                <label htmlFor="consent" className="text-[10px] text-gray-500 leading-tight">
-                  Yes, I would like to receive updates & promotions from Godrej Properties Limited.
-                </label>
-              </div>
+            {/* Consent Checkbox */}
+            <div className="flex items-start mt-6">
+              <input
+                type="checkbox"
+                id="consent"
+                required
+                defaultChecked
+                className="mt-1 mr-3 rounded border-gray-300 text-gray-800 focus:ring-gray-800 w-4 h-4 cursor-pointer"
+              />
+              <label htmlFor="consent" className="text-[10px] text-gray-500 leading-normal font-medium select-none">
+                I Consent to The Processing of Provided Data According To{" "}
+                <a href="/privacy-policy" target="_blank" rel="noopener noreferrer" className="underline hover:text-gray-700">Privacy Policy</a>
+                {" | "}
+                <a href="/terms-and-conditions" target="_blank" rel="noopener noreferrer" className="underline hover:text-gray-700">Terms & Conditions</a>. 
+                I Authorize Prop Solutions 4 U Pvt. Ltd. and its representatives to Call, SMS, Email or WhatsApp Me About Its Products and Benefits. This Consent Overrides Any Registration For DNC/NDNC.
+              </label>
+            </div>
 
-              {/* Submit Button */}
+            {/* Submit Button */}
+            <div className="flex justify-center pt-4">
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="mx-auto block mt-6 px-10 py-2.5 bg-[#1e293b] hover:bg-black text-white font-bold text-xs rounded transition-colors disabled:opacity-50 uppercase tracking-widest cursor-pointer shadow-md"
+                className="w-full max-w-xs py-3 px-8 bg-[#658216] hover:bg-[#536b12] text-white font-bold text-sm rounded-xl transition-all duration-300 disabled:opacity-50 cursor-pointer shadow-md text-center transform hover:scale-[1.02] active:scale-[0.98]"
               >
-                {isSubmitting ? "Submitting..." : "Submit"}
+                {isSubmitting ? "Submitting..." : "Enquire Now"}
               </button>
-            </form>
-          )}
-        </div>
+            </div>
+          </form>
+        )}
       </div>
     </div>
   );
