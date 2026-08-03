@@ -195,9 +195,9 @@ export default function ProjectDetailsClient({ project }: ProjectDetailsClientPr
 
       {/* Quick Specifications Bar */}
       <section className="relative z-20 max-w-7xl mx-auto w-full px-4 md:px-8 mt-[-30px]">
-        <div className="bg-white rounded-3xl shadow-xl border border-black/[0.04] p-6 md:p-8 grid grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="bg-white rounded-3xl shadow-xl border border-black/[0.04] p-5 sm:p-6 md:p-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {/* Typology */}
-          <div className="flex items-center gap-4 border-r border-black/[0.05] last:border-0 pr-2">
+          <div className="flex items-center gap-4 border-b border-black/[0.04] sm:border-b-0 sm:border-r border-black/[0.05] pb-4 sm:pb-0 pr-2">
             <div className="p-3.5 bg-bg-tan rounded-2xl flex-shrink-0">
               <Building2 className="w-6 h-6 text-accent-gold-dark" />
             </div>
@@ -210,9 +210,9 @@ export default function ProjectDetailsClient({ project }: ProjectDetailsClientPr
               </span>
             </div>
           </div>
-
+ 
           {/* Pricing */}
-          <div className="flex items-center gap-4 border-r border-black/[0.05] last:border-0 pr-2">
+          <div className="flex items-center gap-4 border-b border-black/[0.04] lg:border-b-0 lg:border-r border-black/[0.05] pb-4 lg:pb-0 pr-2">
             <div className="p-3.5 bg-bg-tan rounded-2xl flex-shrink-0">
               <IndianRupee className="w-6 h-6 text-accent-gold-dark" />
             </div>
@@ -225,9 +225,9 @@ export default function ProjectDetailsClient({ project }: ProjectDetailsClientPr
               </span>
             </div>
           </div>
-
+ 
           {/* RERA */}
-          <div className="flex items-center gap-4 border-r border-black/[0.05] last:border-0 pr-2">
+          <div className="flex items-center gap-4 border-b border-black/[0.04] sm:border-b-0 sm:border-r border-black/[0.05] pb-4 sm:pb-0 pr-2">
             <div className="p-3.5 bg-bg-tan rounded-2xl flex-shrink-0">
               <FileCheck2 className="w-6 h-6 text-accent-gold-dark" />
             </div>
@@ -240,9 +240,9 @@ export default function ProjectDetailsClient({ project }: ProjectDetailsClientPr
               </span>
             </div>
           </div>
-
+ 
           {/* Possession */}
-          <div className="flex items-center gap-4 last:border-0">
+          <div className="flex items-center gap-4">
             <div className="p-3.5 bg-bg-tan rounded-2xl flex-shrink-0">
               <Calendar className="w-6 h-6 text-accent-gold-dark" />
             </div>

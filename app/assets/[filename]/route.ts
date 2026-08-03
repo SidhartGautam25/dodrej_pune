@@ -29,8 +29,9 @@ async function cdFtpDir(client: ftp.Client, remotePath: string) {
   const segments = remotePath.split("/").filter(Boolean);
   for (const segment of segments) {
     if (segment === "public_html") {
-      const pwd = await client.pwd();
-      if (pwd === "/public_html" || pwd.startsWith("/public_html/")) {
+      const list = await client.list();
+      const hasPublicHtml = list.some(item => item.name === "public_html" && item.isDirectory);
+      if (!hasPublicHtml) {
         continue;
       }
     }
@@ -96,29 +97,39 @@ export async function GET(req: NextRequest, { params }: RouteParams) {
           secure: false,
         });
 
+        let ftpBuffer: Buffer | null = null;
         const remotePath = process.env.FTP_REMOTE_PATH || "public/assets";
-        await cdFtpDir(client, remotePath);
 
-        const writableBuffer = new WritableBuffer();
-        await client.downloadTo(writableBuffer, filename);
-        const ftpBuffer = writableBuffer.getBuffer();
-
-        // Cache the file locally to speed up subsequent requests
+        // Try primary path first
         try {
-          await fs.mkdir(path.dirname(filePath), { recursive: true });
-          await fs.writeFile(filePath, ftpBuffer);
-        } catch (writeErr) {
-          console.warn("Failed to cache FTP file locally:", writeErr);
+          await cdFtpDir(client, remotePath);
+          const writableBuffer = new WritableBuffer();
+          await client.downloadTo(writableBuffer, filename);
+          ftpBuffer = writableBuffer.getBuffer();
+        } catch (primaryErr) {
+          // If primary path fails, check the secondary build-source path
+          try {
+            await client.cd("/");
+            const secondaryPath = ".builds/last-source/public/assets";
+            await cdFtpDir(client, secondaryPath);
+            const writableBuffer = new WritableBuffer();
+            await client.downloadTo(writableBuffer, filename);
+            ftpBuffer = writableBuffer.getBuffer();
+          } catch (secondaryErr) {
+            throw new Error(`Failed to retrieve file from both primary and secondary paths. Primary: ${(primaryErr as Error).message}. Secondary: ${(secondaryErr as Error).message}`);
+          }
         }
 
-        return new NextResponse(ftpBuffer, {
+
+
+        return new NextResponse(ftpBuffer as any, {
           headers: {
             "Content-Type": getContentType(filename),
             "Cache-Control": "public, max-age=31536000, immutable",
           },
         });
       } catch (ftpError) {
-        console.error(`FTP fallback failed for ${filename}:`, ftpError);
+        console.warn(`[Asset Route] FTP fallback failed for ${filename} (file may have been deleted or not uploaded yet): ${(ftpError as Error).message}`);
       } finally {
         client.close();
       }

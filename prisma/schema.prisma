@@ -44,15 +44,16 @@ model Lead {
 }
 
 model PromoBanner {
-  id          String   @id @default("global")
-  imageUrl    String   @db.Text
-  sec1Title   String
-  sec1Sub     String
-  sec2Title   String
-  sec2Sub     String
-  sec3Title   String
-  sec3Sub     String
-  sec4Title   String
-  sec4Sub     String
-  updatedAt   DateTime @updatedAt
+  id               String   @id @default("global")
+  imageUrl         String   @db.Text
+  sec1Title        String
+  sec1Sub          String
+  sec2Title        String
+  sec2Sub          String
+  sec3Title        String
+  sec3Sub          String
+  sec4Title        String
+  sec4Sub          String
+  newLaunchLogoUrl String?  @db.Text
+  updatedAt        DateTime @updatedAt
 }

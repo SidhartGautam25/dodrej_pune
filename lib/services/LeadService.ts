@@ -21,14 +21,15 @@ export class LeadService {
   }): Promise<Lead> {
     // Validations
     if (!data.name.trim()) throw new Error("Name is required.");
-    if (!data.email.trim()) throw new Error("Email is required.");
     if (!data.phone.trim()) throw new Error("Phone number is required.");
     if (!data.projectName.trim()) throw new Error("Project selection is required.");
 
     // Simple Email Regex validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(data.email)) {
-      throw new Error("Please enter a valid email address.");
+    if (data.email && data.email.trim()) {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(data.email)) {
+        throw new Error("Please enter a valid email address.");
+      }
     }
 
     // Phone validation: must be digits, let's keep it flexible but ensure length >= 10
