@@ -27,20 +27,28 @@ export default function Home() {
     setModalProject("");
   };
 
+  // 1. Initial trigger: Open the modal 5 seconds after page load
   useEffect(() => {
     const timer = setTimeout(() => {
-      setHasOpened((prev) => {
-        if (!prev) {
-          setModalProject(projectsData[0].name);
-          setIsModalOpen(true);
-          return true;
-        }
-        return prev;
-      });
+      setModalProject(projectsData[0].name);
+      setIsModalOpen(true);
+      setHasOpened(true);
     }, 5000);
 
     return () => clearTimeout(timer);
   }, []);
+
+  // 2. Subsequent triggers: Re-open the modal 10 seconds after it is closed
+  useEffect(() => {
+    if (!isModalOpen && hasOpened) {
+      const timer = setTimeout(() => {
+        setModalProject(projectsData[0].name);
+        setIsModalOpen(true);
+      }, 10000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [isModalOpen, hasOpened]);
 
   return (
     <div className="relative min-h-screen flex flex-col font-sans bg-bg-tan">
