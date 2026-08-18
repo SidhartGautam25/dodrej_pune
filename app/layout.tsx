@@ -48,7 +48,7 @@ export const metadata: Metadata = {
     siteName: "Godrej Property Pune",
     images: [
       {
-        url: "/godrej_logo_final.jpeg",
+        url: "/godrej-logo-official.png",
         width: 800,
         height: 600,
         alt: "Godrej Property Pune Logo",
@@ -90,7 +90,7 @@ export default function RootLayout({
               "@context": "https://schema.org",
               "@type": "RealEstateAgent",
               "name": "Godrej Property Pune",
-              "image": "https://godrejpropertypune.com/godrej_logo_final.jpeg",
+              "image": "https://godrejpropertypune.com/godrej-logo-official.png",
               "url": "https://godrejpropertypune.com",
               "address": {
                 "@type": "PostalAddress",

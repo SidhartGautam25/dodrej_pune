@@ -44,10 +44,25 @@ export default function EnquiryModal({ isOpen, onClose, defaultProject = "" }: E
 
   useEffect(() => {
     if (isOpen) {
-      setFormData((prev) => ({
-        ...prev,
-        project: defaultProject || prev.project || (projectsList.length > 0 ? projectsList[0].name : ""),
-      }));
+      const allProjects = projectsList.length > 0 ? projectsList : projectsData;
+      const isValidProject = allProjects.some((p) => p.name === defaultProject);
+
+      setFormData((prev) => {
+        const finalProject = defaultProject
+          ? (isValidProject ? defaultProject : (allProjects.length > 0 ? allProjects[0].name : ""))
+          : (prev.project || (allProjects.length > 0 ? allProjects[0].name : ""));
+
+        const finalMessage = defaultProject && !isValidProject
+          ? `Request for: ${defaultProject}`
+          : prev.message;
+
+        return {
+          ...prev,
+          project: finalProject,
+          message: finalMessage,
+        };
+      });
+
       setName("");
       setIsSuccess(false);
       setError("");
@@ -107,11 +122,11 @@ export default function EnquiryModal({ isOpen, onClose, defaultProject = "" }: E
   };
 
   return (
-    <div 
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in" 
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in"
       onClick={onClose}
     >
-      <div 
+      <div
         className="relative w-full max-w-md overflow-hidden rounded-3xl bg-white p-8 sm:p-10 shadow-2xl border border-gray-100 animate-scale-up"
         onClick={(e) => e.stopPropagation()}
       >
@@ -247,8 +262,8 @@ export default function EnquiryModal({ isOpen, onClose, defaultProject = "" }: E
                 I Consent to The Processing of Provided Data According To{" "}
                 <a href="/privacy-policy" target="_blank" rel="noopener noreferrer" className="underline hover:text-gray-700">Privacy Policy</a>
                 {" | "}
-                <a href="/terms-and-conditions" target="_blank" rel="noopener noreferrer" className="underline hover:text-gray-700">Terms & Conditions</a>. 
-                I Authorize Prop Solutions 4 U Pvt. Ltd. and its representatives to Call, SMS, Email or WhatsApp Me About Its Products and Benefits. This Consent Overrides Any Registration For DNC/NDNC.
+                <a href="/terms-and-conditions" target="_blank" rel="noopener noreferrer" className="underline hover:text-gray-700">Terms & Conditions</a>.
+                I Authorize 958 Real Pvt. Ltd. and its representatives to Call, SMS, Email or WhatsApp Me About Its Products and Benefits. This Consent Overrides Any Registration For DNC/NDNC.
               </label>
             </div>
 

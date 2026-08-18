@@ -11,7 +11,7 @@ interface PageProps {
 
 export async function generateMetadata({ params }: PageProps) {
   const { slug } = await params;
-  
+
   // Try fetching from database, fallback to static
   let dbProject = null;
   try {
@@ -48,7 +48,7 @@ export async function generateMetadata({ params }: PageProps) {
       siteName: "Godrej Property Pune",
       images: [
         {
-          url: project.image || "/godrej_logo_final.jpeg",
+          url: project.image || "/godrej-logo-official.png",
           width: 800,
           height: 600,
           alt: `${project.name} Logo`,
@@ -73,42 +73,42 @@ export default async function ProjectPage({ params }: PageProps) {
 
   const project = dbProject
     ? {
-        id: dbProject.id,
-        name: dbProject.name,
-        location: dbProject.location,
-        typology: dbProject.typology,
-        price: dbProject.price,
-        image: dbProject.image,
-        possession: dbProject.possession || undefined,
-        tag1: dbProject.tag1 || undefined,
-        tag2: dbProject.tag2 || undefined,
-        highlights: Array.isArray(dbProject.highlights)
-          ? dbProject.highlights
-          : typeof dbProject.highlights === "string"
+      id: dbProject.id,
+      name: dbProject.name,
+      location: dbProject.location,
+      typology: dbProject.typology,
+      price: dbProject.price,
+      image: dbProject.image,
+      possession: dbProject.possession || undefined,
+      tag1: dbProject.tag1 || undefined,
+      tag2: dbProject.tag2 || undefined,
+      highlights: Array.isArray(dbProject.highlights)
+        ? dbProject.highlights
+        : typeof dbProject.highlights === "string"
           ? JSON.parse(dbProject.highlights)
           : [],
-        rera: dbProject.rera,
-        reraId: dbProject.reraId || undefined,
-        reraLabel: dbProject.reraLabel || undefined,
-        reraQrImage: dbProject.reraQrImage || undefined,
-        category: dbProject.category,
-        description: dbProject.description || undefined,
-        amenities: Array.isArray(dbProject.amenities)
-          ? dbProject.amenities
-          : typeof dbProject.amenities === "string"
+      rera: dbProject.rera,
+      reraId: dbProject.reraId || undefined,
+      reraLabel: dbProject.reraLabel || undefined,
+      reraQrImage: dbProject.reraQrImage || undefined,
+      category: dbProject.category,
+      description: dbProject.description || undefined,
+      amenities: Array.isArray(dbProject.amenities)
+        ? dbProject.amenities
+        : typeof dbProject.amenities === "string"
           ? JSON.parse(dbProject.amenities)
           : [],
-        gallery: Array.isArray(dbProject.gallery)
-          ? dbProject.gallery
-          : typeof dbProject.gallery === "string"
+      gallery: Array.isArray(dbProject.gallery)
+        ? dbProject.gallery
+        : typeof dbProject.gallery === "string"
           ? JSON.parse(dbProject.gallery)
           : [],
-        floorPlans: Array.isArray(dbProject.floorPlans)
-          ? dbProject.floorPlans
-          : typeof dbProject.floorPlans === "string"
+      floorPlans: Array.isArray(dbProject.floorPlans)
+        ? dbProject.floorPlans
+        : typeof dbProject.floorPlans === "string"
           ? JSON.parse(dbProject.floorPlans)
           : [],
-      }
+    }
     : projectsData.find((p) => slugify(p.name) === slug || p.id === slug);
 
   if (!project) {

@@ -1,5 +1,6 @@
 import { leadRepository, LeadRepository } from "../repositories/LeadRepository";
 import { Lead } from "@prisma/client";
+import { LeadratService } from "./LeadratService";
 
 export class LeadService {
   private repo: LeadRepository;
@@ -38,10 +39,23 @@ export class LeadService {
       throw new Error("Please enter a valid 10-digit mobile number.");
     }
 
-    return this.repo.create({
+    const lead = await this.repo.create({
       ...data,
       phone: cleanPhone,
     });
+
+    // Push to Leadrat CRM asynchronously
+    LeadratService.pushLead({
+      name: lead.name,
+      phone: lead.phone,
+      email: lead.email,
+      projectName: lead.projectName,
+      message: lead.message,
+    }).catch((err) => {
+      console.error("[LeadService] Background error pushing lead to Leadrat:", err);
+    });
+
+    return lead;
   }
 }
 
