@@ -26,7 +26,7 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://godrejpropertypune.com"),
   title: "Godrej Property Pune | Premium Apartments & Plots in Pune",
   description: "Discover premium residential apartments & plots by Godrej Properties in Pune. Check pricing, floor plans, location, and exclusive offers on Godrej Property Pune.",
-  keywords: "Godrej Property Pune, Godrej Properties Pune, Godrej Pune, godrejproperpune, Godrej Projects Pune, Hinjewadi, Baner, Magarpatta, Keshav Nagar, Kharadi, Godrej Eden Estate, Godrej The Greenfront, Godrej Evergreen Square, The Aqua Retreat, Godrej River Royale",
+  keywords: "Godrej Property Pune, Godrej Properties Pune, Godrej Pune, godrejproperpune, godrej, godrej property, pune godrej property, godrej properties, godrej projects in pune, godrej flats in pune, godrej plots pune, Hinjewadi, Baner, Magarpatta, Keshav Nagar, Kharadi, Godrej Eden Estate, Godrej The Greenfront, Godrej Evergreen Square, The Aqua Retreat, Godrej River Royale",
   authors: [{ name: "Godrej Properties" }],
   alternates: {
     canonical: "https://godrejpropertypune.com",
@@ -34,9 +34,12 @@ export const metadata: Metadata = {
   icons: {
     icon: [
       { url: "/favicon.ico", sizes: "any" },
-      { url: "/godrej_logo_final.jpeg", type: "image/jpeg" }
+      { url: "/icon-192.png", sizes: "192x192", type: "image/png" },
+      { url: "/icon-512.png", sizes: "512x512", type: "image/png" }
     ],
-    apple: "/godrej_logo_final.jpeg",
+    apple: [
+      { url: "/apple-icon.png", sizes: "180x180", type: "image/png" }
+    ],
   },
   openGraph: {
     title: "Godrej Property Pune | Premium Apartments & Plots in Pune",
@@ -45,7 +48,7 @@ export const metadata: Metadata = {
     siteName: "Godrej Property Pune",
     images: [
       {
-        url: "/godrej_logo_final.jpeg",
+        url: "/godrej-logo-official.png",
         width: 800,
         height: 600,
         alt: "Godrej Property Pune Logo",
@@ -87,7 +90,7 @@ export default function RootLayout({
               "@context": "https://schema.org",
               "@type": "RealEstateAgent",
               "name": "Godrej Property Pune",
-              "image": "https://godrejpropertypune.com/godrej_logo_final.jpeg",
+              "image": "https://godrejpropertypune.com/godrej-logo-official.png",
               "url": "https://godrejpropertypune.com",
               "address": {
                 "@type": "PostalAddress",
