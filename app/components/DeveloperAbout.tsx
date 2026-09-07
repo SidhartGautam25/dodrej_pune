@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { projectsData } from "../data/projects";
 
 interface DeveloperAboutProps {
@@ -8,19 +8,53 @@ interface DeveloperAboutProps {
 }
 
 export default function DeveloperAbout({ onOpenEnquiry }: DeveloperAboutProps) {
+  const [projectsList, setProjectsList] = useState<any[]>([]);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     phone: "",
     message: "",
-    project: projectsData[0].name,
+    project: "",
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [error, setError] = useState("");
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+  useEffect(() => {
+    async function fetchProjects() {
+      try {
+        const res = await fetch("/api/projects");
+        const json = await res.json();
+        if (json.success && Array.isArray(json.data) && json.data.length > 0) {
+          setProjectsList(json.data);
+          setFormData((prev) => ({
+            ...prev,
+            project: prev.project || json.data[0].name,
+          }));
+        } else {
+          setProjectsList(projectsData);
+          setFormData((prev) => ({
+            ...prev,
+            project: prev.project || projectsData[0].name,
+          }));
+        }
+      } catch (err) {
+        setProjectsList(projectsData);
+        setFormData((prev) => ({
+          ...prev,
+          project: prev.project || projectsData[0].name,
+        }));
+      }
+    }
+    fetchProjects();
+  }, []);
+
+  const handleChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+    >,
+  ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
@@ -28,6 +62,9 @@ export default function DeveloperAbout({ onOpenEnquiry }: DeveloperAboutProps) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+
+    const chosenProject =
+      formData.project || projectsList[0]?.name || projectsData[0].name;
 
     if (!formData.name.trim()) return setError("Please enter your name.");
     if (!formData.email.trim()) return setError("Please enter your email.");
@@ -42,11 +79,11 @@ export default function DeveloperAbout({ onOpenEnquiry }: DeveloperAboutProps) {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          projectName: formData.project,
+          projectName: chosenProject,
           name: formData.name,
           email: formData.email,
           phone: formData.phone,
-          message: formData.message,
+          message: formData.message || `Request for: ${chosenProject}`,
         }),
       });
 
@@ -61,7 +98,7 @@ export default function DeveloperAbout({ onOpenEnquiry }: DeveloperAboutProps) {
         email: "",
         phone: "",
         message: "",
-        project: projectsData[0].name,
+        project: chosenProject,
       });
     } catch (err: any) {
       setError(err.message || "An unexpected error occurred.");
@@ -71,9 +108,11 @@ export default function DeveloperAbout({ onOpenEnquiry }: DeveloperAboutProps) {
   };
 
   return (
-    <section id="about-section" className="py-20 px-4 md:px-8 bg-bg-tan border-t border-black/[0.05]">
+    <section
+      id="about-section"
+      className="py-20 px-4 md:px-8 bg-bg-tan border-t border-black/[0.05]"
+    >
       <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
-        
         {/* Left: Content */}
         <div className="lg:col-span-7 space-y-6">
           <span className="text-xs font-bold tracking-widest text-accent-gold-dark uppercase block mb-1">
@@ -83,21 +122,27 @@ export default function DeveloperAbout({ onOpenEnquiry }: DeveloperAboutProps) {
             About Developer
           </h2>
           <div className="w-12 h-1 bg-accent-gold rounded-full" />
-          
+
           <div className="space-y-4 text-sm text-text-main/90 leading-relaxed font-medium">
             <p>
-              Godrej Properties brings the renowned Godrej Properties philosophy of innovation, sustainability, and
-              excellence to the real estate industry. Each development by Godrej Properties blends a 122-year legacy of
-              trust and superior quality with a dedication to cutting-edge design and technology. This commitment has
-              not gone unnoticed; in recent years, Godrej Properties has garnered over 250 awards and recognitions.
+              Godrej Properties brings the renowned Godrej Properties philosophy
+              of innovation, sustainability, and excellence to the real estate
+              industry. Each development by Godrej Properties blends a 122-year
+              legacy of trust and superior quality with a dedication to
+              cutting-edge design and technology. This commitment has not gone
+              unnoticed; in recent years, Godrej Properties has garnered over
+              250 awards and recognitions.
             </p>
             <p>
-              Among these accolades are notable honors such as 'The Most Trusted Real Estate Brand' in 2019 from the
-              Brand Trust Report, and 'Real Estate Company of the Year' at the 9th Construction Week Awards 2019.
-              Furthermore, the company was celebrated as the 'Equality and Diversity Champion' in 2019 at the APREA
-              Property Leaders Awards, and it was named 'The Economic Times Best Real Estate Brand' in 2018.
-              Additionally, Godrej Properties earned the prestigious title of 'Builder of the Year' at the CNBC-Awaaz
-              Real Estate Awards 2018.
+              Among these accolades are notable honors such as 'The Most Trusted
+              Real Estate Brand' in 2019 from the Brand Trust Report, and 'Real
+              Estate Company of the Year' at the 9th Construction Week Awards
+              2019. Furthermore, the company was celebrated as the 'Equality and
+              Diversity Champion' in 2019 at the APREA Property Leaders Awards,
+              and it was named 'The Economic Times Best Real Estate Brand' in
+              2018. Additionally, Godrej Properties earned the prestigious title
+              of 'Builder of the Year' at the CNBC-Awaaz Real Estate Awards
+              2018.
             </p>
           </div>
 
@@ -108,8 +153,18 @@ export default function DeveloperAbout({ onOpenEnquiry }: DeveloperAboutProps) {
               className="inline-flex items-center space-x-3 bg-white border border-accent-gold/40 hover:border-accent-gold rounded-xl px-6 py-4 shadow-sm hover:shadow-md transition-all group"
             >
               <div className="w-10 h-10 rounded-full bg-accent-gold/15 flex items-center justify-center text-accent-gold group-hover:bg-accent-gold group-hover:text-white transition-all">
-                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.94.725l.548 2.2a1 1 0 01-.321.988l-1.305.98a10.582 10.582 0 004.872 4.872l.98-1.305a1 1 0 01.988-.321l2.2.548a1 1 0 01.725.94V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M3 5a2 2 0 012-2h3.28a1 1 0 01.94.725l.548 2.2a1 1 0 01-.321.988l-1.305.98a10.582 10.582 0 004.872 4.872l.98-1.305a1 1 0 01.988-.321l2.2.548a1 1 0 01.725.94V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
+                  />
                 </svg>
               </div>
               <div>
@@ -134,13 +189,26 @@ export default function DeveloperAbout({ onOpenEnquiry }: DeveloperAboutProps) {
             {isSuccess ? (
               <div className="flex flex-col items-center justify-center text-center py-10 space-y-4 animate-fade-in">
                 <div className="w-12 h-12 rounded-full bg-green-500/20 border border-green-500 flex items-center justify-center text-green-400">
-                  <svg className="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                  <svg
+                    className="w-7 h-7"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={3}
+                      d="M5 13l4 4L19 7"
+                    />
                   </svg>
                 </div>
-                <h4 className="text-lg font-serif text-accent-gold">Request Submitted!</h4>
+                <h4 className="text-lg font-serif text-accent-gold">
+                  Request Submitted!
+                </h4>
                 <p className="text-[11px] text-white/70 max-w-xs">
-                  We have received your enquiry. An expert will reach out to you within 24 hours.
+                  We have received your enquiry. An expert will reach out to you
+                  within 24 hours.
                 </p>
                 <button
                   onClick={() => setIsSuccess(false)}
@@ -164,8 +232,15 @@ export default function DeveloperAbout({ onOpenEnquiry }: DeveloperAboutProps) {
                     onChange={handleChange}
                     className="w-full bg-[#1e293b]/90 border border-white/20 rounded-lg px-3.5 py-2.5 text-xs focus:outline-none focus:border-accent-gold text-white"
                   >
-                    {projectsData.map((proj) => (
-                      <option key={proj.id} value={proj.name} className="bg-primary text-white">
+                    {(projectsList.length > 0
+                      ? projectsList
+                      : projectsData
+                    ).map((proj) => (
+                      <option
+                        key={proj.id}
+                        value={proj.name}
+                        className="bg-primary text-white"
+                      >
                         {proj.name}
                       </option>
                     ))}
@@ -230,8 +305,13 @@ export default function DeveloperAbout({ onOpenEnquiry }: DeveloperAboutProps) {
                     defaultChecked
                     className="mt-1 mr-2 rounded text-accent-gold bg-primary border-white/20 focus:ring-accent-gold"
                   />
-                  <label htmlFor="about-consent" className="text-[10px] text-white/50 leading-tight">
-                    I authorize company representatives to Call, SMS, Email or WhatsApp me about its products and offers. This consent overrides any registration for DNC/NDNC.
+                  <label
+                    htmlFor="about-consent"
+                    className="text-[10px] text-white/50 leading-tight"
+                  >
+                    I authorize company representatives to Call, SMS, Email or
+                    WhatsApp me about its products and offers. This consent
+                    overrides any registration for DNC/NDNC.
                   </label>
                 </div>
 
@@ -241,9 +321,24 @@ export default function DeveloperAbout({ onOpenEnquiry }: DeveloperAboutProps) {
                   className="w-full py-3 rounded-lg gold-gradient hover:gold-gradient-hover text-[#1e293b] font-bold text-xs tracking-wider transition-all duration-300 flex items-center justify-center shadow-lg disabled:opacity-50"
                 >
                   {isSubmitting ? (
-                    <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-primary" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx={12} cy={12} r={10} stroke="currentColor" strokeWidth={4} />
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                    <svg
+                      className="animate-spin -ml-1 mr-2 h-4 w-4 text-primary"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx={12}
+                        cy={12}
+                        r={10}
+                        stroke="currentColor"
+                        strokeWidth={4}
+                      />
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                      />
                     </svg>
                   ) : null}
                   {isSubmitting ? "SUBMITTING..." : "SUBMIT NOW"}

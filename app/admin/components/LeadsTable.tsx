@@ -35,22 +35,47 @@ export default function LeadsTable({ leads }: LeadsTableProps) {
     });
   }, [leads, searchQuery, selectedProject]);
 
+  // Helper to ensure displayed message accurately reflects requested project
+  const getLeadMessage = (lead: LeadData) => {
+    if (
+      lead.message &&
+      lead.message.includes("Godrej Eden Estate Phase 3") &&
+      lead.projectName &&
+      !lead.projectName.includes("Godrej Eden Estate Phase 3")
+    ) {
+      return `Request for: ${lead.projectName}`;
+    }
+    return lead.message || "";
+  };
+
   // CSV Export Utility
   const downloadCSV = () => {
-    const headers = ["Date", "Project Name", "Client Name", "Email", "Phone", "Message"];
+    const headers = [
+      "Date",
+      "Project Name",
+      "Client Name",
+      "Email",
+      "Phone",
+      "Message",
+    ];
     const rows = filteredLeads.map((lead) => [
       new Date(lead.createdAt).toLocaleString(),
       lead.projectName,
       lead.name,
       lead.email,
       lead.phone,
-      lead.message || "",
+      getLeadMessage(lead),
     ]);
 
     const csvContent =
       "data:text/csv;charset=utf-8," +
-      [headers.join(","), ...rows.map((e) => e.map(val => `"${val.replace(/"/g, '""')}"`).join(","))].join("\n");
-      
+      [
+        headers.join(","),
+        ...rows.map((e) =>
+          e.map((val) => `"${val.replace(/"/g, '""')}"`).join(","),
+        ),
+      ].join("\n");
+
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement("a");
     link.setAttribute("href", encodedUri);
@@ -125,22 +150,31 @@ export default function LeadsTable({ leads }: LeadsTableProps) {
             <tbody className="divide-y divide-black/[0.04] text-xs text-text-main">
               {filteredLeads.length > 0 ? (
                 filteredLeads.map((lead) => (
-                  <tr key={lead.id} className="hover:bg-bg-tan/10 transition-colors">
+                  <tr
+                    key={lead.id}
+                    className="hover:bg-bg-tan/10 transition-colors"
+                  >
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center space-x-2">
                         <Calendar className="w-3.5 h-3.5 text-text-muted" />
                         <span className="font-semibold text-text-muted">
-                          {new Date(lead.createdAt).toLocaleDateString(undefined, {
-                            month: "short",
-                            day: "numeric",
-                            year: "numeric",
-                          })}
+                          {new Date(lead.createdAt).toLocaleDateString(
+                            undefined,
+                            {
+                              month: "short",
+                              day: "numeric",
+                              year: "numeric",
+                            },
+                          )}
                         </span>
                         <span className="text-[10px] text-text-muted bg-black/[0.04] px-1.5 py-0.5 rounded">
-                          {new Date(lead.createdAt).toLocaleTimeString(undefined, {
-                            hour: "2-digit",
-                            minute: "2-digit",
-                          })}
+                          {new Date(lead.createdAt).toLocaleTimeString(
+                            undefined,
+                            {
+                              hour: "2-digit",
+                              minute: "2-digit",
+                            },
+                          )}
                         </span>
                       </div>
                     </td>
@@ -149,7 +183,9 @@ export default function LeadsTable({ leads }: LeadsTableProps) {
                         <span className="font-extrabold text-sm text-primary block">
                           {lead.name}
                         </span>
-                        <span className="text-text-muted block mt-0.5">{lead.email}</span>
+                        <span className="text-text-muted block mt-0.5">
+                          {lead.email}
+                        </span>
                         <a
                           href={`tel:+91${lead.phone}`}
                           className="text-accent-gold-dark hover:underline font-bold mt-1 block"
@@ -164,19 +200,24 @@ export default function LeadsTable({ leads }: LeadsTableProps) {
                       </span>
                     </td>
                     <td className="px-6 py-4 max-w-xs">
-                      {lead.message ? (
+                      {getLeadMessage(lead) ? (
                         <p className="text-text-main/80 line-clamp-3 leading-relaxed">
-                          {lead.message}
+                          {getLeadMessage(lead)}
                         </p>
                       ) : (
-                        <span className="text-text-muted italic">No message provided</span>
+                        <span className="text-text-muted italic">
+                          No message provided
+                        </span>
                       )}
                     </td>
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td colSpan={4} className="px-6 py-12 text-center text-text-muted italic">
+                  <td
+                    colSpan={4}
+                    className="px-6 py-12 text-center text-text-muted italic"
+                  >
                     No leads found matching current query filters.
                   </td>
                 </tr>
