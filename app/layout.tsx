@@ -25,37 +25,50 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   metadataBase: new URL("https://godrejpropertypune.com"),
   title: "Godrej Property Pune | Premium Apartments & Plots in Pune",
-  description: "Discover premium residential apartments & plots by Godrej Properties in Pune. Check pricing, floor plans, location, and exclusive offers on Godrej Property Pune.",
-  keywords: "Godrej Property Pune, Godrej Properties Pune, Godrej Pune, godrejproperpune, godrej, godrej property, pune godrej property, godrej properties, godrej projects in pune, godrej flats in pune, godrej plots pune, Hinjewadi, Baner, Magarpatta, Keshav Nagar, Kharadi, Godrej Eden Estate, Godrej The Greenfront, Godrej Evergreen Square, The Aqua Retreat, Godrej River Royale",
+  description:
+    "Discover premium residential apartments & plots by Godrej Properties in Pune. Check pricing, floor plans, location, and exclusive offers on Godrej Property Pune.",
+  keywords:
+    "Godrej Property Pune, Godrej Properties Pune, Godrej Pune, godrejproperpune, godrej, godrej property, pune godrej property, godrej properties, godrej projects in pune, godrej flats in pune, godrej plots pune, Hinjewadi, Baner, Magarpatta, Keshav Nagar, Kharadi, Godrej Eden Estate, Godrej The Greenfront, Godrej Evergreen Square, The Aqua Retreat, Godrej River Royale",
   authors: [{ name: "Godrej Properties" }],
   alternates: {
     canonical: "https://godrejpropertypune.com",
   },
   icons: {
     icon: [
-      { url: "/favicon.ico", sizes: "any" },
+      { url: "/godrej-logo-official.png", sizes: "any" },
       { url: "/icon-192.png", sizes: "192x192", type: "image/png" },
-      { url: "/icon-512.png", sizes: "512x512", type: "image/png" }
+      { url: "/icon-512.png", sizes: "512x512", type: "image/png" },
+      { url: "/favicon.ico", sizes: "any" },
     ],
+    shortcut: ["/godrej-logo-official.png"],
     apple: [
-      { url: "/apple-icon.png", sizes: "180x180", type: "image/png" }
+      { url: "/godrej-logo-official.png", sizes: "any" },
+      { url: "/apple-icon.png", sizes: "180x180", type: "image/png" },
     ],
   },
   openGraph: {
     title: "Godrej Property Pune | Premium Apartments & Plots in Pune",
-    description: "Discover premium residential apartments & plots by Godrej Properties in Pune. Check pricing, floor plans, location, and exclusive offers.",
+    description:
+      "Discover premium residential apartments & plots by Godrej Properties in Pune. Check pricing, floor plans, location, and exclusive offers.",
     url: "https://godrejpropertypune.com",
     siteName: "Godrej Property Pune",
     images: [
       {
         url: "/godrej-logo-official.png",
-        width: 800,
-        height: 600,
+        width: 512,
+        height: 512,
         alt: "Godrej Property Pune Logo",
       },
     ],
     locale: "en_US",
     type: "website",
+  },
+  twitter: {
+    card: "summary",
+    title: "Godrej Property Pune | Premium Apartments & Plots in Pune",
+    description:
+      "Discover premium residential apartments & plots by Godrej Properties in Pune. Check pricing, floor plans, location, and exclusive offers.",
+    images: ["/godrej-logo-official.png"],
   },
   robots: {
     index: true,
@@ -82,6 +95,11 @@ export default function RootLayout({
       lang="en"
       className={`${playfair.variable} ${outfit.variable} h-full antialiased`}
     >
+      <head>
+        <link rel="icon" href="/godrej-logo-official.png" sizes="any" />
+        <link rel="shortcut icon" href="/godrej-logo-official.png" />
+        <link rel="apple-touch-icon" href="/godrej-logo-official.png" />
+      </head>
       <body className="min-h-full flex flex-col font-sans">
         <script
           type="application/ld+json"
@@ -89,18 +107,20 @@ export default function RootLayout({
             __html: JSON.stringify({
               "@context": "https://schema.org",
               "@type": "RealEstateAgent",
-              "name": "Godrej Property Pune",
-              "image": "https://godrejpropertypune.com/godrej-logo-official.png",
-              "url": "https://godrejpropertypune.com",
-              "address": {
+              name: "Godrej Property Pune",
+              image: "https://godrejpropertypune.com/godrej-logo-official.png",
+              logo: "https://godrejpropertypune.com/godrej-logo-official.png",
+              url: "https://godrejpropertypune.com",
+              address: {
                 "@type": "PostalAddress",
-                "addressLocality": "Pune",
-                "addressRegion": "MH",
-                "addressCountry": "IN"
+                addressLocality: "Pune",
+                addressRegion: "MH",
+                addressCountry: "IN",
               },
-              "description": "Discover premium residential apartments & plots by Godrej Properties in Pune. Check pricing, floor plans, location, and exclusive offers on Godrej Property Pune.",
-              "priceRange": "₹75 Lacs - ₹3.15 Cr"
-            })
+              description:
+                "Discover premium residential apartments & plots by Godrej Properties in Pune. Check pricing, floor plans, location, and exclusive offers on Godrej Property Pune.",
+              priceRange: "₹75 Lacs - ₹3.15 Cr",
+            }),
           }}
         />
         <QueryProvider>{children}</QueryProvider>

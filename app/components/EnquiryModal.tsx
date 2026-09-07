@@ -9,7 +9,11 @@ interface EnquiryModalProps {
   defaultProject?: string;
 }
 
-export default function EnquiryModal({ isOpen, onClose, defaultProject = "" }: EnquiryModalProps) {
+export default function EnquiryModal({
+  isOpen,
+  onClose,
+  defaultProject = "",
+}: EnquiryModalProps) {
   const [name, setName] = useState("");
   const [formData, setFormData] = useState({
     email: "",
@@ -42,25 +46,48 @@ export default function EnquiryModal({ isOpen, onClose, defaultProject = "" }: E
     fetchProjects();
   }, []);
 
+  const handleClose = () => {
+    setFormData({
+      email: "",
+      phone: "",
+      message: "",
+      project: "",
+    });
+    setName("");
+    setError("");
+    onClose();
+  };
+
   useEffect(() => {
     if (isOpen) {
       const allProjects = projectsList.length > 0 ? projectsList : projectsData;
-      const isValidProject = allProjects.some((p) => p.name === defaultProject);
 
-      setFormData((prev) => {
-        const finalProject = defaultProject
-          ? (isValidProject ? defaultProject : (allProjects.length > 0 ? allProjects[0].name : ""))
-          : (prev.project || (allProjects.length > 0 ? allProjects[0].name : ""));
+      // Determine if defaultProject matches an actual project name or id
+      const matchingProject = allProjects.find(
+        (p) =>
+          p.name.toLowerCase() === defaultProject.trim().toLowerCase() ||
+          p.id === defaultProject.trim(),
+      );
 
-        const finalMessage = defaultProject && !isValidProject
-          ? `Request for: ${defaultProject}`
-          : prev.message;
+      // Check if defaultProject represents a specific action (e.g. "Book Free Site Visit", "Get Price Sheet", etc.)
+      const isActionIntent = !matchingProject && Boolean(defaultProject.trim());
+      const actionIntent = isActionIntent ? defaultProject.trim() : "";
 
-        return {
-          ...prev,
-          project: finalProject,
-          message: finalMessage,
-        };
+      const finalProject = matchingProject
+        ? matchingProject.name
+        : allProjects.length > 0
+          ? allProjects[0].name
+          : "";
+
+      const finalMessage = actionIntent
+        ? `Request for: ${finalProject} (${actionIntent})`
+        : `Request for: ${finalProject}`;
+
+      setFormData({
+        email: "",
+        phone: "",
+        project: finalProject,
+        message: finalMessage,
       });
 
       setName("");
@@ -76,23 +103,33 @@ export default function EnquiryModal({ isOpen, onClose, defaultProject = "" }: E
     setError("");
 
     if (!name.trim()) return setError("Please enter your Name.");
-    if (!formData.project) return setError("Please select a Project of Interest.");
-    if (!formData.phone.trim() || formData.phone.replace(/\D/g, "").length < 10) {
+    if (!formData.project)
+      return setError("Please select a Project of Interest.");
+    if (
+      !formData.phone.trim() ||
+      formData.phone.replace(/\D/g, "").length < 10
+    ) {
       return setError("Please enter a valid 10-digit Phone Number.");
     }
 
     setIsSubmitting(true);
+
+    const targetProject = formData.project;
+    const finalMessage =
+      formData.message && formData.message.trim()
+        ? formData.message.trim()
+        : `Request for: ${targetProject}`;
 
     try {
       const res = await fetch("/api/leads", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          projectName: formData.project,
+          projectName: targetProject,
           name: name.trim(),
           email: formData.email,
           phone: formData.phone,
-          message: formData.message || `Request callback for ${formData.project}`,
+          message: finalMessage,
         }),
       });
 
@@ -110,21 +147,35 @@ export default function EnquiryModal({ isOpen, onClose, defaultProject = "" }: E
       });
       setName("");
     } catch (err: any) {
-      setError(err.message || "An unexpected error occurred. Please try again.");
+      setError(
+        err.message || "An unexpected error occurred. Please try again.",
+      );
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+    >,
+  ) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    if (name === "project") {
+      setFormData((prev) => ({
+        ...prev,
+        project: value,
+        message: `Request for: ${value}`,
+      }));
+    } else {
+      setFormData((prev) => ({ ...prev, [name]: value }));
+    }
   };
 
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in"
-      onClick={onClose}
+      onClick={handleClose}
     >
       <div
         className="relative w-full max-w-md overflow-hidden rounded-3xl bg-white p-8 sm:p-10 shadow-2xl border border-gray-100 animate-scale-up"
@@ -132,28 +183,51 @@ export default function EnquiryModal({ isOpen, onClose, defaultProject = "" }: E
       >
         {/* Close Button */}
         <button
-          onClick={onClose}
+          onClick={handleClose}
           className="absolute top-6 right-6 text-gray-800 hover:text-black transition-colors cursor-pointer"
           aria-label="Close modal"
         >
-          <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+          <svg
+            className="w-6 h-6"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth={2}
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M6 18L18 6M6 6l12 12"
+            />
           </svg>
         </button>
 
         {isSuccess ? (
           <div className="flex flex-col items-center justify-center text-center py-8 space-y-4">
             <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center text-green-600 animate-bounce">
-              <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+              <svg
+                className="w-8 h-8"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2.5}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M5 13l4 4L19 7"
+                />
               </svg>
             </div>
-            <h4 className="text-xl font-bold text-gray-900">Request Submitted!</h4>
+            <h4 className="text-xl font-bold text-gray-900">
+              Request Submitted!
+            </h4>
             <p className="text-sm text-gray-500 max-w-sm leading-relaxed">
-              Thank you for your interest. A representative will contact you shortly on your mobile number.
+              Thank you for your interest. A representative will contact you
+              shortly on your mobile number.
             </p>
             <button
-              onClick={onClose}
+              onClick={handleClose}
               className="mt-6 px-8 py-2.5 bg-[#658216] hover:bg-[#536b12] text-white font-bold text-xs rounded-xl shadow-md transition-colors"
             >
               Close Window
@@ -194,8 +268,18 @@ export default function EnquiryModal({ isOpen, onClose, defaultProject = "" }: E
               <div className="flex items-center border-b border-gray-300 focus-within:border-gray-800 py-1 transition-colors">
                 <div className="flex items-center space-x-1 pr-2 select-none mr-2 border-r border-gray-200">
                   <span className="text-sm">🇮🇳</span>
-                  <svg className="w-2.5 h-2.5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                  <svg
+                    className="w-2.5 h-2.5 text-gray-500"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={3}
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M19 9l-7 7-7-7"
+                    />
                   </svg>
                 </div>
                 <input
@@ -225,7 +309,9 @@ export default function EnquiryModal({ isOpen, onClose, defaultProject = "" }: E
 
             {/* Project Select Dropdown */}
             <div className="space-y-1">
-              <label className="block text-xs font-bold text-gray-500">Project of Interest*</label>
+              <label className="block text-xs font-bold text-gray-500">
+                Project of Interest*
+              </label>
               <div className="relative">
                 <select
                   name="project"
@@ -234,7 +320,9 @@ export default function EnquiryModal({ isOpen, onClose, defaultProject = "" }: E
                   className="w-full bg-transparent border-b border-gray-300 focus:border-gray-800 focus:outline-none py-2 text-sm text-gray-800 font-medium appearance-none cursor-pointer"
                   required
                 >
-                  <option value="" disabled>Select Project</option>
+                  <option value="" disabled>
+                    Select Project
+                  </option>
                   {projectsList.map((p) => (
                     <option key={p.id} value={p.name}>
                       {p.name}
@@ -242,8 +330,18 @@ export default function EnquiryModal({ isOpen, onClose, defaultProject = "" }: E
                   ))}
                 </select>
                 <div className="absolute inset-y-0 right-0 flex items-center pr-1 pointer-events-none">
-                  <svg className="w-4 h-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                  <svg
+                    className="w-4 h-4 text-gray-500"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M19 9l-7 7-7-7"
+                    />
                   </svg>
                 </div>
               </div>
@@ -258,12 +356,31 @@ export default function EnquiryModal({ isOpen, onClose, defaultProject = "" }: E
                 defaultChecked
                 className="mt-1 mr-3 rounded border-gray-300 text-gray-800 focus:ring-gray-800 w-4 h-4 cursor-pointer"
               />
-              <label htmlFor="consent" className="text-[10px] text-gray-500 leading-normal font-medium select-none">
+              <label
+                htmlFor="consent"
+                className="text-[10px] text-gray-500 leading-normal font-medium select-none"
+              >
                 I Consent to The Processing of Provided Data According To{" "}
-                <a href="/privacy-policy" target="_blank" rel="noopener noreferrer" className="underline hover:text-gray-700">Privacy Policy</a>
+                <a
+                  href="/privacy-policy"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline hover:text-gray-700"
+                >
+                  Privacy Policy
+                </a>
                 {" | "}
-                <a href="/terms-and-conditions" target="_blank" rel="noopener noreferrer" className="underline hover:text-gray-700">Terms & Conditions</a>.
-                I Authorize 958 Real Pvt. Ltd. and its representatives to Call, SMS, Email or WhatsApp Me About Its Products and Benefits. This Consent Overrides Any Registration For DNC/NDNC.
+                <a
+                  href="/terms-and-conditions"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline hover:text-gray-700"
+                >
+                  Terms & Conditions
+                </a>
+                . I Authorize 958 Real Pvt. Ltd. and its representatives to
+                Call, SMS, Email or WhatsApp Me About Its Products and Benefits.
+                This Consent Overrides Any Registration For DNC/NDNC.
               </label>
             </div>
 

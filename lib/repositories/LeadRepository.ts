@@ -25,6 +25,13 @@ export class LeadRepository {
       },
     });
   }
+
+  async updateMessage(id: string, message: string): Promise<Lead> {
+    return prisma.lead.update({
+      where: { id },
+      data: { message },
+    });
+  }
 }
 
 export const leadRepository = new LeadRepository();

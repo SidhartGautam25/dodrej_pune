@@ -17,7 +17,7 @@ export default function Home() {
   const [hasOpened, setHasOpened] = useState(false);
 
   const handleOpenEnquiry = (projectName: string = "") => {
-    setModalProject(projectName || projectsData[0].name);
+    setModalProject(projectName);
     setIsModalOpen(true);
     setHasOpened(true);
   };
@@ -30,7 +30,7 @@ export default function Home() {
   // 1. Initial trigger: Open the modal 5 seconds after page load
   useEffect(() => {
     const timer = setTimeout(() => {
-      setModalProject(projectsData[0].name);
+      setModalProject("");
       setIsModalOpen(true);
       setHasOpened(true);
     }, 5000);
@@ -42,7 +42,7 @@ export default function Home() {
   useEffect(() => {
     if (!isModalOpen && hasOpened) {
       const timer = setTimeout(() => {
-        setModalProject(projectsData[0].name);
+        setModalProject("");
         setIsModalOpen(true);
       }, 10000);
 
