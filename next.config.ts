@@ -1,17 +1,18 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  serverExternalPackages: ["@prisma/client", "@prisma/adapter-mariadb"],
   async redirects() {
     return [
       {
-        source: '/:path*',
+        source: "/:path*",
         has: [
           {
-            type: 'host',
-            value: 'www.godrejpropertypune.com',
+            type: "host",
+            value: "www.godrejpropertypune.com",
           },
         ],
-        destination: 'https://godrejpropertypune.com/:path*',
+        destination: "https://godrejpropertypune.com/:path*",
         permanent: true,
       },
     ];
