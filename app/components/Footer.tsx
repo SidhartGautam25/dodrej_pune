@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import Link from "next/link";
 
 interface ProjectReraInfo {
   name: string;
@@ -19,14 +20,22 @@ function ReraQr({ name, qrImage }: { name: string; qrImage?: string | null }) {
     return (
       <div className="flex flex-col items-center justify-center p-2 rounded-xl bg-white border border-white/10 shadow-sm w-36 h-36 overflow-hidden">
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={qrImage} alt={`RERA QR Code for ${name}`} className="w-28 h-28 object-contain" />
+        <img
+          src={qrImage}
+          alt={`RERA QR Code for ${name}`}
+          className="w-28 h-28 object-contain"
+        />
       </div>
     );
   }
   return (
     <div className="flex flex-col items-center justify-center p-3.5 rounded-xl bg-white border border-white/10 shadow-sm text-[#1e293b] w-36 h-36">
       {/* Mock QR Code Pattern using SVG for high performance and visual assurance */}
-      <svg className="w-20 h-20 text-[#1e293b]" viewBox="0 0 100 100" fill="currentColor">
+      <svg
+        className="w-20 h-20 text-[#1e293b]"
+        viewBox="0 0 100 100"
+        fill="currentColor"
+      >
         {/* Corners */}
         <rect x="0" y="0" width="30" height="30" />
         <rect x="5" y="5" width="20" height="20" fill="white" />
@@ -88,11 +97,18 @@ export default function Footer({ singleProject }: FooterProps) {
         try {
           const res = await fetch("/api/projects");
           const json = await res.json();
-          if (json.success && Array.isArray(json.data) && json.data.length > 0) {
+          if (
+            json.success &&
+            Array.isArray(json.data) &&
+            json.data.length > 0
+          ) {
             setDbProjects(json.data);
           }
         } catch (err) {
-          console.warn("Failed to load projects for footer RERA listings:", err);
+          console.warn(
+            "Failed to load projects for footer RERA listings:",
+            err,
+          );
         }
       }
       loadProjects();
@@ -109,7 +125,6 @@ export default function Footer({ singleProject }: FooterProps) {
   return (
     <footer className="bg-[#1e293b] text-white/80 py-16 px-4 md:px-8 border-t border-white/5">
       <div className="max-w-7xl mx-auto space-y-12">
-
         {/* RERA Agent registration */}
         <div className="text-center">
           <span className="text-sm font-bold tracking-widest text-accent-gold-light uppercase border-b border-accent-gold/20 pb-2 px-4">
@@ -137,21 +152,33 @@ export default function Footer({ singleProject }: FooterProps) {
         {/* Legal Disclaimer */}
         <div className="text-[10px] text-white/40 leading-relaxed border-t border-white/10 pt-8 space-y-3 font-light text-center">
           <p className="max-w-4xl mx-auto">
-            Disclaimer: The information provided on this website is for informational purposes only and does not constitute
-            an offer or contract. All renderings, floor plans, specifications, layouts, dimensions, pricing, and project
-            highlights are conceptual/representative and subject to change by the developer without prior notice.
+            Disclaimer: The information provided on this website is for
+            informational purposes only and does not constitute an offer or
+            contract. All renderings, floor plans, specifications, layouts,
+            dimensions, pricing, and project highlights are
+            conceptual/representative and subject to change by the developer
+            without prior notice.
           </p>
           <p className="max-w-4xl mx-auto">
-            The RERA registration details are sourced directly from the Maharashtra Real Estate Regulatory Authority (MahaRERA)
-            and can be verified on their official website. This website is managed by an authorized channel partner
-            (RERA Agent Reg: A51700032694) to assist home buyers. Logos, trademarks, and project renders are property of
+            The RERA registration details are sourced directly from the
+            Maharashtra Real Estate Regulatory Authority (MahaRERA) and can be
+            verified on their official website. This website is managed by an
+            authorized channel partner (RERA Agent Reg: A51700032694) to assist
+            home buyers. Logos, trademarks, and project renders are property of
             their respective owners.
           </p>
-          <p className="text-center pt-4 text-white/50 text-[11px] font-medium max-w-4xl mx-auto">
-            &copy; {new Date().getFullYear()} Godrej Properties Pune. All Rights Reserved. Managed by Authorized Channel Partner.
+          <div className="flex justify-center items-center gap-4 text-[11px] pt-2">
+            <Link
+              href="/privacy-policy"
+              className="text-accent-gold hover:text-white underline underline-offset-4 transition-colors font-medium"
+            >
+              Disclaimer &amp; Privacy Policy
+            </Link>
+          </div>
+          <p className="text-center pt-2 text-white/50 text-[11px] font-medium max-w-4xl mx-auto">
+            All Rights Reserved. &copy; 2026 958 Real Pvt. Ltd
           </p>
         </div>
-
       </div>
     </footer>
   );

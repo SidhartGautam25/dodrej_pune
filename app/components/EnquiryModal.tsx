@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { projectsData } from "../data/projects";
+import Link from "next/link";
+import { projectsData, type Project } from "../data/projects";
 
 interface EnquiryModalProps {
   isOpen: boolean;
@@ -9,94 +10,62 @@ interface EnquiryModalProps {
   defaultProject?: string;
 }
 
-export default function EnquiryModal({
-  isOpen,
+function getInitialProjectAndMessage(
+  defaultProject: string,
+  allProjects: Project[],
+) {
+  const matchingProject = allProjects.find(
+    (p) =>
+      p.name.toLowerCase() === defaultProject.trim().toLowerCase() ||
+      p.id === defaultProject.trim(),
+  );
+
+  const isActionIntent = !matchingProject && Boolean(defaultProject.trim());
+  const actionIntent = isActionIntent ? defaultProject.trim() : "";
+
+  const finalProject = matchingProject
+    ? matchingProject.name
+    : allProjects.length > 0
+      ? allProjects[0].name
+      : "";
+
+  const finalMessage = actionIntent
+    ? `Request for: ${finalProject} (${actionIntent})`
+    : `Request for: ${finalProject}`;
+
+  return { finalProject, finalMessage };
+}
+
+interface EnquiryModalDialogProps {
+  onClose: () => void;
+  defaultProject: string;
+  projectsList: Project[];
+}
+
+function EnquiryModalDialog({
   onClose,
-  defaultProject = "",
-}: EnquiryModalProps) {
+  defaultProject,
+  projectsList,
+}: EnquiryModalDialogProps) {
+  const initial = getInitialProjectAndMessage(defaultProject, projectsList);
+
   const [name, setName] = useState("");
   const [formData, setFormData] = useState({
     email: "",
     phone: "",
-    message: "",
-    project: "",
+    project: initial.finalProject,
+    message: initial.finalMessage,
   });
 
-  const [projectsList, setProjectsList] = useState<any[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [error, setError] = useState("");
 
-  // Fetch all listed projects dynamically from the database
-  useEffect(() => {
-    async function fetchProjects() {
-      try {
-        const res = await fetch("/api/projects");
-        const json = await res.json();
-        if (json.success && Array.isArray(json.data) && json.data.length > 0) {
-          setProjectsList(json.data);
-        } else {
-          setProjectsList(projectsData);
-        }
-      } catch (err) {
-        console.warn("Failed to fetch projects for modal dropdown:", err);
-        setProjectsList(projectsData);
-      }
-    }
-    fetchProjects();
-  }, []);
-
   const handleClose = () => {
-    setFormData({
-      email: "",
-      phone: "",
-      message: "",
-      project: "",
-    });
     setName("");
     setError("");
     onClose();
   };
-
-  useEffect(() => {
-    if (isOpen) {
-      const allProjects = projectsList.length > 0 ? projectsList : projectsData;
-
-      // Determine if defaultProject matches an actual project name or id
-      const matchingProject = allProjects.find(
-        (p) =>
-          p.name.toLowerCase() === defaultProject.trim().toLowerCase() ||
-          p.id === defaultProject.trim(),
-      );
-
-      // Check if defaultProject represents a specific action (e.g. "Book Free Site Visit", "Get Price Sheet", etc.)
-      const isActionIntent = !matchingProject && Boolean(defaultProject.trim());
-      const actionIntent = isActionIntent ? defaultProject.trim() : "";
-
-      const finalProject = matchingProject
-        ? matchingProject.name
-        : allProjects.length > 0
-          ? allProjects[0].name
-          : "";
-
-      const finalMessage = actionIntent
-        ? `Request for: ${finalProject} (${actionIntent})`
-        : `Request for: ${finalProject}`;
-
-      setFormData({
-        email: "",
-        phone: "",
-        project: finalProject,
-        message: finalMessage,
-      });
-
-      setName("");
-      setIsSuccess(false);
-      setError("");
-    }
-  }, [isOpen, defaultProject, projectsList]);
-
-  if (!isOpen) return null;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -146,10 +115,12 @@ export default function EnquiryModal({
         project: "",
       });
       setName("");
-    } catch (err: any) {
-      setError(
-        err.message || "An unexpected error occurred. Please try again.",
-      );
+    } catch (err: unknown) {
+      const errorMessage =
+        err instanceof Error
+          ? err.message
+          : "An unexpected error occurred. Please try again.";
+      setError(errorMessage);
     } finally {
       setIsSubmitting(false);
     }
@@ -160,15 +131,15 @@ export default function EnquiryModal({
       HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
     >,
   ) => {
-    const { name, value } = e.target;
-    if (name === "project") {
+    const { name: fieldName, value } = e.target;
+    if (fieldName === "project") {
       setFormData((prev) => ({
         ...prev,
         project: value,
         message: `Request for: ${value}`,
       }));
     } else {
-      setFormData((prev) => ({ ...prev, [name]: value }));
+      setFormData((prev) => ({ ...prev, [fieldName]: value }));
     }
   };
 
@@ -361,23 +332,13 @@ export default function EnquiryModal({
                 className="text-[10px] text-gray-500 leading-normal font-medium select-none"
               >
                 I Consent to The Processing of Provided Data According To{" "}
-                <a
+                <Link
                   href="/privacy-policy"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="underline hover:text-gray-700"
+                  onClick={handleClose}
+                  className="underline hover:text-gray-700 font-semibold"
                 >
-                  Privacy Policy
-                </a>
-                {" | "}
-                <a
-                  href="/terms-and-conditions"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="underline hover:text-gray-700"
-                >
-                  Terms & Conditions
-                </a>
+                  Disclaimer &amp; Privacy Policy
+                </Link>
                 . I Authorize 958 Real Pvt. Ltd. and its representatives to
                 Call, SMS, Email or WhatsApp Me About Its Products and Benefits.
                 This Consent Overrides Any Registration For DNC/NDNC.
@@ -398,5 +359,42 @@ export default function EnquiryModal({
         )}
       </div>
     </div>
+  );
+}
+
+export default function EnquiryModal({
+  isOpen,
+  onClose,
+  defaultProject = "",
+}: EnquiryModalProps) {
+  const [projectsList, setProjectsList] = useState<Project[]>([]);
+
+  // Fetch all listed projects dynamically from the database
+  useEffect(() => {
+    async function fetchProjects() {
+      try {
+        const res = await fetch("/api/projects");
+        const json = await res.json();
+        if (json.success && Array.isArray(json.data) && json.data.length > 0) {
+          setProjectsList(json.data as Project[]);
+        } else {
+          setProjectsList(projectsData);
+        }
+      } catch {
+        setProjectsList(projectsData);
+      }
+    }
+    fetchProjects();
+  }, []);
+
+  if (!isOpen) return null;
+
+  return (
+    <EnquiryModalDialog
+      key={`${defaultProject}-${projectsList.length}`}
+      onClose={onClose}
+      defaultProject={defaultProject}
+      projectsList={projectsList.length > 0 ? projectsList : projectsData}
+    />
   );
 }

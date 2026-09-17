@@ -1,14 +1,16 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { projectsData } from "../data/projects";
+import Link from "next/link";
+import { projectsData, type Project } from "../data/projects";
 
 interface DeveloperAboutProps {
-  onOpenEnquiry: (projectName?: string) => void;
+  onOpenEnquiry?: (projectName?: string) => void;
 }
 
 export default function DeveloperAbout({ onOpenEnquiry }: DeveloperAboutProps) {
-  const [projectsList, setProjectsList] = useState<any[]>([]);
+  void onOpenEnquiry;
+  const [projectsList, setProjectsList] = useState<Project[]>([]);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -27,7 +29,7 @@ export default function DeveloperAbout({ onOpenEnquiry }: DeveloperAboutProps) {
         const res = await fetch("/api/projects");
         const json = await res.json();
         if (json.success && Array.isArray(json.data) && json.data.length > 0) {
-          setProjectsList(json.data);
+          setProjectsList(json.data as Project[]);
           setFormData((prev) => ({
             ...prev,
             project: prev.project || json.data[0].name,
@@ -39,7 +41,7 @@ export default function DeveloperAbout({ onOpenEnquiry }: DeveloperAboutProps) {
             project: prev.project || projectsData[0].name,
           }));
         }
-      } catch (err) {
+      } catch {
         setProjectsList(projectsData);
         setFormData((prev) => ({
           ...prev,
@@ -100,8 +102,10 @@ export default function DeveloperAbout({ onOpenEnquiry }: DeveloperAboutProps) {
         message: "",
         project: chosenProject,
       });
-    } catch (err: any) {
-      setError(err.message || "An unexpected error occurred.");
+    } catch (err: unknown) {
+      const errorMessage =
+        err instanceof Error ? err.message : "An unexpected error occurred.";
+      setError(errorMessage);
     } finally {
       setIsSubmitting(false);
     }
@@ -134,15 +138,16 @@ export default function DeveloperAbout({ onOpenEnquiry }: DeveloperAboutProps) {
               250 awards and recognitions.
             </p>
             <p>
-              Among these accolades are notable honors such as 'The Most Trusted
-              Real Estate Brand' in 2019 from the Brand Trust Report, and 'Real
-              Estate Company of the Year' at the 9th Construction Week Awards
-              2019. Furthermore, the company was celebrated as the 'Equality and
-              Diversity Champion' in 2019 at the APREA Property Leaders Awards,
-              and it was named 'The Economic Times Best Real Estate Brand' in
-              2018. Additionally, Godrej Properties earned the prestigious title
-              of 'Builder of the Year' at the CNBC-Awaaz Real Estate Awards
-              2018.
+              Among these accolades are notable honors such as &apos;The Most
+              Trusted Real Estate Brand&apos; in 2019 from the Brand Trust
+              Report, and &apos;Real Estate Company of the Year&apos; at the 9th
+              Construction Week Awards 2019. Furthermore, the company was
+              celebrated as the &apos;Equality and Diversity Champion&apos; in
+              2019 at the APREA Property Leaders Awards, and it was named
+              &apos;The Economic Times Best Real Estate Brand&apos; in 2018.
+              Additionally, Godrej Properties earned the prestigious title of
+              &apos;Builder of the Year&apos; at the CNBC-Awaaz Real Estate
+              Awards 2018.
             </p>
           </div>
 
@@ -310,8 +315,14 @@ export default function DeveloperAbout({ onOpenEnquiry }: DeveloperAboutProps) {
                     className="text-[10px] text-white/50 leading-tight"
                   >
                     I authorize company representatives to Call, SMS, Email or
-                    WhatsApp me about its products and offers. This consent
-                    overrides any registration for DNC/NDNC.
+                    WhatsApp me about its products and offers according to the{" "}
+                    <Link
+                      href="/privacy-policy"
+                      className="underline text-accent-gold hover:text-white"
+                    >
+                      Disclaimer &amp; Privacy Policy
+                    </Link>
+                    . This consent overrides any registration for DNC/NDNC.
                   </label>
                 </div>
 
